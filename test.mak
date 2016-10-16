@@ -23,10 +23,11 @@ OUTFILE=$(OUTDIR)/test
 CFG_INC=-Iinclude -I${HOME}/Projects 
 CFG_LIB=/Users/dayton/Projects/oscpp/Debug//oscpp.dylib 
 CFG_OBJ=
-COMMON_OBJ=$(OUTDIR)/test.o $(OUTDIR)/testTrim.o 
+COMMON_OBJ=$(OUTDIR)/test.o $(OUTDIR)/testSystemException.o \
+	$(OUTDIR)/testTrim.o 
 OBJ=$(COMMON_OBJ) $(CFG_OBJ)
-ALL_OBJ=$(OUTDIR)/test.o $(OUTDIR)/testTrim.o \
-	/Users/dayton/Projects/oscpp/Debug//oscpp.dylib 
+ALL_OBJ=$(OUTDIR)/test.o $(OUTDIR)/testSystemException.o \
+	$(OUTDIR)/testTrim.o /Users/dayton/Projects/oscpp/Debug//oscpp.dylib 
 
 COMPILE=clang++ -c    -g -o "$(OUTDIR)/$(*F).o" $(CFG_INC) "$<"
 LINK=clang++  -g -o "$(OUTFILE)" $(OBJ) $(CFG_LIB)
@@ -70,9 +71,11 @@ OUTFILE=$(OUTDIR)/test
 CFG_INC=-Iinclude -I${HOME}/Projects 
 CFG_LIB=/Users/dayton/Projects/oscpp/Release//oscpp.dylib 
 CFG_OBJ=
-COMMON_OBJ=$(OUTDIR)/test.o $(OUTDIR)/testTrim.o 
+COMMON_OBJ=$(OUTDIR)/test.o $(OUTDIR)/testSystemException.o \
+	$(OUTDIR)/testTrim.o 
 OBJ=$(COMMON_OBJ) $(CFG_OBJ)
-ALL_OBJ=$(OUTDIR)/test.o $(OUTDIR)/testTrim.o \
+ALL_OBJ=$(OUTDIR)/test.o $(OUTDIR)/testSystemException.o \
+	$(OUTDIR)/testTrim.o \
 	/Users/dayton/Projects/oscpp/Release//oscpp.dylib 
 
 COMPILE=clang++ -c   -o "$(OUTDIR)/$(*F).o" $(CFG_INC) "$<"

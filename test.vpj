@@ -257,6 +257,7 @@
     <Files AutoFolders="DirectoryView">
         <Folder Name="test">
             <F N="test/test.cpp"/>
+            <F N="test/testSystemException.cpp"/>
             <F N="test/testTrim.cpp"/>
         </Folder>
         <F
