@@ -24,7 +24,6 @@ TEST(oscpp, testtrim) {
   };
   const size_t NSAMPLE = sizeof(sample) / sizeof(sample[0]);
 
-  std::cout << "Process " << getpid() << std::endl;
   for (size_t testNumber = 0; testNumber < NSAMPLE; ++testNumber) {
     string testCase = sample[testNumber];
     oscpp::trim(testCase);

@@ -45,7 +45,8 @@
                 Deletable="0"
                 SaveOption="SaveWorkspaceFiles"
                 RunFromDir="%rw"
-                ClearProcessBuffer="1">
+                ClearProcessBuffer="1"
+                DependsRef="Debug">
                 <Exec CmdLine='make -f "%rp%rn.mak" CFG=%b'/>
             </Target>
             <Target
@@ -55,7 +56,8 @@
                 Deletable="0"
                 SaveOption="SaveWorkspaceFiles"
                 RunFromDir="%rw"
-                ClearProcessBuffer="1">
+                ClearProcessBuffer="1"
+                DependsRef="Debug">
                 <Exec CmdLine='make -f "%rp%rn.mak" rebuild CFG=%b'/>
             </Target>
             <Target
@@ -113,6 +115,9 @@
         <Libs PreObjects="0">
             <Lib File="%bd/oscpp.dylib"/>
         </Libs>
+        <Dependencies Name="Debug">
+            <Dependency Project="oscpp.vpj"/>
+        </Dependencies>
     </Config>
     <Config
         Name="Release"
@@ -153,7 +158,8 @@
                 Deletable="0"
                 SaveOption="SaveWorkspaceFiles"
                 RunFromDir="%rw"
-                ClearProcessBuffer="1">
+                ClearProcessBuffer="1"
+                DependsRef="Release">
                 <Exec CmdLine='make -f "%rp%rn.mak" CFG=%b'/>
             </Target>
             <Target
@@ -163,7 +169,8 @@
                 Deletable="0"
                 SaveOption="SaveWorkspaceFiles"
                 RunFromDir="%rw"
-                ClearProcessBuffer="1">
+                ClearProcessBuffer="1"
+                DependsRef="Release">
                 <Exec CmdLine='make -f "%rp%rn.mak" rebuild CFG=%b'/>
             </Target>
             <Target
@@ -221,6 +228,9 @@
         <Libs PreObjects="0">
             <Lib File="%bd/oscpp.dylib"/>
         </Libs>
+        <Dependencies Name="Release">
+            <Dependency Project="oscpp.vpj"/>
+        </Dependencies>
     </Config>
     <CustomFolders>
         <Folder

@@ -38,11 +38,15 @@ $(OUTDIR)/%.o : test/%.cpp
 # Build rules
 all: $(OUTFILE)
 
-$(OUTFILE): $(OUTDIR)  $(OBJ)
+$(OUTFILE): $(OUTDIR) deps $(OBJ)
 	$(LINK)
 
 $(OUTDIR):
 	$(MKDIR) -p "$(OUTDIR)"
+
+# Build dependencies
+deps:
+	@(cd .;$(MAKE) -f oscpp.mak CFG=$(CFG))
 
 # Rebuild this project
 rebuild: cleanall all
@@ -54,6 +58,7 @@ clean:
 
 # Clean this project and all dependencies
 cleanall: clean
+	@(cd .;$(MAKE) -f oscpp.mak cleanall CFG=$(CFG))
 endif
 
 #
@@ -80,11 +85,15 @@ $(OUTDIR)/%.o : test/%.cpp
 # Build rules
 all: $(OUTFILE)
 
-$(OUTFILE): $(OUTDIR)  $(OBJ)
+$(OUTFILE): $(OUTDIR) deps $(OBJ)
 	$(LINK)
 
 $(OUTDIR):
 	$(MKDIR) -p "$(OUTDIR)"
+
+# Build dependencies
+deps:
+	@(cd .;$(MAKE) -f oscpp.mak CFG=$(CFG))
 
 # Rebuild this project
 rebuild: cleanall all
@@ -96,4 +105,5 @@ clean:
 
 # Clean this project and all dependencies
 cleanall: clean
+	@(cd .;$(MAKE) -f oscpp.mak cleanall CFG=$(CFG))
 endif
