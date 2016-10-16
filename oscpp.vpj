@@ -1,0 +1,556 @@
+<!DOCTYPE Project SYSTEM "http://www.slickedit.com/dtd/vse/10.0/vpj.dtd">
+<Project
+    Version="10.0"
+    VendorName="SlickEdit"
+    TemplateName="Clang++"
+    WorkingDir="."
+    BuildSystem="automakefile"
+    BuildMakeFile="%rp%rn.mak">
+    <Config
+        Name="Debug"
+        Type="gnuc"
+        DebugCallbackName="lldb"
+        Version="1"
+        OutputFile="%bdoscpp.dylib"
+        CompilerConfigName="Latest Version">
+        <Menu>
+            <Target
+                Name="Compile"
+                MenuCaption="&amp;Compile"
+                Dialog="_gnuc_options_form Compile"
+                CaptureOutputWith="ProcessBuffer"
+                Deletable="0"
+                OutputExts="*.o"
+                SaveOption="SaveCurrent"
+                RunFromDir="%rw"
+                ClearProcessBuffer="1">
+                <Exec CmdLine='clang++ -c %xup  %defd -g -o "%bd%n%oe" %i "%f"'/>
+            </Target>
+            <Target
+                Name="Link"
+                MenuCaption="&amp;Link"
+                ShowOnMenu="Never"
+                Dialog="_gnuc_options_form Link"
+                CaptureOutputWith="ProcessBuffer"
+                Deletable="0"
+                SaveOption="SaveCurrent"
+                RunFromDir="%rw"
+                ClearProcessBuffer="1">
+                <Exec CmdLine='clang++ %xup -g -o "%o" %f %libs -shared -fPIC'/>
+            </Target>
+            <Target
+                Name="Build"
+                MenuCaption="&amp;Build"
+                CaptureOutputWith="ProcessBuffer"
+                Deletable="0"
+                SaveOption="SaveWorkspaceFiles"
+                RunFromDir="%rw"
+                ClearProcessBuffer="1">
+                <Exec CmdLine='make -f "%rp%rn.mak" CFG=%b'/>
+            </Target>
+            <Target
+                Name="Rebuild"
+                MenuCaption="&amp;Rebuild"
+                CaptureOutputWith="ProcessBuffer"
+                Deletable="0"
+                SaveOption="SaveWorkspaceFiles"
+                RunFromDir="%rw"
+                ClearProcessBuffer="1">
+                <Exec CmdLine='make -f "%rp%rn.mak" rebuild CFG=%b'/>
+            </Target>
+            <Target
+                Name="Debug"
+                MenuCaption="&amp;Debug"
+                Dialog="_gnuc_options_form Run/Debug"
+                BuildFirst="1"
+                CaptureOutputWith="ProcessBuffer"
+                Deletable="0"
+                SaveOption="SaveNone"
+                RunFromDir="%rw"
+                ClearProcessBuffer="1">
+                <Exec CmdLine=""/>
+            </Target>
+            <Target
+                Name="Execute"
+                MenuCaption="E&amp;xecute"
+                Dialog="_gnuc_options_form Run/Debug"
+                BuildFirst="1"
+                CaptureOutputWith="ProcessBuffer"
+                Deletable="0"
+                SaveOption="SaveWorkspaceFiles"
+                RunFromDir="%rw"
+                ClearProcessBuffer="1">
+                <Exec CmdLine=""/>
+            </Target>
+            <Target
+                Name="dash"
+                MenuCaption="-"
+                Deletable="0"
+                CaptureOutputWith="ProcessBuffer"
+                ClearProcessBuffer="1"
+                ShowOnMenu="HideIfNoCmdLine">
+                <Exec/>
+            </Target>
+            <Target
+                Name="Clang Options"
+                MenuCaption="Clang &amp;Options..."
+                ShowOnMenu="HideIfNoCmdLine"
+                Deletable="0"
+                SaveOption="SaveNone">
+                <Exec
+                    CmdLine="clangoptions"
+                    Type="Slick-C"/>
+            </Target>
+            <Target
+                Name="Test"
+                MenuCaption="Test"
+                RunFromDir="%bd"
+                CaptureOutputWith="ProcessBuffer"
+                SaveOption="SaveAll">
+                <Exec CmdLine="testTrim"/>
+            </Target>
+        </Menu>
+        <List Name="GNUC Options">
+            <Item
+                Name="LinkerOutputType"
+                Value="SharedLibrary"/>
+        </List>
+        <Includes>
+            <Include Dir="include"/>
+            <Include Dir="${HOME}/Projects"/>
+        </Includes>
+        <Dependencies Name="Debug">
+            <Dependency Project="test.vpj"/>
+        </Dependencies>
+    </Config>
+    <Config
+        Name="Release"
+        Type="gnuc"
+        DebugCallbackName="lldb"
+        Version="1"
+        OutputFile="%bdoscpp.dylib"
+        CompilerConfigName="Latest Version">
+        <Menu>
+            <Target
+                Name="Compile"
+                MenuCaption="&amp;Compile"
+                Dialog="_gnuc_options_form Compile"
+                CaptureOutputWith="ProcessBuffer"
+                Deletable="0"
+                OutputExts="*.o"
+                SaveOption="SaveCurrent"
+                RunFromDir="%rw"
+                ClearProcessBuffer="1">
+                <Exec CmdLine='clang++ -c %xup %defd -o "%bd%n%oe" %i "%f"'/>
+            </Target>
+            <Target
+                Name="Link"
+                MenuCaption="&amp;Link"
+                ShowOnMenu="Never"
+                Dialog="_gnuc_options_form Link"
+                CaptureOutputWith="ProcessBuffer"
+                Deletable="0"
+                SaveOption="SaveCurrent"
+                RunFromDir="%rw"
+                ClearProcessBuffer="1">
+                <Exec CmdLine='clang++ %xup -o "%o" %f %libs -shared -fPIC'/>
+            </Target>
+            <Target
+                Name="Build"
+                MenuCaption="&amp;Build"
+                CaptureOutputWith="ProcessBuffer"
+                Deletable="0"
+                SaveOption="SaveWorkspaceFiles"
+                RunFromDir="%rw"
+                ClearProcessBuffer="1">
+                <Exec CmdLine='make -f "%rp%rn.mak" CFG=%b'/>
+            </Target>
+            <Target
+                Name="Rebuild"
+                MenuCaption="&amp;Rebuild"
+                CaptureOutputWith="ProcessBuffer"
+                Deletable="0"
+                SaveOption="SaveWorkspaceFiles"
+                RunFromDir="%rw"
+                ClearProcessBuffer="1">
+                <Exec CmdLine='make -f "%rp%rn.mak" rebuild CFG=%b'/>
+            </Target>
+            <Target
+                Name="Debug"
+                MenuCaption="&amp;Debug"
+                Dialog="_gnuc_options_form Run/Debug"
+                BuildFirst="1"
+                CaptureOutputWith="ProcessBuffer"
+                Deletable="0"
+                SaveOption="SaveNone"
+                RunFromDir="%rw"
+                ClearProcessBuffer="1">
+                <Exec CmdLine=""/>
+            </Target>
+            <Target
+                Name="Execute"
+                MenuCaption="E&amp;xecute"
+                Dialog="_gnuc_options_form Run/Debug"
+                BuildFirst="1"
+                CaptureOutputWith="ProcessBuffer"
+                Deletable="0"
+                SaveOption="SaveWorkspaceFiles"
+                RunFromDir="%rw"
+                ClearProcessBuffer="1">
+                <Exec CmdLine=""/>
+            </Target>
+            <Target
+                Name="dash"
+                MenuCaption="-"
+                Deletable="0"
+                CaptureOutputWith="ProcessBuffer"
+                ClearProcessBuffer="1"
+                ShowOnMenu="HideIfNoCmdLine">
+                <Exec/>
+            </Target>
+            <Target
+                Name="Clang Options"
+                MenuCaption="Clang &amp;Options..."
+                ShowOnMenu="HideIfNoCmdLine"
+                Deletable="0"
+                SaveOption="SaveNone">
+                <Exec
+                    CmdLine="clangoptions"
+                    Type="Slick-C"/>
+            </Target>
+            <Target
+                Name="Test"
+                MenuCaption="Test"
+                RunFromDir="%bd"
+                CaptureOutputWith="ProcessBuffer"
+                SaveOption="SaveAll">
+                <Exec CmdLine="testTrim"/>
+            </Target>
+        </Menu>
+        <List Name="GNUC Options">
+            <Item
+                Name="LinkerOutputType"
+                Value="SharedLibrary"/>
+        </List>
+        <Includes>
+            <Include Dir="include"/>
+            <Include Dir="${HOME}/Projects"/>
+        </Includes>
+        <Dependencies Name="Release">
+            <Dependency Project="test.vpj"/>
+        </Dependencies>
+    </Config>
+    <CustomFolders>
+        <Folder
+            Name="Source Files"
+            Filters="*.c;*.C;*.cc;*.cpp;*.cp;*.cxx;*.c++;*.prg;*.pas;*.dpr;*.asm;*.s;*.bas;*.java;*.cs;*.sc;*.e;*.cob;*.html;*.rc;*.tcl;*.py;*.pl;*.d;*.m;*.mm;*.go;*.groovy;*.gsh"
+            GUID="{9FCF50F3-BD8F-48FC-AC2F-1639E3954FEE}"></Folder>
+        <Folder
+            Name="Header Files"
+            Filters="*.h;*.H;*.hh;*.hpp;*.hxx;*.h++;*.inc;*.sh;*.cpy;*.if"
+            GUID="{5C445A8F-1771-489D-93EE-0624E9ABB3E4}"></Folder>
+        <Folder
+            Name="Resource Files"
+            Filters="*.ico;*.cur;*.dlg"
+            GUID="{61F45F8B-1372-49A9-A7F6-3F7AAC461110}"/>
+        <Folder
+            Name="Bitmaps"
+            Filters="*.bmp"
+            GUID="{AA49BDE6-59D1-4550-B180-5054644A3993}"/>
+        <Folder
+            Name="Other Files"
+            Filters=""
+            GUID="{20CDDEE3-1AE7-4EBF-9A40-50EBA65249E6}"></Folder>
+    </CustomFolders>
+    <Files AutoFolders="DirectoryView">
+        <Folder Name="include">
+            <F N="include/sysexception.hpp"/>
+            <F N="include/trim.hpp"/>
+        </Folder>
+        <Folder Name="src">
+            <F N="src/sysexception.cpp"/>
+            <F N="src/trim.cpp"/>
+        </Folder>
+        <F
+            N="oscpp<!DOCTYPE Project SYSTEM "http://www.slickedit.com/dtd/vse/10.0/vpj.dtd">
+<Project
+    Version="10.0"
+    VendorName="SlickEdit"
+    TemplateName="Clang++"
+    WorkingDir="."
+    BuildSystem="automakefile"
+    BuildMakeFile="%rp%rn.mak">
+    <Config
+        Name="Debug"
+        Type="gnuc"
+        DebugCallbackName="lldb"
+        Version="1"
+        OutputFile="%bdoscpp.dylib"
+        CompilerConfigName="Latest Version">
+        <Menu>
+            <Target
+                Name="Compile"
+                MenuCaption="&amp;Compile"
+                Dialog="_gnuc_options_form Compile"
+                CaptureOutputWith="ProcessBuffer"
+                Deletable="0"
+                OutputExts="*.o"
+                SaveOption="SaveCurrent"
+                RunFromDir="%rw"
+                ClearProcessBuffer="1">
+                <Exec CmdLine='clang++ -c %xup  %defd -g -o "%bd%n%oe" %i "%f"'/>
+            </Target>
+            <Target
+                Name="Link"
+                MenuCaption="&amp;Link"
+                ShowOnMenu="Never"
+                Dialog="_gnuc_options_form Link"
+                CaptureOutputWith="ProcessBuffer"
+                Deletable="0"
+                SaveOption="SaveCurrent"
+                RunFromDir="%rw"
+                ClearProcessBuffer="1">
+                <Exec CmdLine='clang++ %xup -g -o "%o" %f %libs -shared -fPIC'/>
+            </Target>
+            <Target
+                Name="Build"
+                MenuCaption="&amp;Build"
+                CaptureOutputWith="ProcessBuffer"
+                Deletable="0"
+                SaveOption="SaveWorkspaceFiles"
+                RunFromDir="%rw"
+                ClearProcessBuffer="1">
+                <Exec CmdLine='make -f "%rp%rn.mak" CFG=%b'/>
+            </Target>
+            <Target
+                Name="Rebuild"
+                MenuCaption="&amp;Rebuild"
+                CaptureOutputWith="ProcessBuffer"
+                Deletable="0"
+                SaveOption="SaveWorkspaceFiles"
+                RunFromDir="%rw"
+                ClearProcessBuffer="1">
+                <Exec CmdLine='make -f "%rp%rn.mak" rebuild CFG=%b'/>
+            </Target>
+            <Target
+                Name="Debug"
+                MenuCaption="&amp;Debug"
+                Dialog="_gnuc_options_form Run/Debug"
+                BuildFirst="1"
+                CaptureOutputWith="ProcessBuffer"
+                Deletable="0"
+                SaveOption="SaveNone"
+                RunFromDir="%rw"
+                ClearProcessBuffer="1">
+                <Exec CmdLine=""/>
+            </Target>
+            <Target
+                Name="Execute"
+                MenuCaption="E&amp;xecute"
+                Dialog="_gnuc_options_form Run/Debug"
+                BuildFirst="1"
+                CaptureOutputWith="ProcessBuffer"
+                Deletable="0"
+                SaveOption="SaveWorkspaceFiles"
+                RunFromDir="%rw"
+                ClearProcessBuffer="1">
+                <Exec CmdLine=""/>
+            </Target>
+            <Target
+                Name="dash"
+                MenuCaption="-"
+                Deletable="0"
+                CaptureOutputWith="ProcessBuffer"
+                ClearProcessBuffer="1"
+                ShowOnMenu="HideIfNoCmdLine">
+                <Exec/>
+            </Target>
+            <Target
+                Name="Clang Options"
+                MenuCaption="Clang &amp;Options..."
+                ShowOnMenu="HideIfNoCmdLine"
+                Deletable="0"
+                SaveOption="SaveNone">
+                <Exec
+                    CmdLine="clangoptions"
+                    Type="Slick-C"/>
+            </Target>
+            <Target
+                Name="Test"
+                MenuCaption="Test"
+                RunFromDir="%bd"
+                CaptureOutputWith="ProcessBuffer"
+                SaveOption="SaveAll">
+                <Exec CmdLine="testTrim"/>
+            </Target>
+        </Menu>
+        <List Name="GNUC Options">
+            <Item
+                Name="LinkerOutputType"
+                Value="SharedLibrary"/>
+        </List>
+        <Includes>
+            <Include Dir="include"/>
+            <Include Dir="${HOME}/Projects"/>
+        </Includes>
+        <Dependencies Name="Debug">
+            <Dependency Project="test.vpj"/>
+        </Dependencies>
+    </Config>
+    <Config
+        Name="Release"
+        Type="gnuc"
+        DebugCallbackName="lldb"
+        Version="1"
+        OutputFile="%bdoscpp.dylib"
+        CompilerConfigName="Latest Version">
+        <Menu>
+            <Target
+                Name="Compile"
+                MenuCaption="&amp;Compile"
+                Dialog="_gnuc_options_form Compile"
+                CaptureOutputWith="ProcessBuffer"
+                Deletable="0"
+                OutputExts="*.o"
+                SaveOption="SaveCurrent"
+                RunFromDir="%rw"
+                ClearProcessBuffer="1">
+                <Exec CmdLine='clang++ -c %xup %defd -o "%bd%n%oe" %i "%f"'/>
+            </Target>
+            <Target
+                Name="Link"
+                MenuCaption="&amp;Link"
+                ShowOnMenu="Never"
+                Dialog="_gnuc_options_form Link"
+                CaptureOutputWith="ProcessBuffer"
+                Deletable="0"
+                SaveOption="SaveCurrent"
+                RunFromDir="%rw"
+                ClearProcessBuffer="1">
+                <Exec CmdLine='clang++ %xup -o "%o" %f %libs -shared -fPIC'/>
+            </Target>
+            <Target
+                Name="Build"
+                MenuCaption="&amp;Build"
+                CaptureOutputWith="ProcessBuffer"
+                Deletable="0"
+                SaveOption="SaveWorkspaceFiles"
+                RunFromDir="%rw"
+                ClearProcessBuffer="1">
+                <Exec CmdLine='make -f "%rp%rn.mak" CFG=%b'/>
+            </Target>
+            <Target
+                Name="Rebuild"
+                MenuCaption="&amp;Rebuild"
+                CaptureOutputWith="ProcessBuffer"
+                Deletable="0"
+                SaveOption="SaveWorkspaceFiles"
+                RunFromDir="%rw"
+                ClearProcessBuffer="1">
+                <Exec CmdLine='make -f "%rp%rn.mak" rebuild CFG=%b'/>
+            </Target>
+            <Target
+                Name="Debug"
+                MenuCaption="&amp;Debug"
+                Dialog="_gnuc_options_form Run/Debug"
+                BuildFirst="1"
+                CaptureOutputWith="ProcessBuffer"
+                Deletable="0"
+                SaveOption="SaveNone"
+                RunFromDir="%rw"
+                ClearProcessBuffer="1">
+                <Exec CmdLine=""/>
+            </Target>
+            <Target
+                Name="Execute"
+                MenuCaption="E&amp;xecute"
+                Dialog="_gnuc_options_form Run/Debug"
+                BuildFirst="1"
+                CaptureOutputWith="ProcessBuffer"
+                Deletable="0"
+                SaveOption="SaveWorkspaceFiles"
+                RunFromDir="%rw"
+                ClearProcessBuffer="1">
+                <Exec CmdLine=""/>
+            </Target>
+            <Target
+                Name="dash"
+                MenuCaption="-"
+                Deletable="0"
+                CaptureOutputWith="ProcessBuffer"
+                ClearProcessBuffer="1"
+                ShowOnMenu="HideIfNoCmdLine">
+                <Exec/>
+            </Target>
+            <Target
+                Name="Clang Options"
+                MenuCaption="Clang &amp;Options..."
+                ShowOnMenu="HideIfNoCmdLine"
+                Deletable="0"
+                SaveOption="SaveNone">
+                <Exec
+                    CmdLine="clangoptions"
+                    Type="Slick-C"/>
+            </Target>
+            <Target
+                Name="Test"
+                MenuCaption="Test"
+                RunFromDir="%bd"
+                CaptureOutputWith="ProcessBuffer"
+                SaveOption="SaveAll">
+                <Exec CmdLine="testTrim"/>
+            </Target>
+        </Menu>
+        <List Name="GNUC Options">
+            <Item
+                Name="LinkerOutputType"
+                Value="SharedLibrary"/>
+        </List>
+        <Includes>
+            <Include Dir="include"/>
+            <Include Dir="${HOME}/Projects"/>
+        </Includes>
+        <Dependencies Name="Release">
+            <Dependency Project="test.vpj"/>
+        </Dependencies>
+    </Config>
+    <CustomFolders>
+        <Folder
+            Name="Source Files"
+            Filters="*.c;*.C;*.cc;*.cpp;*.cp;*.cxx;*.c++;*.prg;*.pas;*.dpr;*.asm;*.s;*.bas;*.java;*.cs;*.sc;*.e;*.cob;*.html;*.rc;*.tcl;*.py;*.pl;*.d;*.m;*.mm;*.go;*.groovy;*.gsh"
+            GUID="{9FCF50F3-BD8F-48FC-AC2F-1639E3954FEE}"></Folder>
+        <Folder
+            Name="Header Files"
+            Filters="*.h;*.H;*.hh;*.hpp;*.hxx;*.h++;*.inc;*.sh;*.cpy;*.if"
+            GUID="{5C445A8F-1771-489D-93EE-0624E9ABB3E4}"></Folder>
+        <Folder
+            Name="Resource Files"
+            Filters="*.ico;*.cur;*.dlg"
+            GUID="{61F45F8B-1372-49A9-A7F6-3F7AAC461110}"/>
+        <Folder
+            Name="Bitmaps"
+            Filters="*.bmp"
+            GUID="{AA49BDE6-59D1-4550-B180-5054644A3993}"/>
+        <Folder
+            Name="Other Files"
+            Filters=""
+            GUID="{20CDDEE3-1AE7-4EBF-9A40-50EBA65249E6}"></Folder>
+    </CustomFolders>
+    <Files AutoFolders="DirectoryView">
+        <Folder Name="include">
+            <F N="include/sysexception.hpp"/>
+            <F N="include/trim.hpp"/>
+        </Folder>
+        <Folder Name="src">
+            <F N="src/sysexception.cpp"/>
+            <F N="src/trim.cpp"/>
+        </Folder>
+        <F
+            N="oscpp.mak"
+            Type="Makefile"/>
+    </Files>
+</Project>
+.mak"
+            Type="Makefile"/>
+    </Files>
+</Project>
