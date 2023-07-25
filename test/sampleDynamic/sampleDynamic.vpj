@@ -11,7 +11,7 @@
         Type="gnuc"
         DebugCallbackName="lldb"
         Version="1"
-        OutputFile="%bdoscpp.dylib"
+        OutputFile="%bdsampleDynamic.dylib"
         CompilerConfigName="Latest Version">
         <Menu>
             <Target
@@ -101,31 +101,19 @@
                     CmdLine="clangoptions"
                     Type="Slick-C"/>
             </Target>
-            <Target
-                Name="Test"
-                MenuCaption="Test"
-                RunFromDir="%bd"
-                CaptureOutputWith="ProcessBuffer"
-                SaveOption="SaveAll">
-                <Exec CmdLine="testTrim"/>
-            </Target>
         </Menu>
         <List Name="GNUC Options">
             <Item
                 Name="LinkerOutputType"
                 Value="SharedLibrary"/>
         </List>
-        <Includes>
-            <Include Dir="include"/>
-            <Include Dir="${HOME}/Projects"/>
-        </Includes>
     </Config>
     <Config
         Name="Release"
         Type="gnuc"
         DebugCallbackName="lldb"
         Version="1"
-        OutputFile="%bdoscpp.dylib"
+        OutputFile="%bdsampleDynamic.dylib"
         CompilerConfigName="Latest Version">
         <Menu>
             <Target
@@ -215,58 +203,39 @@
                     CmdLine="clangoptions"
                     Type="Slick-C"/>
             </Target>
-            <Target
-                Name="Test"
-                MenuCaption="Test"
-                RunFromDir="%bd"
-                CaptureOutputWith="ProcessBuffer"
-                SaveOption="SaveAll">
-                <Exec CmdLine="testTrim"/>
-            </Target>
         </Menu>
         <List Name="GNUC Options">
             <Item
                 Name="LinkerOutputType"
                 Value="SharedLibrary"/>
         </List>
-        <Includes>
-            <Include Dir="include"/>
-            <Include Dir="${HOME}/Projects"/>
-        </Includes>
     </Config>
     <CustomFolders>
         <Folder
             Name="Source Files"
             Filters="*.c;*.C;*.cc;*.cpp;*.cp;*.cxx;*.c++;*.prg;*.pas;*.dpr;*.asm;*.s;*.bas;*.java;*.cs;*.sc;*.e;*.cob;*.html;*.rc;*.tcl;*.py;*.pl;*.d;*.m;*.mm;*.go;*.groovy;*.gsh"
-            GUID="{9FCF50F3-BD8F-48FC-AC2F-1639E3954FEE}"></Folder>
+            GUID="{D63612AC-33C4-4575-B4B9-B6F705E96405}"/>
         <Folder
             Name="Header Files"
             Filters="*.h;*.H;*.hh;*.hpp;*.hxx;*.h++;*.inc;*.sh;*.cpy;*.if"
-            GUID="{5C445A8F-1771-489D-93EE-0624E9ABB3E4}"></Folder>
+            GUID="{54059B09-A6DA-4629-9472-54FD7DCD8AC3}"/>
         <Folder
             Name="Resource Files"
             Filters="*.ico;*.cur;*.dlg"
-            GUID="{61F45F8B-1372-49A9-A7F6-3F7AAC461110}"/>
+            GUID="{7FDB19AE-92D5-4253-8272-E5BA925F241F}"/>
         <Folder
             Name="Bitmaps"
             Filters="*.bmp"
-            GUID="{AA49BDE6-59D1-4550-B180-5054644A3993}"/>
+            GUID="{3B2D9B34-5EB5-449E-B39E-8A6ACF97FBCF}"/>
         <Folder
             Name="Other Files"
             Filters=""
-            GUID="{20CDDEE3-1AE7-4EBF-9A40-50EBA65249E6}"></Folder>
+            GUID="{BF447D61-E58B-4320-87B7-8F3FE467D9AF}"></Folder>
     </CustomFolders>
     <Files AutoFolders="DirectoryView">
-        <Folder Name="include">
-            <F N="include/sysexception.hpp"/>
-            <F N="include/trim.hpp"/>
-        </Folder>
-        <Folder Name="src">
-            <F N="src/sysexception.cpp"/>
-            <F N="src/trim.cpp"/>
-        </Folder>
+        <F N="sampleDynamic.cpp"/>
         <F
-            N="oscpp.mak"
+            N="sampleDynamic.mak"
             Type="Makefile"/>
     </Files>
 </Project>

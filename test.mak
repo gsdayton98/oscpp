@@ -23,14 +23,15 @@ OUTFILE=$(OUTDIR)/test
 CFG_INC=-Iinclude -I${HOME}/Projects 
 CFG_LIB=/Users/dayton/Projects/oscpp/Debug//oscpp.dylib 
 CFG_OBJ=
-COMMON_OBJ=$(OUTDIR)/test.o $(OUTDIR)/testSystemException.o \
-	$(OUTDIR)/testTrim.o 
+COMMON_OBJ=$(OUTDIR)/test.o $(OUTDIR)/testDynamicLibrary.o \
+	$(OUTDIR)/testSystemException.o $(OUTDIR)/testTrim.o 
 OBJ=$(COMMON_OBJ) $(CFG_OBJ)
-ALL_OBJ=$(OUTDIR)/test.o $(OUTDIR)/testSystemException.o \
-	$(OUTDIR)/testTrim.o /Users/dayton/Projects/oscpp/Debug//oscpp.dylib 
+ALL_OBJ=$(OUTDIR)/test.o $(OUTDIR)/testDynamicLibrary.o \
+	$(OUTDIR)/testSystemException.o $(OUTDIR)/testTrim.o \
+	/Users/dayton/Projects/oscpp/Debug//oscpp.dylib 
 
-COMPILE=clang++ -c    -g -o "$(OUTDIR)/$(*F).o" $(CFG_INC) "$<"
-LINK=clang++  -g -o "$(OUTFILE)" $(OBJ) $(CFG_LIB)
+COMPILE=clang++ -c   -g -Werror -W -Waggregate-return -Wbad-function-cast -Wcast-align -Wcast-qual -Wchar-subscripts -Wcomment -Wconversion -Werror-implicit-function-declaration -Wfloat-equal -Wformat -Wimplicit -Winline -Wmain -Wmissing-declarations -Wmissing-noreturn -Wmissing-prototypes -Wmultichar -Wnested-externs -Wpacked -Wparentheses -Wpointer-arith -Wredundant-decls -Wreorder -Wreturn-type -Wshadow -Wsign-compare -Wstrict-prototypes -Wswitch -Wunreachable-code -Wunused -Wuninitialized -Wunknown-pragmas -Wwrite-strings -std=c++11 -o "$(OUTDIR)/$(*F).o" $(CFG_INC) $<
+LINK=clang++  -g -Werror -o "$(OUTFILE)" $(ALL_OBJ)
 
 # Pattern rules
 $(OUTDIR)/%.o : test/%.cpp
@@ -48,6 +49,7 @@ $(OUTDIR):
 # Build dependencies
 deps:
 	@(cd .;$(MAKE) -f oscpp.mak CFG=$(CFG))
+	@(cd test/mockstrerror/;$(MAKE) -f mockstrerror.mak CFG=$(CFG))
 
 # Rebuild this project
 rebuild: cleanall all
@@ -60,6 +62,7 @@ clean:
 # Clean this project and all dependencies
 cleanall: clean
 	@(cd .;$(MAKE) -f oscpp.mak cleanall CFG=$(CFG))
+	@(cd test/mockstrerror/;$(MAKE) -f mockstrerror.mak cleanall CFG=$(CFG))
 endif
 
 #
@@ -71,15 +74,15 @@ OUTFILE=$(OUTDIR)/test
 CFG_INC=-Iinclude -I${HOME}/Projects 
 CFG_LIB=/Users/dayton/Projects/oscpp/Release//oscpp.dylib 
 CFG_OBJ=
-COMMON_OBJ=$(OUTDIR)/test.o $(OUTDIR)/testSystemException.o \
-	$(OUTDIR)/testTrim.o 
+COMMON_OBJ=$(OUTDIR)/test.o $(OUTDIR)/testDynamicLibrary.o \
+	$(OUTDIR)/testSystemException.o $(OUTDIR)/testTrim.o 
 OBJ=$(COMMON_OBJ) $(CFG_OBJ)
-ALL_OBJ=$(OUTDIR)/test.o $(OUTDIR)/testSystemException.o \
-	$(OUTDIR)/testTrim.o \
+ALL_OBJ=$(OUTDIR)/test.o $(OUTDIR)/testDynamicLibrary.o \
+	$(OUTDIR)/testSystemException.o $(OUTDIR)/testTrim.o \
 	/Users/dayton/Projects/oscpp/Release//oscpp.dylib 
 
-COMPILE=clang++ -c   -o "$(OUTDIR)/$(*F).o" $(CFG_INC) "$<"
-LINK=clang++  -o "$(OUTFILE)" $(OBJ) $(CFG_LIB)
+COMPILE=clang++ -c   -std=c++11 -o "$(OUTDIR)/$(*F).o" $(CFG_INC) $<
+LINK=clang++  -o "$(OUTFILE)" $(ALL_OBJ)
 
 # Pattern rules
 $(OUTDIR)/%.o : test/%.cpp
@@ -97,6 +100,7 @@ $(OUTDIR):
 # Build dependencies
 deps:
 	@(cd .;$(MAKE) -f oscpp.mak CFG=$(CFG))
+	@(cd test/mockstrerror/;$(MAKE) -f mockstrerror.mak CFG=$(CFG))
 
 # Rebuild this project
 rebuild: cleanall all
@@ -109,4 +113,5 @@ clean:
 # Clean this project and all dependencies
 cleanall: clean
 	@(cd .;$(MAKE) -f oscpp.mak cleanall CFG=$(CFG))
+	@(cd test/mockstrerror/;$(MAKE) -f mockstrerror.mak cleanall CFG=$(CFG))
 endif

@@ -19,33 +19,32 @@ endif
 #
 ifeq "$(CFG)" "Debug"
 OUTDIR=Debug
-OUTFILE=$(OUTDIR)/oscpp.dylib
-CFG_INC=-Iinclude -I${HOME}/Projects 
+OUTFILE=$(OUTDIR)/sampleDynamic.dylib
+CFG_INC=
 CFG_LIB=
 CFG_OBJ=
-COMMON_OBJ=$(OUTDIR)/sysexception.o $(OUTDIR)/trim.o 
+COMMON_OBJ=$(OUTDIR)/sampleDynamic.o 
 OBJ=$(COMMON_OBJ) $(CFG_OBJ)
-ALL_OBJ=$(OUTDIR)/sysexception.o $(OUTDIR)/trim.o 
+ALL_OBJ=$(OUTDIR)/sampleDynamic.o 
 
 COMPILE=clang++ -c    -g -o "$(OUTDIR)/$(*F).o" $(CFG_INC) "$<"
 LINK=clang++  -g -o "$(OUTFILE)" $(OBJ) $(CFG_LIB) -shared -fPIC
 
 # Pattern rules
-$(OUTDIR)/%.o : src/%.cpp
+$(OUTDIR)/%.o : %.cpp
 	$(COMPILE)
 
 # Build rules
 all: $(OUTFILE)
 
-$(OUTFILE): $(OUTDIR) $(OBJ)
+$(OUTFILE): $(OUTDIR)  $(OBJ)
 	$(LINK)
 
 $(OUTDIR):
 	$(MKDIR) -p "$(OUTDIR)"
 
 # Rebuild this project
-rebuild: cleanall
-	@$(MAKE) -f "$(strip $(MAKEFILE_LIST))" $(MAKEFLAGS) all
+rebuild: cleanall all
 
 # Clean this project
 clean:
@@ -61,33 +60,32 @@ endif
 #
 ifeq "$(CFG)" "Release"
 OUTDIR=Release
-OUTFILE=$(OUTDIR)/oscpp.dylib
-CFG_INC=-Iinclude -I${HOME}/Projects 
+OUTFILE=$(OUTDIR)/sampleDynamic.dylib
+CFG_INC=
 CFG_LIB=
 CFG_OBJ=
-COMMON_OBJ=$(OUTDIR)/sysexception.o $(OUTDIR)/trim.o 
+COMMON_OBJ=$(OUTDIR)/sampleDynamic.o 
 OBJ=$(COMMON_OBJ) $(CFG_OBJ)
-ALL_OBJ=$(OUTDIR)/sysexception.o $(OUTDIR)/trim.o 
+ALL_OBJ=$(OUTDIR)/sampleDynamic.o 
 
 COMPILE=clang++ -c   -o "$(OUTDIR)/$(*F).o" $(CFG_INC) "$<"
 LINK=clang++  -o "$(OUTFILE)" $(OBJ) $(CFG_LIB) -shared -fPIC
 
 # Pattern rules
-$(OUTDIR)/%.o : src/%.cpp
+$(OUTDIR)/%.o : %.cpp
 	$(COMPILE)
 
 # Build rules
 all: $(OUTFILE)
 
-$(OUTFILE): $(OUTDIR) $(OBJ)
+$(OUTFILE): $(OUTDIR)  $(OBJ)
 	$(LINK)
 
 $(OUTDIR):
 	$(MKDIR) -p "$(OUTDIR)"
 
 # Rebuild this project
-rebuild: cleanall
-	@$(MAKE) -f "$(strip $(MAKEFILE_LIST))" $(MAKEFLAGS) all
+rebuild: cleanall all
 
 # Clean this project
 clean:
@@ -97,9 +95,3 @@ clean:
 # Clean this project and all dependencies
 cleanall: clean
 endif
-
-#
-# include dependencies:
-#
-$(OUTDIR)/sysexception.o: src/sysexception.cpp include/sysexception.hpp
-$(OUTDIR)/trim.o: src/trim.cpp include/trim.hpp

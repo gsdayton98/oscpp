@@ -2,5 +2,11 @@
 #include <string>
 
 namespace oscpp {
+
+/**
+ *  Trim trailing whitespace from end of string.
+ *
+ * @param s      String to trim.
+ */
 void trim(std::string& s);
 }
