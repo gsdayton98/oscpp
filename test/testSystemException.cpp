@@ -15,6 +15,8 @@ TEST(oscpp, testSystemException) {
     "Undefined error: 0",
     "Operation not permitted"
   };
+
+  std::cout << "testSystemException" << std::endl;
   static const int NTESTCASES = sizeof(expected) / sizeof(expected[0]);
 
   for (int err = 0; err < NTESTCASES; ++err) {
