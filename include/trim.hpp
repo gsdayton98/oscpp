@@ -8,5 +8,6 @@ namespace oscpp {
  *
  * @param s      String to trim.
  */
-void trim(std::string& s);
+    [[maybe_unused]]
+    void trim(std::string &s);
 }

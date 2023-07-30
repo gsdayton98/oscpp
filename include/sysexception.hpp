@@ -4,11 +4,12 @@
 #include <string>
 
 namespace oscpp {
+    class SysException : public std::runtime_error {
+    public:
+        explicit SysException(int errorNumber = errno)
+        : std::runtime_error(SysException::message(errorNumber))
+        {}
 
-class SysException : public std::runtime_error {
-public:
-  SysException(int errorNumber = errno) : std::runtime_error(SysException::message(errorNumber)) {}
-
-  static std::string message(int errorNumber);
-};
+        static std::string message(int errorNumber);
+    };
 }
