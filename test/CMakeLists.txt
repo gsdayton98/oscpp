@@ -1,5 +1,6 @@
 project(oscpp_test)
 
+
 include_directories(mockstrerror $ENV{HOME}/Projects)
 
 set(SOURCES test.cpp

@@ -10,7 +10,7 @@ set(HEADERS include/dynamiclibrary.hpp
         include/trim.hpp
         src/sysexception.cpp)
 
-set(SOURCES src/sysexception.cpp  src/trim.cpp)
+set(SOURCES src/sysexception.cpp  src/trim.cpp src/dynamiclibary.cpp)
 
 add_library(oscpp SHARED ${HEADERS} ${SOURCES})
 
