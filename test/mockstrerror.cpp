@@ -12,14 +12,14 @@ public:
   int strerror_r(int errnum, char *strerrbuf, size_t buflen);
 
 private:
-  static extern "C" int (*realStrError_r)(int, char*, size_t);
+  static int (*realStrError_r)(int, char*, size_t);
 };
 
 extern "C" int (*MockStrError::realStrError_r)(int, char*, size_t) = nullptr;
 
 MockStrError::MockStrError(void) {
   if (realStrError_r == nullptr) {
-    realStrError_r = dlsym(RTLD_NEXT, "strerror_r");
+    realStrError_r = reinterpret_cast<int (*)(int, char *, size_t)>(dlsym(RTLD_NEXT, "strerror_r"));
   }
 }
 
