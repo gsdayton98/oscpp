@@ -8,12 +8,15 @@ include_directories(include)
 
 set(DEVROOT $ENV{HOME})
 
-set(HEADERS include/dynamiclibrary.hpp
+set(HEADERS include/circular_buffer.hpp
+        include/dynamiclibrary.hpp
         include/sysexception.hpp
-        include/trim.hpp
-        src/sysexception.cpp)
+        include/trim.hpp)
 
-set(SOURCES src/sysexception.cpp  src/trim.cpp src/dynamiclibary.cpp)
+set(SOURCES src/circular_buffer.cpp
+        src/dynamiclibary.cpp
+        src/sysexception.cpp
+        src/trim.cpp)
 
 add_library(oscpp SHARED ${HEADERS} ${SOURCES})
 target_include_directories(oscpp PRIVATE .)
@@ -21,7 +24,8 @@ set_target_properties(oscpp PROPERTIES
         VERSION ${PROJECT_VERSION}
         SOVERSION 1)
 
-install(TARGETS oscpp
-        LIBRARY DESTINATION ${DEVROOT}/lib)
+install(TARGETS oscpp LIBRARY DESTINATION ${DEVROOT}/lib)
+
 install(FILES ${HEADERS} DESTINATION ${DEVROOT}/include)
+
 add_subdirectory(test)

@@ -25,7 +25,7 @@ MockStrError::MockStrError(void) {
 
 
 extern "C" int strerror_r(int errnum, char *strerrbuf, size_t buflen) {
-
+    return 0;
 }
 
 
