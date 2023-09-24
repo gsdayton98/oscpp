@@ -1,8 +1,9 @@
+// -*- mode:C++; c-basic-offset:2; indent-tabs-mode:nil -*-
+// Copyright 2023 Glen S. Dayton. Rights reserved according to terms of included license.
 #include <chrono>
 #include "CppUnitXLite/CppUnitXLite.hpp"
 #include <thread>
 #include "circular_buffer.hpp"
-
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "HidingNonVirtualFunction"

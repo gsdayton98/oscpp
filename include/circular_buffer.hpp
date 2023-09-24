@@ -1,3 +1,6 @@
+// -*- mode:C++; c-basic-offset:2; indent-tabs-mode:nil -*-
+// Copyright 2023 Glen S. Dayton. Rights reserved according to terms of included license.
+
 #ifndef CIRCULAR_BUFFER_HPP
 #define CIRCULAR_BUFFER_HPP
 
