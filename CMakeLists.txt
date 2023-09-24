@@ -11,12 +11,16 @@ set(DEVROOT $ENV{HOME})
 set(HEADERS include/circular_buffer.hpp
         include/dynamiclibrary.hpp
         include/sysexception.hpp
-        include/trim.hpp)
+        include/trim.hpp
+        include/socket.hpp)
 
 set(SOURCES src/circular_buffer.cpp
         src/dynamiclibary.cpp
         src/sysexception.cpp
-        src/trim.cpp)
+        src/trim.cpp
+        src/socket.cpp
+        src/file_descriptor.cpp
+        include/file_descriptor.hpp)
 
 add_library(oscpp SHARED ${HEADERS} ${SOURCES})
 target_include_directories(oscpp PRIVATE .)
