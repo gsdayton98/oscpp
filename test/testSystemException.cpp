@@ -1,13 +1,15 @@
 // -*- mode:C++; c-basic-offset:2; indent-tabs-mode:nil -*-
 // Copyright 2016 Glen S. Dayton. Rights reserved according to terms of included license.
 
-#include <CppUnitXLite/CppUnitXLite.hpp>
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "OCUnusedMacroInspection"
+#define BOOST_BOOST_AUTO_TEST_MODULE Test systemException
+#include <boost/test/unit_test.hpp>
 #include <sysexception.hpp>
 using std::string;
 
 
-
-TEST(oscpp, testSystemException) {
+BOOST_AUTO_TEST_CASE(testSystemException) {
   const char *expected[] = {
     "Undefined error: 0",
     "Operation not permitted"
@@ -18,6 +20,6 @@ TEST(oscpp, testSystemException) {
 
   for (int err = 0; err < N_TEST_CASES; ++err) {
     oscpp::SysException ex(err);
-    CHECK_EQUAL(string(expected[err]), string(ex.what()));
+    BOOST_CHECK_EQUAL(string(expected[err]), string(ex.what()));
   }
 }

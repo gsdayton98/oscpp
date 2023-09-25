@@ -4,8 +4,14 @@
 //
 // Created by Glen Dayton on 8/15/23.
 //
+
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "OCUnusedMacroInspection"
+
 #include <cerrno>
-#include <CppUnitXLite/CppUnitXLite.hpp>
+#define BOOST_BOOST_AUTO_TEST_MODULE Test file_descriptor
+#include <boost/test/unit_test.hpp>
+
 #include <fcntl.h>
 #include "file_descriptor.hpp"
 #include <string>
@@ -18,34 +24,35 @@ static auto fileDescriptorOpen(int fd) -> bool {
 }
 
 
-TEST(oscpp, testFileDescriptor) {
+BOOST_AUTO_TEST_CASE(testFileDescriptor) {
     // open a file to get a file descriptor to use in tests
     const char *testFileName = "testFile.txt";
 
     int sysDescriptor = ::open(testFileName, O_RDWR|O_CREAT|O_TRUNC, 0664);
     if (sysDescriptor < 0) {
         std::string error = "FileDescriptor test failed setup: " + oscpp::SysException::message(errno);
-        FAIL(error.c_str());
+        BOOST_FAIL(error.c_str());
     }
     // Check the underlying descriptor is actually open.
-    CHECK(fileDescriptorOpen(sysDescriptor));
+    BOOST_CHECK(fileDescriptorOpen(sysDescriptor));
 
     auto fileDescriptor = oscpp::FileDescriptor::create(sysDescriptor);
-    CHECK_EQUAL(sysDescriptor, fileDescriptor.descriptor());
+    BOOST_CHECK_EQUAL(sysDescriptor, fileDescriptor.descriptor());
 
     // Clone the descriptor and check both the original and clone are open.
-    int newSysDescriptor = -1;
+    int newSysDescriptor;
     {
         auto newDescriptor = fileDescriptor.clone();
-        CHECK_EQUAL(newDescriptor.second, 0);
+        BOOST_CHECK_EQUAL(newDescriptor.second, 0);
         newSysDescriptor = newDescriptor.first.descriptor();
-        CHECK_LT(0, newSysDescriptor);
-        CHECK(sysDescriptor != newSysDescriptor);
-        CHECK(fileDescriptorOpen(newSysDescriptor));
-        CHECK(fileDescriptorOpen(sysDescriptor));
+        BOOST_CHECK_LT(0, newSysDescriptor);
+        BOOST_CHECK(sysDescriptor != newSysDescriptor);
+        BOOST_CHECK(fileDescriptorOpen(newSysDescriptor));
+        BOOST_CHECK(fileDescriptorOpen(sysDescriptor));
     }
     // Check the original is still open, and the cloned one is closed.
-    CHECK_EQUAL(sysDescriptor, fileDescriptor.descriptor());
-    CHECK(!fileDescriptorOpen(newSysDescriptor));
-    CHECK(fileDescriptorOpen(sysDescriptor));
+    BOOST_CHECK_EQUAL(sysDescriptor, fileDescriptor.descriptor());
+    BOOST_CHECK(!fileDescriptorOpen(newSysDescriptor));
+    BOOST_CHECK(fileDescriptorOpen(sysDescriptor));
 }
+#pragma clang diagnostic pop

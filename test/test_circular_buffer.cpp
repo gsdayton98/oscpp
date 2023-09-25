@@ -1,7 +1,7 @@
 // -*- mode:C++; c-basic-offset:2; indent-tabs-mode:nil -*-
 // Copyright 2023 Glen S. Dayton. Rights reserved according to terms of included license.
 #include <chrono>
-#include "CppUnitXLite/CppUnitXLite.hpp"
+#include "CppUnitXLite/CppUnitXLite.cpp"
 #include <thread>
 #include "circular_buffer.hpp"
 
@@ -16,10 +16,21 @@ namespace {
     struct TesterCircularBuffer : public CircularBuffer<uintptr_t> {
         static size_t roundup(size_t n) { return CircularBuffer<uintptr_t>::roundup(n); }
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "ConstantParameter"
         explicit TesterCircularBuffer(size_t n) : CircularBuffer<uintptr_t>{n} {}
+#pragma clang diagnostic pop
 
         auto next(size_t i) -> size_t  { return CircularBuffer<uintptr_t>::next(i); }
+
     };
+
+    [[maybe_unused]]
+    struct TestRegistration {
+        TestResult tr;
+
+        TestRegistration() : tr{} { TestRegistry::runAll(tr); }
+    } testRegistryInitialization;
 
 
     struct TestCase {
@@ -89,36 +100,36 @@ TEST(TestCircularBuffer, ReadWrite1) {
     }
 
 
-    uintptr_t justread;
+    uintptr_t justRead;
     for (uintptr_t x = 1UL; x <= 5UL; ++x) {
-        CHECK(cbuf.tryGet(justread));
-        CHECK_EQUAL(x, justread);
+        CHECK(cbuf.tryGet(justRead));
+        CHECK_EQUAL(x, justRead);
     }
 }
 
 TEST(TestCircularBuffer, ReadWriteX) {
     CircularBuffer<uintptr_t> cbuf{8};
 
-    uintptr_t expectedread = 1UL;
-    uintptr_t justread;
+    uintptr_t expectedRead = 1UL;
+    uintptr_t justRead;
     for (uintptr_t x = 1UL; x <= 25UL; ++x) {
         while (!cbuf.tryPut(x)) {
-            CHECK(cbuf.tryGet(justread));
-            CHECK_EQUAL(expectedread, justread);
-            ++expectedread;
+            CHECK(cbuf.tryGet(justRead));
+            CHECK_EQUAL(expectedRead, justRead);
+            ++expectedRead;
 
-            CHECK(cbuf.tryGet(justread));
-            CHECK_EQUAL(expectedread, justread);
-            ++expectedread;
-            CHECK(cbuf.tryGet(justread));
-            CHECK_EQUAL(expectedread, justread);
-            ++expectedread;
+            CHECK(cbuf.tryGet(justRead));
+            CHECK_EQUAL(expectedRead, justRead);
+            ++expectedRead;
+            CHECK(cbuf.tryGet(justRead));
+            CHECK_EQUAL(expectedRead, justRead);
+            ++expectedRead;
         }
     }
 
-    while (cbuf.tryGet(justread)) {
-        CHECK_EQUAL(expectedread, justread);
-        ++expectedread;
+    while (cbuf.tryGet(justRead)) {
+        CHECK_EQUAL(expectedRead, justRead);
+        ++expectedRead;
     }
     CHECK(cbuf.empty());
 }
@@ -127,30 +138,30 @@ TEST(TestCircularBuffer, ReadWriteX) {
 TEST(TestCircularBuffer, Singlethread) {
     CircularBuffer<uintptr_t> cbuf{8};
 
-    uintptr_t expectedread = 1UL;
-    uintptr_t justread;
+    uintptr_t expectedRead = 1UL;
+    uintptr_t justRead;
 
     for (uintptr_t x = 1UL; x <= 25UL; ++x) {
         cbuf.put(x);
         while (cbuf.full()) {
-            justread = cbuf.get();
-            CHECK_EQUAL(expectedread, justread);
-            ++expectedread;
+            justRead = cbuf.get();
+            CHECK_EQUAL(expectedRead, justRead);
+            ++expectedRead;
 
-            justread = cbuf.get();
-            CHECK_EQUAL(expectedread, justread);
-            ++expectedread;
+            justRead = cbuf.get();
+            CHECK_EQUAL(expectedRead, justRead);
+            ++expectedRead;
 
-            justread = cbuf.get();
-            CHECK_EQUAL(expectedread, justread);
-            ++expectedread;
+            justRead = cbuf.get();
+            CHECK_EQUAL(expectedRead, justRead);
+            ++expectedRead;
         }
     }
 
     while (!cbuf.empty()) {
-        justread = cbuf.get();
-        CHECK_EQUAL(expectedread, justread);
-        ++expectedread;
+        justRead = cbuf.get();
+        CHECK_EQUAL(expectedRead, justRead);
+        ++expectedRead;
     }
     CHECK(cbuf.empty());
 }
@@ -158,7 +169,7 @@ TEST(TestCircularBuffer, Singlethread) {
 using std::chrono::duration;
 using std::chrono::milliseconds;
 
-
+[[maybe_unused]]
 struct TestCircularBufferMultiThreadTest : public Test {
     CircularBuffer<uintptr_t> cbuf;
     static const uintptr_t ITERATIONS = 50UL;
