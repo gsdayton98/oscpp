@@ -11,6 +11,13 @@
 #include <string>
 #include "sysexception.hpp"
 
+
+static auto fileDescriptorOpen(int fd) -> bool {
+    auto sysResult = ::fcntl(fd, F_GETFD);
+    return sysResult >= 0;
+}
+
+
 TEST(oscpp, testFileDescriptor) {
     // open a file to get a file descriptor to use in tests
     const char *testFileName = "testFile.txt";
@@ -20,14 +27,24 @@ TEST(oscpp, testFileDescriptor) {
         std::string error = "FileDescriptor test failed setup: " + oscpp::SysException::message(errno);
         FAIL(error.c_str());
     }
+    // Check the underlying descriptor is actually open.
+    CHECK(fileDescriptorOpen(sysDescriptor));
 
     auto fileDescriptor = oscpp::FileDescriptor::create(sysDescriptor);
     CHECK_EQUAL(sysDescriptor, fileDescriptor.descriptor());
 
+    // Clone the descriptor and check both the original and clone are open.
+    int newSysDescriptor = -1;
     {
         auto newDescriptor = fileDescriptor.clone();
-        CHECK_LT(0, newDescriptor.descriptor());
-        CHECK(fileDescriptor.descriptor() != newDescriptor.descriptor());
+        newSysDescriptor = newDescriptor.descriptor();
+        CHECK_LT(0, newSysDescriptor);
+        CHECK(sysDescriptor != newSysDescriptor);
+        CHECK(fileDescriptorOpen(newSysDescriptor));
+        CHECK(fileDescriptorOpen(sysDescriptor));
     }
+    // Check the original is still open, and the cloned one is closed.
     CHECK_EQUAL(sysDescriptor, fileDescriptor.descriptor());
+    CHECK(!fileDescriptorOpen(newSysDescriptor));
+    CHECK(fileDescriptorOpen(sysDescriptor));
 }
