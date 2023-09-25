@@ -6,6 +6,7 @@
 //
 // Implementation of FileDescriptor.
 
+#include <cerrno>
 #include "file_descriptor.hpp"
 #include <unistd.h>
 
@@ -17,7 +18,7 @@
 }
 
 
-oscpp::FileDescriptor::~FileDescriptor() {
+oscpp::FileDescriptor::~FileDescriptor() noexcept {
     if (-1 < handle) {
         ::close(handle);
     }
@@ -25,9 +26,14 @@ oscpp::FileDescriptor::~FileDescriptor() {
 
 
 [[maybe_unused]]
-auto oscpp::FileDescriptor::create(int descriptor) -> FileDescriptor {return std::move(FileDescriptor {descriptor});}
+auto oscpp::FileDescriptor::create(int descriptor) noexcept -> FileDescriptor {return std::move(FileDescriptor {descriptor});}
 
 
-[[maybe_unused]] [[nodiscard]] auto oscpp::FileDescriptor::clone() const -> FileDescriptor {
-    return std::move(FileDescriptor {::dup(handle)});
+[[maybe_unused]] [[nodiscard]] auto oscpp::FileDescriptor::clone() const noexcept -> std::pair<FileDescriptor, int> {
+    int errorCode = 0;
+    auto newSysDescriptor = ::dup(handle);
+    if (newSysDescriptor < 0) {
+        errorCode = errno;
+    }
+    return std::make_pair(std::move(FileDescriptor {newSysDescriptor}), errorCode);
 }

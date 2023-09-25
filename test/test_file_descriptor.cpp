@@ -37,7 +37,8 @@ TEST(oscpp, testFileDescriptor) {
     int newSysDescriptor = -1;
     {
         auto newDescriptor = fileDescriptor.clone();
-        newSysDescriptor = newDescriptor.descriptor();
+        CHECK_EQUAL(newDescriptor.second, 0);
+        newSysDescriptor = newDescriptor.first.descriptor();
         CHECK_LT(0, newSysDescriptor);
         CHECK(sysDescriptor != newSysDescriptor);
         CHECK(fileDescriptorOpen(newSysDescriptor));

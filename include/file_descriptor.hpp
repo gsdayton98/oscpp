@@ -25,11 +25,11 @@ namespace oscpp {
          * Use the create() method to create new file descriptors
          * @param fileDescriptor
          */
-        [[maybe_unused]] explicit FileDescriptor(int fileDescriptor) : handle {fileDescriptor} {}
+        [[maybe_unused]] explicit FileDescriptor(int fileDescriptor) noexcept : handle {fileDescriptor} {}
 
     public:
 
-        [[maybe_unused]] static auto create(int descriptor) -> FileDescriptor;
+        [[maybe_unused]] static auto create(int descriptor) noexcept -> FileDescriptor;
 
         /**
          * Cannot copy a file descriptor.  Use the clone method to duplicate the descriptor into a new descriptor.
@@ -45,7 +45,7 @@ namespace oscpp {
         /**
          * Close the descriptor.
          */
-        ~FileDescriptor();
+        ~FileDescriptor() noexcept;
 
         /**
          * Cannot copy a file descriptor.  Use the clone method to duplicate the descriptor into a new descriptor.
@@ -60,15 +60,15 @@ namespace oscpp {
 
         /**
          * Duplicate the existing FileDescriptor into a new FileDescriptor.
-         * @return A new FileDescriptor
+         * @return A new (FileDescriptor, error code) pair. Do not use the File Descriptor is non-zero.
          */
-        [[maybe_unused]] [[nodiscard]] auto clone() const -> FileDescriptor;
+        [[maybe_unused]] [[nodiscard]] auto clone() const noexcept -> std::pair<FileDescriptor, int>;
 
         /**
          * Return the low-level implementation specific file descriptor.
          * @return Operating system file handle
          */
-        [[maybe_unused]] [[nodiscard]] auto descriptor() const -> int { return handle; }
+        [[maybe_unused]] [[nodiscard]] auto descriptor() const noexcept -> int { return handle; }
     };
 }
 #endif //OSCPP_FILE_DESCRIPTOR_HPP
