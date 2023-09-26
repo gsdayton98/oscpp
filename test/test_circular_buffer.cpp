@@ -25,13 +25,6 @@ namespace {
 
     };
 
-    [[maybe_unused]]
-    struct TestRegistration {
-        TestResult tr;
-
-        TestRegistration() : tr{} { TestRegistry::runAll(tr); }
-    } testRegistryInitialization;
-
 
     struct TestCase {
         size_t arg;
@@ -208,5 +201,8 @@ struct TestCircularBufferMultiThreadTest : public Test {
     }
 
 } TestCircularBufferMultiThreadTestInstance;
+
+
+TESTMAIN
 
 #pragma clang diagnostic pop

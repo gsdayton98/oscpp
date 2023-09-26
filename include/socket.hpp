@@ -14,24 +14,23 @@ namespace oscpp {
         int handle;
 
     public:
-        explicit Socket(int domain = PF_INET, int socketType = SOCK_STREAM, int protocol = 2);
+        explicit Socket(int sysFileDescriptor) noexcept : handle{sysFileDescriptor} {}
 
         Socket(Socket &) = delete;
 
-        [[maybe_unused]] [[maybe_unused]] Socket(Socket &&) noexcept;
+        [[maybe_unused]] Socket(Socket &&) noexcept;
 
-        ~Socket();
+        ~Socket() noexcept;
 
         Socket &operator=(Socket &) = delete;
 
         Socket &operator=(Socket &&) = delete;
 
-        static std::pair<int, int> create(int domain, int socketType, int protocol);
+        static auto create(int domain = PF_INET, int socketType = SOCK_STREAM, int protocol = 0) noexcept -> std::pair<Socket, int>;
 
-        [[maybe_unused]] [[nodiscard]] Socket clone() const;
+        [[maybe_unused]] [[nodiscard]] auto clone() const noexcept -> std::pair<Socket, int>;
 
-    protected:
-        [[maybe_unused]] [[nodiscard]] int descriptor() const { return handle; }
+        [[maybe_unused]] [[nodiscard]] int descriptor() const noexcept { return handle; }
     };
 }
 #endif //OSCPP_SOCKET_HPP

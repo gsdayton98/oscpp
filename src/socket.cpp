@@ -11,25 +11,13 @@
 
 using namespace oscpp;
 
-
-oscpp::Socket::Socket(int domain, int socketType,  int protocol)
-: handle {-1}
-{
-    auto result = Socket::create(domain, socketType, protocol);
-    if (result.second != 0) {
-        throw SysException(errno);
-    }
-    handle = result.first;
-}
-
-
 [[maybe_unused]] oscpp::Socket::Socket(Socket&& other) noexcept
 : handle {other.handle}
 {
     other.handle = -1;
 }
 
-oscpp::Socket::~Socket()
+oscpp::Socket::~Socket() noexcept
 {
     if (-1 < handle) {
         (void) ::close(handle);
@@ -38,17 +26,21 @@ oscpp::Socket::~Socket()
 }
 
 
-std::pair<int, int> oscpp::Socket::create(int domain, int socketType, int protocol) {
+ auto oscpp::Socket::create(int domain, int socketType, int protocol) noexcept -> std::pair<Socket, int> {
     int error = 0;
     int newHandle = ::socket(domain, socketType, protocol);
     if (newHandle < 0) {
         error = errno;
     }
-    return std::make_pair(newHandle, error);
+    return std::make_pair(Socket(newHandle), error);
 }
 
 
-[[maybe_unused]] Socket oscpp::Socket::clone() const {
+[[maybe_unused]] auto oscpp::Socket::clone() const noexcept -> std::pair<Socket, int> {
+    int error = 0;
     int newHandle = ::dup(handle);
-    return Socket(newHandle);
+    if (newHandle < 0) {
+        error = errno;
+    }
+    return std::make_pair(Socket(newHandle), error);
 }
