@@ -11,7 +11,6 @@
 #include <boost/test/unit_test.hpp>
 #include "socket.hpp"
 #include <sys/socket.h>
-#include <unistd.h>
 
 static auto checkSocketOpen(int socket_fd) -> bool {
     int error = 0;
