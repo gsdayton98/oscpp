@@ -1,3 +1,5 @@
+// -*- mode:C++; c-basic-offset:2; indent-tabs-mode:nil -*-
+// Copyright 2016 Glen S. Dayton. Rights reserved according to terms of included license.
 //
 // Created by Glen Dayton on 7/29/23.
 //
