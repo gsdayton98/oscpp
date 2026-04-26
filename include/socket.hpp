@@ -10,11 +10,10 @@
 
 namespace oscpp {
     class [[maybe_unused]] Socket {
-    private:
         int handle;
 
     public:
-        explicit Socket(int sysFileDescriptor) noexcept : handle{sysFileDescriptor} {}
+        explicit Socket(const int sysFileDescriptor) noexcept : handle{sysFileDescriptor} {}
 
         Socket(Socket &) = delete;
 

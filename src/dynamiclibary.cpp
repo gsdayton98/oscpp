@@ -26,7 +26,7 @@ oscpp::DynamicLibrary::DynamicLibrary()
 
 
 //  Find the specified symbol in the currently open library.
-[[maybe_unused]] auto oscpp::DynamicLibrary::symbol(const char *symbolName) -> void * {
+[[maybe_unused]] auto oscpp::DynamicLibrary::symbol(const char *symbolName) const -> void * {
     void *result = dlsym(handle, symbolName);
     if (result == nullptr) {
         throw std::runtime_error(dlerror());

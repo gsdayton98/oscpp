@@ -1,0 +1,35 @@
+// -*- mode: c++ -*-
+////
+// ©2026 All rights reserved.
+//  Glen Dayton, new account
+//
+//  Test Stopwatch
+
+#include <cstdlib>
+#include <fstream>
+#include <iostream>
+#include <stdexcept>
+#include <unistd.h>
+
+#define BOOST_TEST_DYN_LINK
+#define BOOST_TEST_MAIN "Test StopWatch"
+#include <boost/test/unit_test.hpp>
+#include "stopwatch.hpp"
+
+BOOST_AUTO_TEST_CASE(test_stopwatch)
+{
+    constexpr auto SECOND = 1000000UL;
+    oscpp::StopWatch stopwatch;
+    usleep(SECOND);
+    auto reading = stopwatch.read();
+    BOOST_REQUIRE_LT(1.0, reading);
+
+    usleep(SECOND);
+    reading = stopwatch.read();
+    BOOST_REQUIRE_LT(2.0, reading);
+
+    stopwatch.reset();
+    usleep(SECOND);
+    reading = stopwatch.read();
+    BOOST_REQUIRE_LT(1.0, reading);
+}

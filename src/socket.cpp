@@ -9,7 +9,6 @@
 #include "socket.hpp"
 #include "sysexception.hpp"
 
-using namespace oscpp;
 
 [[maybe_unused]] oscpp::Socket::Socket(Socket&& other) noexcept
 : handle {other.handle}
@@ -20,15 +19,15 @@ using namespace oscpp;
 oscpp::Socket::~Socket() noexcept
 {
     if (-1 < handle) {
-        (void) ::close(handle);
+        (void) close(handle);
     }
     handle = -1;
 }
 
 
- auto oscpp::Socket::create(int domain, int socketType, int protocol) noexcept -> std::pair<Socket, int> {
+ auto oscpp::Socket::create(const int domain, const int socketType, const int protocol) noexcept -> std::pair<Socket, int> {
     int error = 0;
-    int newHandle = ::socket(domain, socketType, protocol);
+    const int newHandle = socket(domain, socketType, protocol);
     if (newHandle < 0) {
         error = errno;
     }
@@ -38,7 +37,7 @@ oscpp::Socket::~Socket() noexcept
 
 [[maybe_unused]] auto oscpp::Socket::clone() const noexcept -> std::pair<Socket, int> {
     int error = 0;
-    int newHandle = ::dup(handle);
+    const int newHandle = dup(handle);
     if (newHandle < 0) {
         error = errno;
     }

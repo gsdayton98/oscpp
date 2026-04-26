@@ -1,23 +1,23 @@
+// -*- mode:C++; c-basic-offset:2; indent-tabs-mode:nil -*-
+// Copyright 2023 Glen S. Dayton. Rights reserved according to terms of included license.
 #include <chrono>
-#include "CppUnitXLite/CppUnitXLite.hpp"
+#include "CppUnitXLite/CppUnitXLite.cpp"
 #include <thread>
 #include "circular_buffer.hpp"
 
-
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "HidingNonVirtualFunction"
 template
-class CircularBuffer<uintptr_t>;
+class oscpp::CircularBuffer<uintptr_t>;
 
 
 namespace {
     // Inherit from CircularBuffer, so we can test the internal functions.
-    struct TesterCircularBuffer : public CircularBuffer<uintptr_t> {
-        static size_t roundup(size_t n) { return CircularBuffer<uintptr_t>::roundup(n); }
+    struct TesterCircularBuffer : oscpp::CircularBuffer<uintptr_t> {
+        static size_t roundup(const size_t n) { return CircularBuffer::roundup(n); }
 
-        explicit TesterCircularBuffer(size_t n) : CircularBuffer<uintptr_t>{n} {}
+        explicit TesterCircularBuffer(const size_t n) : CircularBuffer{n} {}
 
-        auto next(size_t i) -> size_t  { return CircularBuffer<uintptr_t>::next(i); }
+        [[nodiscard]] auto next(const size_t i) const -> size_t  { return CircularBuffer::next(i); }
+
     };
 
 
@@ -25,7 +25,7 @@ namespace {
         size_t arg;
         size_t expected;
 
-        TestCase(size_t theArg, size_t theExpected)
+        TestCase(const size_t theArg, const size_t theExpected)
                 : arg(theArg), expected(theExpected) {}
     };
 }
@@ -44,146 +44,146 @@ TEST(TestCircularBuffer, Roundup) {
             TestCase{60, 64}
     };
 
-    for (TestCase &aTestCase: testCases) {
+    for (const TestCase &aTestCase: testCases) {
         CHECK_EQUAL(aTestCase.expected, TesterCircularBuffer::roundup(aTestCase.arg));
     }
 }
 
 TEST(TestCircularBuffer, Construction) {
-    CircularBuffer<uintptr_t> cbuf{7};
+    const oscpp::CircularBuffer<uintptr_t> buffer{7};
 
-    CHECK_EQUAL(8UL, cbuf.capacity());
+    CHECK_EQUAL(8UL, buffer.capacity());
 }
 
 TEST(TestCircularBuffer, Next) {
-    TesterCircularBuffer cbuf{8};
+    const TesterCircularBuffer buffer{8};
 
-    for (size_t i = 0; i < 2 * cbuf.capacity(); ++i) {
-        size_t j = cbuf.next(i);
-        CHECK_EQUAL((i + 1UL) % cbuf.capacity(), j);
+    for (size_t i = 0; i < 2 * buffer.capacity(); ++i) {
+        const size_t j = buffer.next(i);
+        CHECK_EQUAL((i + 1UL) % buffer.capacity(), j);
     }
 }
 
 TEST(TestCircularBuffer, Zero) {
-    CircularBuffer<uintptr_t> cbuf{0};
+    const oscpp::CircularBuffer<uintptr_t> buffer{0};
 
-    CHECK(cbuf.empty());
-    CHECK(cbuf.full());
+    CHECK(buffer.empty());
+    CHECK(buffer.full());
 }
 
 TEST(TestCircularBuffer, Size) {
-    CircularBuffer<uintptr_t> cbuf{8};
+    oscpp::CircularBuffer<uintptr_t> buffer{8};
 
     for (uintptr_t x = 1UL; x <= 5UL; ++x) {
-        CHECK(cbuf.tryPut(x));
+        CHECK(buffer.tryPut(x));
     }
-    CHECK_EQUAL(5UL, cbuf.size());
+    CHECK_EQUAL(5UL, buffer.size());
 }
 
 TEST(TestCircularBuffer, ReadWrite1) {
-    CircularBuffer<uintptr_t> cbuf{8};
+    oscpp::CircularBuffer<uintptr_t> buffer{8};
 
     for (uintptr_t x = 1UL; x <= 5UL; ++x) {
-        CHECK(cbuf.tryPut(x));
+        CHECK(buffer.tryPut(x));
     }
 
 
-    uintptr_t justread;
+    uintptr_t justRead;
     for (uintptr_t x = 1UL; x <= 5UL; ++x) {
-        CHECK(cbuf.tryGet(justread));
-        CHECK_EQUAL(x, justread);
+        CHECK(buffer.tryGet(justRead));
+        CHECK_EQUAL(x, justRead);
     }
 }
 
 TEST(TestCircularBuffer, ReadWriteX) {
-    CircularBuffer<uintptr_t> cbuf{8};
+    oscpp::CircularBuffer<uintptr_t> buffer{8};
 
-    uintptr_t expectedread = 1UL;
-    uintptr_t justread;
+    uintptr_t expectedRead = 1UL;
+    uintptr_t justRead;
     for (uintptr_t x = 1UL; x <= 25UL; ++x) {
-        while (!cbuf.tryPut(x)) {
-            CHECK(cbuf.tryGet(justread));
-            CHECK_EQUAL(expectedread, justread);
-            ++expectedread;
+        while (!buffer.tryPut(x)) {
+            CHECK(buffer.tryGet(justRead));
+            CHECK_EQUAL(expectedRead, justRead);
+            ++expectedRead;
 
-            CHECK(cbuf.tryGet(justread));
-            CHECK_EQUAL(expectedread, justread);
-            ++expectedread;
-            CHECK(cbuf.tryGet(justread));
-            CHECK_EQUAL(expectedread, justread);
-            ++expectedread;
+            CHECK(buffer.tryGet(justRead));
+            CHECK_EQUAL(expectedRead, justRead);
+            ++expectedRead;
+            CHECK(buffer.tryGet(justRead));
+            CHECK_EQUAL(expectedRead, justRead);
+            ++expectedRead;
         }
     }
 
-    while (cbuf.tryGet(justread)) {
-        CHECK_EQUAL(expectedread, justread);
-        ++expectedread;
+    while (buffer.tryGet(justRead)) {
+        CHECK_EQUAL(expectedRead, justRead);
+        ++expectedRead;
     }
-    CHECK(cbuf.empty());
+    CHECK(buffer.empty());
 }
 
 
 TEST(TestCircularBuffer, Singlethread) {
-    CircularBuffer<uintptr_t> cbuf{8};
+    oscpp::CircularBuffer<uintptr_t> buffer{8};
 
-    uintptr_t expectedread = 1UL;
-    uintptr_t justread;
+    uintptr_t expectedRead = 1UL;
+    uintptr_t justRead;
 
     for (uintptr_t x = 1UL; x <= 25UL; ++x) {
-        cbuf.put(x);
-        while (cbuf.full()) {
-            justread = cbuf.get();
-            CHECK_EQUAL(expectedread, justread);
-            ++expectedread;
+        buffer.put(x);
+        while (buffer.full()) {
+            justRead = buffer.get();
+            CHECK_EQUAL(expectedRead, justRead);
+            ++expectedRead;
 
-            justread = cbuf.get();
-            CHECK_EQUAL(expectedread, justread);
-            ++expectedread;
+            justRead = buffer.get();
+            CHECK_EQUAL(expectedRead, justRead);
+            ++expectedRead;
 
-            justread = cbuf.get();
-            CHECK_EQUAL(expectedread, justread);
-            ++expectedread;
+            justRead = buffer.get();
+            CHECK_EQUAL(expectedRead, justRead);
+            ++expectedRead;
         }
     }
 
-    while (!cbuf.empty()) {
-        justread = cbuf.get();
-        CHECK_EQUAL(expectedread, justread);
-        ++expectedread;
+    while (!buffer.empty()) {
+        justRead = buffer.get();
+        CHECK_EQUAL(expectedRead, justRead);
+        ++expectedRead;
     }
-    CHECK(cbuf.empty());
+    CHECK(buffer.empty());
 }
 
 using std::chrono::duration;
 using std::chrono::milliseconds;
 
-
-struct TestCircularBufferMultiThreadTest : public Test {
-    CircularBuffer<uintptr_t> cbuf;
-    static const uintptr_t ITERATIONS = 50UL;
+[[maybe_unused]]
+struct TestCircularBufferMultiThreadTest : Test {
+    oscpp::CircularBuffer<uintptr_t> buffer;
+    static constexpr uintptr_t ITERATIONS = 50UL;
 
     TestCircularBufferMultiThreadTest()
             : Test("CppUnitXLiteTest::TestCircularBufferMultiThreadTest"),
-              cbuf{8} {}
+              buffer{8} {}
 
 
-    // CppUnitXLite is single threaded so only one thread may post results
+    // CppUnitXLite is single threaded, so only one thread may post results
     void testThread(TestResult &result) {
-        static const duration PERIOD = milliseconds(30);
+        constexpr auto PERIOD = milliseconds(30);
 
         for (uintptr_t expected = 1UL; expected <= ITERATIONS; ++expected) {
             std::this_thread::sleep_for(PERIOD);
-            uintptr_t actual = cbuf.get();
+            const uintptr_t actual = buffer.get();
 
             checkEqual(expected, actual, result, __FILE__, __LINE__);
         }
     }
 
     void otherThread() {
-        static const duration PERIOD = milliseconds(55);
+        constexpr auto PERIOD = milliseconds(55);
 
         for (uintptr_t actual = 1UL; actual <= ITERATIONS; ++actual) {
-            cbuf.put(actual);
+            buffer.put(actual);
             std::this_thread::sleep_for(PERIOD);
         }
     }
@@ -197,4 +197,6 @@ struct TestCircularBufferMultiThreadTest : public Test {
 
 } TestCircularBufferMultiThreadTestInstance;
 
-#pragma clang diagnostic pop
+
+TESTMAIN
+

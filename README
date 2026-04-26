@@ -1,7 +1,0 @@
-Welcome to OSCPP
-
-C++ library for wrapping some operating system functionality.
-
-The unit testing makes use of the CppUnitXLite framework (https://github.com/gsdayton98/CppUnitXLite.git)
-
-

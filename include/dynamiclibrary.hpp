@@ -1,5 +1,7 @@
 // -*- mode:C++; c-basic-offset:2; indent-tabs-mode:nil -*-
 // Copyright 2016. Glen S. Dayton. Rights reserved according to terms of included license.
+#ifndef OSCPP_DYNAMIC_LIBRARY_HPP
+#define OSCPP_DYNAMIC_LIBRARY_HPP
 
 namespace oscpp {
 
@@ -26,7 +28,7 @@ namespace oscpp {
          * @return void*  Address of the function.
          */
         [[maybe_unused]] [[maybe_unused]]
-        auto symbol(const char *symbolName) -> void *;
+        auto symbol(const char *symbolName) const -> void *;
 
         /**
          * Close the library
@@ -41,3 +43,5 @@ namespace oscpp {
         void *handle;
     };
 }
+
+#endif // OSCPP_DYNAMIC_LIBRARY_HPP
