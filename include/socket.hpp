@@ -9,7 +9,7 @@
 #include <utility>
 
 namespace oscpp {
-    class [[maybe_unused]] Socket {
+    class [[maybe_unused]] __attribute__((visibility("default"))) Socket {
         int handle;
 
     public:

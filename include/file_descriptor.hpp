@@ -14,7 +14,7 @@
 
 namespace oscpp {
 
-    class [[maybe_unused]] FileDescriptor {
+    class [[maybe_unused]] __attribute__((visibility("default"))) FileDescriptor {
         /**
          * Implementation-dependent file handle or descriptor.
          */

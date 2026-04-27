@@ -119,17 +119,17 @@ template<typename ElementType>
     return i + 1 & bufferCapacityMinus1;
 }
 
-template class oscpp::CircularBuffer<bool>;
-template class oscpp::CircularBuffer<unsigned char>;
-template class oscpp::CircularBuffer<unsigned short>;
-template class oscpp::CircularBuffer<unsigned int>;
-template class oscpp::CircularBuffer<unsigned long>;
-template class oscpp::CircularBuffer<unsigned long long>;
-template class oscpp::CircularBuffer<char>;
-template class oscpp::CircularBuffer<short>;
-template class oscpp::CircularBuffer<int>;
-template class oscpp::CircularBuffer<long>;
-template class oscpp::CircularBuffer<long long>;
-template class oscpp::CircularBuffer<float>;
-template class oscpp::CircularBuffer<double>;
-template class oscpp::CircularBuffer<long double>;
+template class __attribute__((visibility("default"))) oscpp::CircularBuffer<bool>;
+template class __attribute__((visibility("default"))) oscpp::CircularBuffer<unsigned char>;
+template class __attribute__((visibility("default"))) oscpp::CircularBuffer<unsigned short>;
+template class __attribute__((visibility("default"))) oscpp::CircularBuffer<unsigned int>;
+template class __attribute__((visibility("default"))) oscpp::CircularBuffer<unsigned long>;
+template class __attribute__((visibility("default"))) oscpp::CircularBuffer<unsigned long long>;
+template class __attribute__((visibility("default"))) oscpp::CircularBuffer<char>;
+template class __attribute__((visibility("default"))) oscpp::CircularBuffer<short>;
+template class __attribute__((visibility("default"))) oscpp::CircularBuffer<int>;
+template class __attribute__((visibility("default"))) oscpp::CircularBuffer<long>;
+template class __attribute__((visibility("default"))) oscpp::CircularBuffer<long long>;
+template class __attribute__((visibility("default"))) oscpp::CircularBuffer<float>;
+template class __attribute__((visibility("default"))) oscpp::CircularBuffer<double>;
+template class __attribute__((visibility("default"))) oscpp::CircularBuffer<long double>;

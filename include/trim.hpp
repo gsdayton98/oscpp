@@ -10,7 +10,7 @@ namespace oscpp {
  *
  * @param s      String to trim.
  */
-    [[maybe_unused]]
+    [[maybe_unused]] __attribute__((visibility("default")))
     void trim(std::string &s);
 }
 #endif

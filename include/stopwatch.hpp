@@ -10,7 +10,7 @@
 #include <chrono>
 
 namespace oscpp {
-    class StopWatch {
+    class __attribute__((visibility("default"))) StopWatch {
         std::chrono::steady_clock::time_point start;
 
     public:

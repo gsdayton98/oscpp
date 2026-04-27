@@ -5,7 +5,7 @@
 #include <stdexcept>
 #include <string>
 namespace oscpp {
-    class SysException : public std::runtime_error {
+    class __attribute__((visibility("default"))) SysException : public std::runtime_error {
     public:
         explicit SysException(const int errorNumber = errno)
         : std::runtime_error(message(errorNumber))

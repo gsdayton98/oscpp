@@ -21,7 +21,7 @@ namespace oscpp {
  * Quite specifically, I don't provide a conversion constructor from a file descriptor because  a file descriptor is a
  * reference to a resource I don't own.
  */
-class File {
+class __attribute__((visibility("default"))) File {
  public:
   explicit File(const char *filename, const int flags = O_RDONLY | O_CLOEXEC, const int mode = 0)
   : fd {open(filename, flags, mode)},

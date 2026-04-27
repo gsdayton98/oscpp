@@ -8,7 +8,7 @@ namespace oscpp {
 /**
  *  Get information about a dynamic library.
  */
-    class [[maybe_unused]] DynamicLibrary {
+    class [[maybe_unused]] __attribute__((visibility("default"))) DynamicLibrary {
     public:
         /**
          * Open the current application image.

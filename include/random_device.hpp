@@ -11,7 +11,7 @@
 #define TEST_RANDOM_DEVICE_RANDOM_DEVICE_HPP
 #include <random>
 namespace oscpp {
-    class RandomDevice {
+    class __attribute__((visibility("default"))) RandomDevice {
         std::random_device r;
 
     public:
