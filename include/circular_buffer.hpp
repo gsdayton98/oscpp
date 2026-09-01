@@ -1,8 +1,8 @@
 // -*- mode:C++; c-basic-offset:2; indent-tabs-mode:nil -*-
 // Copyright 2023 Glen S. Dayton. Rights reserved according to terms of included license.
 
-#ifndef CIRCULAR_BUFFER_HPP
-#define CIRCULAR_BUFFER_HPP
+#ifndef OSCPP_CIRCULAR_BUFFER_HPP
+#define OSCPP_CIRCULAR_BUFFER_HPP
 
 
 #include <mutex>
@@ -22,6 +22,10 @@ namespace oscpp {
     template<typename ElementType>
     class CircularBuffer {
     public:
+        /**
+         * Minimum size of the buffer must include space for the wrap-around.
+         */
+        static constexpr size_t MinSize = 4u;
         /**
          * Create an empty circular buffer at least 'nSize' big.
          * The actual size of the buffer will be rounded up to a power of 2.
@@ -83,17 +87,23 @@ namespace oscpp {
         [[nodiscard]] auto next(size_t i) const -> size_t;
 
     private:
+        // Non-locking versions of empty()/full() for use by callers that
+        // already hold `guard`. head and tail must never be read or written
+        // without holding `guard`.
+        [[nodiscard]] auto emptyLocked() const -> bool;
+        [[nodiscard]] auto fullLocked() const -> bool;
+
         const size_t bufferCapacity;
         const size_t bufferCapacityMinus1;
         ElementType *const buffer;
-        volatile size_t head;
-        volatile size_t tail;
+        size_t head;
+        size_t tail;
 
-        // Protects head and tail
-        std::mutex readMutex;
+        // Protects head and tail, and is held while waiting on notEmpty/notFull.
+        // mutable so const methods (empty(), full(), size()) can lock it.
+        mutable std::mutex guard;
         std::condition_variable notEmpty;
-        std::mutex writeMutex;
         std::condition_variable notFull;
     };
 }
-#endif // CIRCULAR_BUFFER_HPP
+#endif // OSCPP_CIRCULAR_BUFFER_HPP
