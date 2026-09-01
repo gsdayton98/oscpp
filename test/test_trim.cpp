@@ -1,21 +1,15 @@
 // -*- mode:C++; c-basic-offset:2; indent-tabs-mode:nil -*-
 // Copyright 2016.  Glen S. Dayton.  All rights reserved.
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "OCUnusedMacroInspection"
-#define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MAIN
 #define BOOST_BOOST_AUTO_TEST_MODULE Test trim
 #include <boost/test/unit_test.hpp>
 #include "trim.hpp"
 
 using std::string;
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "bugprone-string-literal-with-embedded-nul"
 BOOST_AUTO_TEST_CASE(test_trim) {
   string sample[] = {
-    "The rain in Spain falls mainly on the plain     \t\0\0\0 ",
+    "The rain in Spain falls mainly on the plain     \t\0\0\0 ", // NOLINT(*-string-literal-with-embedded-nul)
     "The quick brown fox jumps over the lazy dog.",
     ""
   };
@@ -38,5 +32,3 @@ BOOST_AUTO_TEST_CASE(test_trim) {
     BOOST_CHECK_EQUAL((int) expectedLastCharacter[testNumber], (int) testCase.back());
   }
 }
-#pragma clang diagnostic pop
-#pragma clang diagnostic pop

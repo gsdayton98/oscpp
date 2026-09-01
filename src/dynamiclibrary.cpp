@@ -11,7 +11,9 @@
 oscpp::DynamicLibrary::DynamicLibrary()
         : handle{dlopen(nullptr, 0)} {
     if (handle == nullptr) {
-        throw std::runtime_error(dlerror());
+        const auto message = dlerror();
+        if (message == nullptr) throw std::runtime_error("Unknown DynamicLibrary error");
+        throw std::runtime_error(message);
     }
 }
 
@@ -20,7 +22,9 @@ oscpp::DynamicLibrary::DynamicLibrary()
 [[maybe_unused]] oscpp::DynamicLibrary::DynamicLibrary(const char *path)
         : handle{dlopen(path, 0)} {
     if (handle == nullptr) {
-        throw std::runtime_error(dlerror());
+        auto message = dlerror();
+        if (message == nullptr) throw std::runtime_error("Unknown DynamicLibrary error");
+        throw std::runtime_error(message);
     }
 }
 

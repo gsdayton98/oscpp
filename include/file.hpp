@@ -1,6 +1,6 @@
 // -*- mode: c++ -*-
 ////
-// @copyright 2021 Glen S. Dayton. All rights reserved. Project Euler has confidentiality rules, so do not copy nor publish this code.
+// @copyright 2021 Glen S. Dayton. Rights reserved according to terms of included license.
 // @author Glen S. Dayton
 //
 //  Wrapper around Posix file operations that protect against inadvertent copying of the file descriptor and guarantee
@@ -8,8 +8,8 @@
 //
 // All the methods may throw an oscpp::SysException (a type of std::runtime_error) on errors.
 
-#ifndef FILE_H_INCL
-#define FILE_H_INCL
+#ifndef OSCPP_FILE_HPP
+#define OSCPP_FILE_HPP
 #include <fcntl.h>
 #include <sys/stat.h>
 #include "sysexception.hpp"
@@ -23,6 +23,13 @@ namespace oscpp {
  */
 class __attribute__((visibility("default"))) File {
  public:
+  /**
+   * Open the file at the given path.
+   * @param filename Path to the file to open.
+   * @param flags    Flags passed to ::open() (default O_RDONLY | O_CLOEXEC).
+   * @param mode     Permission bits used if the file is created (default 0).
+   * @throws oscpp::SysException if the file cannot be opened.
+   */
   explicit File(const char *filename, const int flags = O_RDONLY | O_CLOEXEC, const int mode = 0)
   : fd {open(filename, flags, mode)},
         mappedFile {nullptr},
@@ -34,7 +41,20 @@ class __attribute__((visibility("default"))) File {
   File& operator=(const File&) = delete;
   ~File() { close(); }
 
+  /**
+   * Memory-map the file for reading. If the file is already mapped, the previous mapping is
+   * released before creating the new one.
+   * @return Pointer to the mapped region and its length in bytes.
+   * @throws oscpp::SysException if the file's status cannot be read or the mapping fails.
+   */
   std::pair<void*, size_t> map();
+
+  /**
+   * Get file status information for the open file.
+   * @param buffer Destination for the stat information.
+   * @return The same buffer, populated.
+   * @throws oscpp::SysException if the file's status cannot be read.
+   */
   struct stat& fstat(struct stat& buffer) const;
 
  private:
@@ -47,4 +67,4 @@ class __attribute__((visibility("default"))) File {
 };
 
 }
-#endif // FILE_H_INCL
+#endif // OSCPP_FILE_HPP

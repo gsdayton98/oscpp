@@ -4,15 +4,13 @@
 //  Glen Dayton, new account
 //
 //  Test Stopwatch
+#define BOOST_BOOST_AUTO_TEST_MODULE Test StopWatch
 
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
 #include <unistd.h>
-
-#define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MAIN "Test StopWatch"
 #include <boost/test/unit_test.hpp>
 #include "stopwatch.hpp"
 

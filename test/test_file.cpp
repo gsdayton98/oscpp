@@ -4,14 +4,12 @@
 //  Glen Dayton, new account
 //
 //  Test File
+#define BOOST_BOOST_AUTO_TEST_MODULE Test File
 
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
-
-#define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MAIN "Test File"
 #include <boost/test/unit_test.hpp>
 #include "file.hpp"
 

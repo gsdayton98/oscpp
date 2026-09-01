@@ -1,6 +1,7 @@
 //
 // Created by Glen Dayton on 8/11/23.
 //
+#include <algorithm>
 #include "circular_buffer.hpp"
 
 template<typename ElementType>
@@ -24,11 +25,24 @@ oscpp::CircularBuffer<ElementType>::CircularBuffer(const size_t nSize)
 
     /// Predicate for testing whether buffer is empty
     template<typename ElementType>
-    [[nodiscard]] auto oscpp::CircularBuffer<ElementType>::empty() const-> bool { return head == tail; }
+    [[nodiscard]] auto oscpp::CircularBuffer<ElementType>::empty() const -> bool {
+        std::unique_lock lock(guard);
+        return emptyLocked();
+    }
 
     /// Predicate for testing whether the buffer is full
     template<typename ElementType>
-    [[nodiscard]] auto oscpp::CircularBuffer<ElementType>::full() const -> bool { return next(head) == tail; }
+    [[nodiscard]] auto oscpp::CircularBuffer<ElementType>::full() const -> bool {
+        std::unique_lock lock(guard);
+        return fullLocked();
+    }
+
+    // Non-locking versions of empty()/full(); caller must hold `guard`.
+    template<typename ElementType>
+    [[nodiscard]] auto oscpp::CircularBuffer<ElementType>::emptyLocked() const -> bool { return head == tail; }
+
+    template<typename ElementType>
+    [[nodiscard]] auto oscpp::CircularBuffer<ElementType>::fullLocked() const -> bool { return next(head) == tail; }
 
     /**
      * Get a value from the buffer.  Blocks until it is done.
@@ -36,9 +50,8 @@ oscpp::CircularBuffer<ElementType>::CircularBuffer(const size_t nSize)
      */
     template<typename ElementType>
     auto oscpp::CircularBuffer<ElementType>::get() -> ElementType {
-        // Lock the read mutex to reserve the current tail value,
-        std::unique_lock lock(readMutex);
-        notEmpty.wait(lock, [this]{ return ! empty(); });
+        std::unique_lock lock(guard);
+        notEmpty.wait(lock, [this]{ return ! emptyLocked(); });
         auto val = buffer[tail];
         tail = next(tail);
         lock.unlock();
@@ -50,6 +63,7 @@ oscpp::CircularBuffer<ElementType>::CircularBuffer(const size_t nSize)
     /// returns the number of elements in the buffer
     template<typename ElementType>
     [[nodiscard]] auto oscpp::CircularBuffer<ElementType>::size() const -> size_t {
+        std::unique_lock lock(guard);
         return head + bufferCapacity - tail & bufferCapacityMinus1;
     }
 
@@ -59,14 +73,17 @@ oscpp::CircularBuffer<ElementType>::CircularBuffer(const size_t nSize)
      */
     template<typename ElementType>
     auto oscpp::CircularBuffer<ElementType>::tryGet(ElementType &value) -> bool {
+        std::unique_lock lock(guard);
         bool status = false;
-        if (!empty()) {
-            std::unique_lock lock(readMutex);
+        if (!emptyLocked()) {
             value = buffer[tail];
             tail = next(tail);
             status = true;
         }
-        notFull.notify_all();
+        lock.unlock();
+        if (status) {
+            notFull.notify_all();
+        }
         return status;
 }
 
@@ -76,14 +93,17 @@ oscpp::CircularBuffer<ElementType>::CircularBuffer(const size_t nSize)
  */
 template<typename ElementType>
 auto oscpp::CircularBuffer<ElementType>::tryPut(ElementType value) -> bool {
+    std::unique_lock lock(guard);
     bool status = false;
-    if (!full()) {
-        std::unique_lock lock(writeMutex);
+    if (!fullLocked()) {
         buffer[head] = value;
         head = next(head);
         status = true;
     }
-    notEmpty.notify_all();
+    lock.unlock();
+    if (status) {
+        notEmpty.notify_all();
+    }
     return status;
 }
 
@@ -93,8 +113,8 @@ auto oscpp::CircularBuffer<ElementType>::tryPut(ElementType value) -> bool {
  */
 template<typename ElementType>
 auto oscpp::CircularBuffer<ElementType>::put(ElementType value) -> void {
-    unique_lock lock(writeMutex);
-    notFull.wait(lock, [this]{ return ! full();});
+    unique_lock lock(guard);
+    notFull.wait(lock, [this]{ return ! fullLocked();});
     buffer[head] = value;
     head = next(head);
     lock.unlock();
@@ -105,8 +125,9 @@ auto oscpp::CircularBuffer<ElementType>::put(ElementType value) -> void {
 // simplify modulo operation
 template<typename ElementType>
 auto oscpp::CircularBuffer<ElementType>::roundup(const size_t n) -> size_t {
-    unsigned int k = 1;
-    while (k < n) {
+    size_t k = 1;
+    auto nn = std::max(CircularBuffer::MinSize, n);
+    while (k < nn) {
         k <<= 1;
     }
     return k;
@@ -119,6 +140,8 @@ template<typename ElementType>
     return i + 1 & bufferCapacityMinus1;
 }
 
+
+// For convenience we instantiate instances of some common types.
 template class __attribute__((visibility("default"))) oscpp::CircularBuffer<bool>;
 template class __attribute__((visibility("default"))) oscpp::CircularBuffer<unsigned char>;
 template class __attribute__((visibility("default"))) oscpp::CircularBuffer<unsigned short>;

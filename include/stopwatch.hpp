@@ -1,12 +1,12 @@
 // -*- mode: c++ -*-
-// @copyright 2021 Glen S. Dayton. All rights reserved,
+// @copyright 2021 Glen S. Dayton. Rights reserved according to included license.
 
 //// StopWatch class
 //
 //  Simple utility for timing sections of code.
 
-#ifndef STOPWATCH_HPP_INCL
-#define STOPWATCH_HPP_INCL
+#ifndef OSCPP_STOPWATCH_HPP
+#define OSCPP_STOPWATCH_HPP
 #include <chrono>
 
 namespace oscpp {

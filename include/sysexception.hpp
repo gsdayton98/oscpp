@@ -1,6 +1,6 @@
-// Copyright 2016. Glen S. Dayton.  All rights reserved.
-#ifndef SYSEXCEPTION_HPP
-#define SYSEXCEPTION_HPP
+// Copyright 2016. Glen S. Dayton. Rights reserved according to included license.
+#ifndef OSCPP_SYSEXCEPTION_HPP
+#define OSCPP_SYSEXCEPTION_HPP
 #include <cerrno>
 #include <stdexcept>
 #include <string>
