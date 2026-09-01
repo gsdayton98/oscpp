@@ -4,6 +4,7 @@
 //  Glen Dayton, new account
 //
 //  Test Stopwatch
+#define BOOST_BOOST_AUTO_TEST_MODULE Test StopWatch
 
 #include <cstdlib>
 #include <fstream>

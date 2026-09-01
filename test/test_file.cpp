@@ -4,6 +4,7 @@
 //  Glen Dayton, new account
 //
 //  Test File
+#define BOOST_BOOST_AUTO_TEST_MODULE Test File
 
 #include <cstdlib>
 #include <fstream>

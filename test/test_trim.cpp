@@ -9,7 +9,7 @@ using std::string;
 
 BOOST_AUTO_TEST_CASE(test_trim) {
   string sample[] = {
-    "The rain in Spain falls mainly on the plain     \t\0\0\0 ",
+    "The rain in Spain falls mainly on the plain     \t\0\0\0 ", // NOLINT(*-string-literal-with-embedded-nul)
     "The quick brown fox jumps over the lazy dog.",
     ""
   };

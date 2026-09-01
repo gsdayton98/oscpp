@@ -4,13 +4,8 @@ cmake_minimum_required(VERSION 3.25)
 set (Boost_USE_STATIC_LIBS OFF)
 find_package (Boost REQUIRED COMPONENTS unit_test_framework CONFIG)
 
-add_executable(test_circular_buffer test_circular_buffer.cpp)
-target_include_directories(test_circular_buffer PRIVATE "../include" "$ENV{HOME}/Projects")
-target_compile_definitions(test_circular_buffer PRIVATE BOOST_TEST_DYN_LINK)
-target_link_libraries(test_circular_buffer PRIVATE oscpp Boost::unit_test_framework)
-add_test(NAME test_circular_buffer COMMAND test_circular_buffer)
-
 add_executable(oscpp_tests oscpp_tests.cpp
+        test_circular_buffer.cpp
         test_dynamic_library.cpp
         test_file.cpp
         test_file_descriptor.cpp

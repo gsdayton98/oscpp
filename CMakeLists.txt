@@ -25,7 +25,7 @@ set(HEADERS include/circular_buffer.hpp
         include/trim.hpp)
 
 set(SOURCES src/circular_buffer.cpp
-        src/dynamiclibary.cpp
+        src/dynamiclibrary.cpp
         src/file.cpp
         src/file_descriptor.cpp
         src/random_device.cpp
