@@ -27,7 +27,7 @@ namespace oscpp {
          * DynamicLibrary runtime_errors are not SystemExceptions because SystemExceptions get their messages
          * from strerror_r(), but DynamicLibrary gets its messages from dlerror().
          */
-        [[maybe_unused]] [[maybe_unused]]
+        [[maybe_unused]]
         explicit DynamicLibrary(const char *path);
 
         /**
@@ -35,7 +35,7 @@ namespace oscpp {
          * @return void*  Address of the function.
          * @throws std::runtime_error if the symbol cannot be found.
          */
-        [[maybe_unused]] [[maybe_unused]]
+        [[maybe_unused]]
         auto symbol(const char *symbolName) const -> void *;
 
         /**

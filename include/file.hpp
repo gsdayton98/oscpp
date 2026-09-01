@@ -39,6 +39,26 @@ class __attribute__((visibility("default"))) File {
 
   File(const File&) = delete;
   File& operator=(const File&) = delete;
+
+  /**
+   * Move constructor transfers ownership of the descriptor and any active
+   * mapping, and disables the source so its destructor is a no-op.
+   */
+  File(File&& other) noexcept
+  : fd {other.fd},
+        mappedFile {other.mappedFile},
+        mappedLen {other.mappedLen}
+  {
+    other.fd = -1;
+    other.mappedFile = nullptr;
+    other.mappedLen = 0;
+  }
+
+  /**
+   * Move version of the assignment operator doesn't make sense.
+   */
+  File& operator=(File&&) = delete;
+
   ~File() { close(); }
 
   /**

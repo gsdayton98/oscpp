@@ -33,7 +33,9 @@ oscpp::DynamicLibrary::DynamicLibrary()
 [[maybe_unused]] auto oscpp::DynamicLibrary::symbol(const char *symbolName) const -> void * {
     void *result = dlsym(handle, symbolName);
     if (result == nullptr) {
-        throw std::runtime_error(dlerror());
+        auto message = dlerror();
+        if (message == nullptr) throw std::runtime_error("Unknown DynamicLibrary error");
+        throw std::runtime_error(message);
     }
     return result;
 }

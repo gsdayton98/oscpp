@@ -3,6 +3,9 @@ project(oscpp VERSION 1.0.0 DESCRIPTION "Library for operating system like funct
 enable_testing()
 
 include(GNUInstallDirs)
+# Override system installation when developing.
+# For actual installation, set the values on the command line.
+# This avoids needing privileged access during development.
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set(CMAKE_INSTALL_PREFIX "$ENV{HOME}" CACHE PATH "Install prefix" FORCE)
 endif()
@@ -41,7 +44,7 @@ target_include_directories(oscpp
             $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 target_compile_options(oscpp PRIVATE -fvisibility=hidden)
-set_target_properties(oscpp PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION 1)
+set_target_properties(oscpp PROPERTIES VERSION ${PROJECT_VERSION})
 set_target_properties(oscpp PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR})
 set_target_properties(oscpp PROPERTIES PUBLIC_HEADER "${HEADERS}")
 
@@ -51,7 +54,7 @@ install(TARGETS ${PROJECT_NAME} EXPORT oscpp
         RUNTIME  DESTINATION "${BINDIR}"
         PUBLIC_HEADER DESTINATION "${INCLUDEDIR}")
 install(EXPORT oscpp NAMESPACE oscpp:: DESTINATION "${LIBDIR}/cmake/oscpp")
-export(TARGETS ${PROJECT_NAME} NAMESPACE oscpp FILE oscpp.cmake)
+export(TARGETS ${PROJECT_NAME} NAMESPACE oscpp:: FILE oscpp.cmake)
 
 add_subdirectory(test)
 

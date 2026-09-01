@@ -12,18 +12,17 @@ namespace oscpp {
     class [[maybe_unused]] __attribute__((visibility("default"))) Socket {
         int handle;
 
-    public:
+    private:
         explicit Socket(const int sysFileDescriptor) noexcept : handle{sysFileDescriptor} {}
 
-        Socket(Socket &) = delete;
+    public:
+        Socket(const Socket &) = delete;
 
         [[maybe_unused]] Socket(Socket &&) noexcept;
 
         ~Socket() noexcept;
 
-        Socket &operator=(Socket &) = delete;
-
-        Socket &operator=(Socket &&) = delete;
+        Socket &operator=(const Socket &) = delete;
 
         static auto create(int domain = PF_INET, int socketType = SOCK_STREAM, int protocol = 0) noexcept -> std::pair<Socket, int>;
 
