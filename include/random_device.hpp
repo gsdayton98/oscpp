@@ -6,15 +6,20 @@
 //
 //  Implementation specific wrapper around C++ random_device.
 //  C++ random_device may block.
-//
-#ifndef TEST_RANDOM_DEVICE_RANDOM_DEVICE_HPP
-#define TEST_RANDOM_DEVICE_RANDOM_DEVICE_HPP
+
+#ifndef OSCPP_RANDOM_DEVICE_HPP
+#define OSCPP_RANDOM_DEVICE_HPP
+
 #include <random>
 namespace oscpp {
     class __attribute__((visibility("default"))) RandomDevice {
         std::random_device r;
 
     public:
+        /**
+         * @throws std::system_error if the underlying std::random_device cannot be constructed
+         * (e.g. "/dev/random" cannot be opened).
+         */
         RandomDevice() : r{"/dev/random"} {}
 
         auto operator()() -> unsigned int { return r(); }
@@ -26,4 +31,4 @@ namespace oscpp {
         static constexpr auto max() -> unsigned int { return std::random_device::max(); }
     };
 }
-#endif //TEST_RANDOM_DEVICE_RANDOM_DEVICE_HPP
+#endif //OSCPP_RANDOM_DEVICE_HPP

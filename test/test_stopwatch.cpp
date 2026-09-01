@@ -10,9 +10,6 @@
 #include <iostream>
 #include <stdexcept>
 #include <unistd.h>
-
-#define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MAIN "Test StopWatch"
 #include <boost/test/unit_test.hpp>
 #include "stopwatch.hpp"
 

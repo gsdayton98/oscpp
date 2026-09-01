@@ -4,7 +4,6 @@
 #define OSCPP_DYNAMIC_LIBRARY_HPP
 
 namespace oscpp {
-
 /**
  *  Get information about a dynamic library.
  */
@@ -12,6 +11,10 @@ namespace oscpp {
     public:
         /**
          * Open the current application image.
+         *
+         * @throws std::runtime_error if this operation fails.
+         * DynamicLibrary runtime_errors are not SystemExceptions because SystemExceptions get their messages
+         * from strerror_r(), but DynamicLibrary gets its messages from dlerror().
          */
         [[maybe_unused]]
         DynamicLibrary();
@@ -19,6 +22,10 @@ namespace oscpp {
         /**
          * Load the specified path into the image.
          * @param path Path to object or library
+         *
+         * @throws std::runtime_error if this operation fails.
+         * DynamicLibrary runtime_errors are not SystemExceptions because SystemExceptions get their messages
+         * from strerror_r(), but DynamicLibrary gets its messages from dlerror().
          */
         [[maybe_unused]] [[maybe_unused]]
         explicit DynamicLibrary(const char *path);
@@ -26,6 +33,7 @@ namespace oscpp {
         /**
          * Find the specified symbol in the currently open library.
          * @return void*  Address of the function.
+         * @throws std::runtime_error if the symbol cannot be found.
          */
         [[maybe_unused]] [[maybe_unused]]
         auto symbol(const char *symbolName) const -> void *;

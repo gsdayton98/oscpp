@@ -3,8 +3,7 @@
 //
 // Created by Glen Dayton on 9/26/23.
 //
-#define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MAIN
+
 #define BOOST_BOOST_AUTO_TEST_MODULE Test socket
 #include <boost/test/unit_test.hpp>
 #include "socket.hpp"

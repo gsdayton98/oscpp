@@ -3,8 +3,6 @@
 //
 // Created by Glen Dayton on 04/25/2026.
 //
-#define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MAIN
 #define BOOST_BOOST_AUTO_TEST_MODULE Test RandomDevice
 #include <boost/test/unit_test.hpp>
 

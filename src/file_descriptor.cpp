@@ -26,7 +26,7 @@ oscpp::FileDescriptor::~FileDescriptor() noexcept {
 
 
 [[maybe_unused]]
-auto oscpp::FileDescriptor::create(const int descriptor) noexcept -> FileDescriptor {return std::move(FileDescriptor {descriptor});}
+auto oscpp::FileDescriptor::create(const int descriptor) noexcept -> FileDescriptor {return FileDescriptor {descriptor};}
 
 
 [[maybe_unused]] [[nodiscard]] auto oscpp::FileDescriptor::clone() const noexcept -> std::pair<FileDescriptor, int> {
@@ -35,5 +35,5 @@ auto oscpp::FileDescriptor::create(const int descriptor) noexcept -> FileDescrip
     if (newSysDescriptor < 0) {
         errorCode = errno;
     }
-    return std::make_pair(std::move(FileDescriptor {newSysDescriptor}), errorCode);
+    return std::make_pair(FileDescriptor {newSysDescriptor}, errorCode);
 }

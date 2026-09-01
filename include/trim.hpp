@@ -1,6 +1,6 @@
-// Copyright 2016.  Glen S. Dayton.  All rights reserved.
-#ifndef TRIM_HPP
-#define TRIM_HPP
+// Copyright 2016.  Glen S. Dayton. Rights reserved according to included license.
+#ifndef OSCPP_TRIM_HPP
+#define OSCPP_TRIM_HPP
 #include <string>
 
 namespace oscpp {

@@ -14,6 +14,10 @@ std::pair<void*, size_t> oscpp::File::map() {
 
   fstat(stats);
 
+  if (mappedFile) {
+    (void) munmap( mappedFile,  mappedLen);
+  }
+
   mappedLen = stats.st_size;
   mappedFile = mmap(nullptr, mappedLen, PROT_READ, MAP_FILE | MAP_PRIVATE, fd, 0L);
   if (mappedFile == MAP_FAILED) throw SysException{};
