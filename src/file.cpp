@@ -20,7 +20,10 @@ std::pair<void*, size_t> oscpp::File::map() {
 
   mappedLen = stats.st_size;
   mappedFile = mmap(nullptr, mappedLen, PROT_READ, MAP_FILE | MAP_PRIVATE, fd, 0L);
-  if (mappedFile == MAP_FAILED) throw SysException{};
+  if (mappedFile == MAP_FAILED) {
+    mappedFile = nullptr;
+    throw SysException{};
+  }
 
   return std::make_pair(mappedFile, mappedLen);
 }
@@ -45,6 +48,9 @@ void oscpp::File::close() {
     mappedFile = nullptr;
     mappedLen = 0;
   }
-  (void)::close(fd);
+  if (fd >= 0) {
+    (void)::close(fd);
+    fd = -1;
+  }
 }
 

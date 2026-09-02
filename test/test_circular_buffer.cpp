@@ -99,7 +99,7 @@ BOOST_AUTO_TEST_CASE(Roundup) {
 BOOST_AUTO_TEST_CASE(Construction) {
     const oscpp::CircularBuffer<uintptr_t> buffer{7};
 
-    BOOST_CHECK_EQUAL(8UL, buffer.capacity());
+    BOOST_CHECK_EQUAL(7UL, buffer.capacity());
 }
 
 BOOST_AUTO_TEST_CASE(Next) {
@@ -107,7 +107,7 @@ BOOST_AUTO_TEST_CASE(Next) {
 
     for (size_t i = 0; i < 2 * buffer.capacity(); ++i) {
         const size_t j = buffer.next(i);
-        BOOST_CHECK_EQUAL((i + 1UL) % buffer.capacity(), j);
+        BOOST_CHECK_EQUAL((i + 1UL) % (buffer.capacity() + 1), j);
     }
 }
 
@@ -119,7 +119,7 @@ BOOST_AUTO_TEST_CASE(Zero) {
     // forever on a degenerate zero-capacity request.
     BOOST_CHECK(buffer.empty());
     BOOST_CHECK(!buffer.full());
-    BOOST_CHECK_EQUAL(oscpp::CircularBuffer<uintptr_t>::MinSize, buffer.capacity());
+    BOOST_CHECK_EQUAL(oscpp::CircularBuffer<uintptr_t>::MinSize, buffer.capacity() + 1);
 }
 
 BOOST_AUTO_TEST_CASE(Size) {
@@ -129,6 +129,21 @@ BOOST_AUTO_TEST_CASE(Size) {
         BOOST_CHECK(buffer.tryPut(x));
     }
     BOOST_CHECK_EQUAL(5UL, buffer.size());
+}
+
+BOOST_AUTO_TEST_CASE(Full)
+{
+    constexpr size_t TESTSIZE = 8u;
+    oscpp::CircularBuffer<int> buffer{TESTSIZE};
+
+    BOOST_CHECK_EQUAL(buffer.capacity() + 1, TESTSIZE);
+    BOOST_CHECK(buffer.empty());
+    BOOST_CHECK(!buffer.full());
+
+    for (auto n=0; n < TESTSIZE-1; ++n) {
+        BOOST_CHECK(buffer.tryPut(n));
+    }
+    BOOST_CHECK(buffer.full());
 }
 
 BOOST_AUTO_TEST_CASE(ReadWrite1) {
@@ -314,3 +329,21 @@ BOOST_AUTO_TEST_CASE(MultithreadedTryPutTryGet) {
 }
 // End Claude AI generated code
 // End Claude AI generated code
+
+
+// Test the instantiation of a non-predefined instantiation type.
+BOOST_AUTO_TEST_CASE(Noninstantiated)
+{
+    constexpr size_t TESTSIZE = 8u;
+    struct Example {
+        int x;
+        float y;
+    };
+    oscpp::CircularBuffer<Example> buffer{8};
+
+    for (int n=0; n < TESTSIZE - 1; ++n) {
+        Example s = {.x= n, .y= 2.0f*n};
+        buffer.put(s);
+    }
+    BOOST_CHECK(buffer.full());
+}

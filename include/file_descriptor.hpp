@@ -33,7 +33,7 @@ namespace oscpp {
         /**
          * Cannot copy a file descriptor.  Use the clone method to duplicate the descriptor into a new descriptor.
          */
-        FileDescriptor(FileDescriptor &) = delete;
+        FileDescriptor(const FileDescriptor &) = delete;
 
         /**
          * Move constructor creates a new FileDescriptor with the same handle and disables the old handle to prevent
@@ -49,7 +49,7 @@ namespace oscpp {
         /**
          * Cannot copy a file descriptor.  Use the clone method to duplicate the descriptor into a new descriptor.
          */
-        FileDescriptor &operator=(FileDescriptor &) = delete;
+        FileDescriptor &operator=(const FileDescriptor &) = delete;
 
         /**
           * Cannot copy a file descriptor.  Use the clone method to duplicate the descriptor into a new descriptor.
@@ -59,7 +59,7 @@ namespace oscpp {
 
         /**
          * Duplicate the existing FileDescriptor into a new FileDescriptor.
-         * @return A new (FileDescriptor, error code) pair. Do not use the File Descriptor is non-zero.
+         * @return A new (FileDescriptor, error code) pair. Do not use the File Descriptor if error code is non-zero.
          */
         [[maybe_unused]] [[nodiscard]] auto clone() const noexcept -> std::pair<FileDescriptor, int>;
 
