@@ -1,9 +1,7 @@
-// -*- mode: c++ -*-
+// -*- mode:C++; c-basic-offset:2; indent-tabs-mode:nil -*-
+// Copyright 2026 Glen S. Dayton. Rights reserved according to terms of included license.
 ////
-// ©2026 All rights reserved.
-//  Glen Dayton, new account
-//
-//  Test Stopwatch
+//!  Test Stopwatch
 #define BOOST_BOOST_AUTO_TEST_MODULE Test StopWatch
 
 #include <cstdlib>

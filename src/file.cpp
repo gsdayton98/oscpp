@@ -1,5 +1,5 @@
 // -*- mode: c++ -*-
-// @copyright  2021 Glen S. Dayton. All rights reserved. Project Euler has confidentiality rules so do not copy nor publish this code.
+// @copyright  2021 Glen S. Dayton. Rights reserved according to terms of included license.
 //  @author Glen S.Dayton
 
 #include "file.hpp"

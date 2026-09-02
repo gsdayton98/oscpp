@@ -1,4 +1,5 @@
-// Copyright 2016.  Glen S. Dayton.  All rights reserved.
+// -*- mode: c++ -*-;
+// Copyright 2016.  Glen S. Dayton. Rights reserved according to included license.
 #include <string>
 #include <trim.hpp>
 

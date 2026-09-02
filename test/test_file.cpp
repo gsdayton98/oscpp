@@ -1,9 +1,7 @@
 // -*- mode: c++ -*-
 ////
-// ©2026 All rights reserved.
-//  Glen Dayton, new account
-//
-//  Test File
+//!  Copyright 2026 Glen S. Dayton. Rights reserved according to terms of included license.
+//!  Test File
 #define BOOST_BOOST_AUTO_TEST_MODULE Test File
 
 #include <cstdlib>

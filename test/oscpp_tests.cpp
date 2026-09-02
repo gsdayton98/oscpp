@@ -1,6 +1,6 @@
 // -*- mode: c++ -*-
 ////
-// ©2026 Glen S. Dayton. All rights reserved.
+// ©2026 Glen S. Dayton. Rights reserved according to terms of included license.
 //
 //  Boost test driver.
 

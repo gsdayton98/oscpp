@@ -1,5 +1,5 @@
 // -*- mode:C++; c-basic-offset:2; indent-tabs-mode:nil -*-
-// Copyright 2016.  Glen S. Dayton.  All rights reserved.
+// Copyright 2016.  Glen S. Dayton. Rights reserved according to terms of included license.
 
 #define BOOST_BOOST_AUTO_TEST_MODULE Test trim
 #include <boost/test/unit_test.hpp>

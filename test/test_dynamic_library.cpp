@@ -1,7 +1,6 @@
 // -*- mode:C++; c-basic-offset:2; indent-tabs-mode:nil -*-
 // Copyright 2023 Glen S. Dayton. Rights reserved according to terms of included license.
 
-
 #define BOOST_BOOST_AUTO_TEST_MODULE Test systemDynamicLibrary
 #include <boost/test/unit_test.hpp>
 #include <string>
