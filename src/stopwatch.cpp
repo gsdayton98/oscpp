@@ -1,6 +1,5 @@
-// -*- mode: c++ -*-
-// @copyright 2021 Glen S. Dayton. All rights reserved.
-
+// -*- mode: c++ -*-;
+// @copyright 2021 Glen S. Dayton. Rights reserved according to included license.
 #include "stopwatch.hpp"
 using namespace std::chrono;
 

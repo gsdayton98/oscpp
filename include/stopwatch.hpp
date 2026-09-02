@@ -1,7 +1,7 @@
 // -*- mode: c++ -*-
 // @copyright 2021 Glen S. Dayton. Rights reserved according to included license.
-
-//// StopWatch class
+////
+///StopWatch class
 //
 //  Simple utility for timing sections of code.
 
