@@ -11,6 +11,7 @@
 template
 class oscpp::CircularBuffer<uintptr_t>;
 
+BOOST_AUTO_TEST_SUITE(CircularBuffer)
 
 namespace {
     // Inherit from CircularBuffer, so we can test the internal functions.
@@ -347,3 +348,5 @@ BOOST_AUTO_TEST_CASE(Noninstantiated)
     }
     BOOST_CHECK(buffer.full());
 }
+
+BOOST_AUTO_TEST_SUITE_END()

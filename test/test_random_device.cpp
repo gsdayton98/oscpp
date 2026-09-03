@@ -8,6 +8,8 @@
 
 #include "random_device.hpp"
 
+BOOST_AUTO_TEST_SUITE(RandomDevice)
+
 // This test is mostly to ensure it compiles and runs without errors.
 BOOST_AUTO_TEST_CASE(test_random_device)
 {
@@ -20,3 +22,5 @@ BOOST_AUTO_TEST_CASE(test_random_device)
     BOOST_TEST_MESSAGE("max " << oscpp::RandomDevice::max());
     BOOST_TEST_MESSAGE("random value: " << rd());
 }
+
+BOOST_AUTO_TEST_SUITE_END()

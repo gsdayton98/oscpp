@@ -9,6 +9,8 @@
 #include "socket.hpp"
 #include <sys/socket.h>
 
+BOOST_AUTO_TEST_SUITE(Socket)
+
 static auto checkSocketOpen(const int socket_fd) -> bool {
     int error = 0;
     socklen_t length = sizeof (error);
@@ -41,3 +43,5 @@ BOOST_AUTO_TEST_CASE(testSocket)
     BOOST_REQUIRE(!checkSocketOpen(newSysDescriptor));
     BOOST_REQUIRE(checkSocketOpen(testSysDescriptor));
 }
+
+BOOST_AUTO_TEST_SUITE_END()

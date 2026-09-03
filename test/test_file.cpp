@@ -31,6 +31,9 @@ struct TextFileFixture {
     ~TextFileFixture() = default;
 };
 
+BOOST_AUTO_TEST_SUITE(File)
+
+
 BOOST_TEST_GLOBAL_FIXTURE(TextFileFixture);
 
 
@@ -54,3 +57,5 @@ BOOST_AUTO_TEST_CASE(Test_map)
     BOOST_TEST_REQUIRE(static_cast<unsigned int *>(mappedFile)[1] == 1u);
     BOOST_TEST_REQUIRE(static_cast<unsigned int *>(mappedFile)[NUMBER_POINTS - 1] == NUMBER_POINTS - 1u);
 }
+
+BOOST_AUTO_TEST_SUITE_END()

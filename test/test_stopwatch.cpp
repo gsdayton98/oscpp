@@ -11,7 +11,7 @@
 #include <unistd.h>
 #include <boost/test/unit_test.hpp>
 #include "stopwatch.hpp"
-
+BOOST_AUTO_TEST_SUITE(StopWatch)
 BOOST_AUTO_TEST_CASE(test_stopwatch)
 {
     constexpr auto SECOND = 1000000UL;
@@ -29,3 +29,4 @@ BOOST_AUTO_TEST_CASE(test_stopwatch)
     reading = stopwatch.read();
     BOOST_REQUIRE_LT(1.0, reading);
 }
+BOOST_AUTO_TEST_SUITE_END()

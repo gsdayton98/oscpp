@@ -5,7 +5,7 @@
 #include <boost/test/unit_test.hpp>
 #include "sysexception.hpp"
 using std::string;
-
+BOOST_AUTO_TEST_SUITE(SystemException)
 
 BOOST_AUTO_TEST_CASE(test_system_exception) {
   const char *expected[] = {
@@ -21,3 +21,4 @@ BOOST_AUTO_TEST_CASE(test_system_exception) {
     BOOST_CHECK_EQUAL(string(expected[err]), string(ex.what()));
   }
 }
+BOOST_AUTO_TEST_SUITE_END()
