@@ -6,6 +6,7 @@
 #include "trim.hpp"
 
 using std::string;
+BOOST_AUTO_TEST_SUITE(Trim)
 
 BOOST_AUTO_TEST_CASE(test_trim) {
   string sample[] = {
@@ -32,3 +33,5 @@ BOOST_AUTO_TEST_CASE(test_trim) {
     BOOST_CHECK_EQUAL((int) expectedLastCharacter[testNumber], (int) testCase.back());
   }
 }
+
+BOOST_AUTO_TEST_SUITE_END()

@@ -6,6 +6,7 @@
 #include <string>
 #include "dynamiclibrary.hpp"
 using std::string;
+BOOST_AUTO_TEST_SUITE(DynamicLibrary)
 
 
 BOOST_AUTO_TEST_CASE(testSystemDynamicLibrary) {
@@ -20,3 +21,5 @@ BOOST_AUTO_TEST_CASE(testSystemDynamicLibrary) {
         BOOST_FAIL(ex.what());
     }
 }
+
+BOOST_AUTO_TEST_SUITE_END()

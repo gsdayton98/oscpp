@@ -13,7 +13,7 @@
 #include "file_descriptor.hpp"
 #include <string>
 #include "sysexception.hpp"
-
+BOOST_AUTO_TEST_SUITE(FileDescriptor)
 
 static auto fileDescriptorOpen(const int fd) -> bool {
     const auto sysResult = fcntl(fd, F_GETFD);
@@ -52,3 +52,5 @@ BOOST_AUTO_TEST_CASE(testFileDescriptor) {
     BOOST_REQUIRE(!fileDescriptorOpen(newSysDescriptor));
     BOOST_REQUIRE(fileDescriptorOpen(sysDescriptor));
 }
+
+BOOST_AUTO_TEST_SUITE_END()
