@@ -110,9 +110,9 @@ Items are ordered by priority within each section. Nothing here has been fixed y
   nothing. The module is defined in `oscpp_tests.cpp`.
 - [x] Tests that write files now use the `TempDirectory` helper (`test/temp_directory.hpp`): a unique directory under the
   system temp directory, removed on destruction, with per-test fixtures. Nothing is written to the working directory.
-- [ ] Missing coverage: `CircularBuffer` multithreaded producer/consumer tests now live in `stress_circular_buffer` (label
-  `stress`); run them under TSan. The rest of the earlier coverage list (`File`, `FileDescriptor`, `Socket`,
-  `DynamicLibrary`, `StopWatch::reset`, `trim` edge cases, and the `oscpp_exceptionless` counterparts) is done.
+- [x] Missing coverage is filled. The `CircularBuffer` stress tests (`stress_circular_buffer`, label `stress`) ran clean
+  under TSan (three runs, AppleClang 21, `-fsanitize=thread` on the library and test, build dir
+  `../build/oscpp/claude-tsan`). Making that repeatable is covered by the sanitizer option in the build-system section.
 - [ ] `test_system_exception.cpp` expects the macOS text "Undefined error: 0" and `test_dynamic_library.cpp` hard-codes
   `/usr/lib/libc++.1.dylib`. Fine while macOS-only; revisit when Linux returns.
 - [ ] `test_random_device` only asserts `entropy() > 0`, which is not guaranteed by the standard. Assert that it
