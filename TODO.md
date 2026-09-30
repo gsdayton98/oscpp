@@ -68,8 +68,6 @@ Items are ordered by priority within each section. Nothing here has been fixed y
   `ElementType` is an accepted requirement.
 - [x] `file.hpp` and `socket.hpp` include `<utility>` and `<cstddef>` where used. `<fcntl.h>` and `<sys/stat.h>` stay in `file.hpp`
   because the default arguments and `struct stat` need them.
-- [ ] `SysException` messages carry no context. Add an optional `what_arg` (e.g. `"open(/path): No such file"`), and use
-  it in `File`.
 
 ## P2: Build system (`CMakeLists.txt`, `test/CMakeLists.txt`)
 
@@ -111,18 +109,14 @@ Items are ordered by priority within each section. Nothing here has been fixed y
 
 ## P4: Docs and hygiene
 
-- [ ] README: fix the typos ("associed", "aruound" in `socket.hpp`, "oen" in `circular_buffer.hpp`), remove trailing
-  whitespace in the table, and add build, install and `find_package(oscpp)` usage sections plus a minimal example.
-- [ ] `.gitignore` carries stale Visual Studio entries (`OSCPP.vpwhistu`, `OSCPP.vtg`, `Debug`). Replace with
-  `cmake-build-*` (already present) plus `CMakeUserPresets.json`. `build/` is already ignored.
-- [ ] Normalize headers:
-  - copyright years and formats vary (2016, 2021, 2023, "©2026")
-  - indentation switches between 2 and 4 spaces
-  - `#endif` comments are inconsistent (`stopwatch.hpp` has the wrong guard name in its comment; `sysexception.hpp` and
-    `trim.hpp` have none)
-  - some files lack a trailing newline
-  Add a `.clang-format` (and optionally `.clang-tidy`) and run it once.
-- [ ] Replace the `-*- mode:C++ ... -*-` Emacs modelines with a `.editorconfig`, if they aren't wanted.
+- [x] README rewritten: typos fixed, both namespaces explained, an example, and build, install, options and
+  `find_package(oscpp)` usage.
+- [x] `.gitignore` stale Visual Studio entries replaced (now `cmake-build-*`, `build/` and `CMakeUserPresets.json`).
+- [ ] Normalize headers. Done by hand: copyright line format (years untouched), `#endif // GUARD` comments with the real
+  guard names (the exceptionless guards are now `OSCPP_EXCEPTIONLESS_*`), trailing newlines, the `aruound` typo.
+  `.clang-format` (2-space indent, 120 columns, matching the Emacs modelines) and `.editorconfig` are added, but the
+  one-time reformat is not run yet because `clang-format` isn't installed here. Run it once, then review the diff.
+- [x] The `-*- mode:C++ ... -*-` modelines are kept (they carry the Emacs settings); `.editorconfig` covers other editors.
 - [ ] Bump the version and add a CHANGELOG once the API changes above land, since the error-handling split (`create`/`clone`
   now throw, non-throwing forms moved to `oscpp_exceptionless`) is source-breaking.
 

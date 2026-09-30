@@ -1,5 +1,5 @@
 // -*- mode: c++ -*-
-// @copyright  2021 Glen S. Dayton. Rights reserved according to terms of included license.
+// Copyright 2021 Glen S. Dayton. Rights reserved according to terms of included license.
 //  @author Glen S.Dayton
 
 #include "oscpp/file.hpp"

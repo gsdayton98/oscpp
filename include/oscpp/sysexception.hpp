@@ -1,5 +1,5 @@
 // -*- mode:C++; c-basic-offset:2; indent-tabs-mode:nil -*-
-// Copyright 2016. Glen S. Dayton. Rights reserved according to included license.
+// Copyright 2016 Glen S. Dayton. Rights reserved according to terms of included license.
 ////
 //! SysException
 //!
@@ -26,4 +26,4 @@ namespace oscpp {
         static auto message(int errorNumber) -> std::string;
     };
 }
-#endif
+#endif // OSCPP_SYSEXCEPTION_HPP

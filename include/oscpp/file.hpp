@@ -1,6 +1,6 @@
 // -*- mode: c++ -*-
 ////
-// @copyright 2021 Glen S. Dayton. Rights reserved according to terms of included license.
+// Copyright 2021 Glen S. Dayton. Rights reserved according to terms of included license.
 // @author Glen S. Dayton
 //
 //  Wrapper around Posix file operations that protect against inadvertent copying of the file descriptor and guarantee

@@ -1,11 +1,11 @@
 // -*- mode:C++; c-basic-offset:2; indent-tabs-mode:nil -*-
-// Copyright 2023 Glen S. Dayton. Rights reserved according to the included license terms.
+// Copyright 2023 Glen S. Dayton. Rights reserved according to terms of included license.
 //
 // Non-throwing counterpart of oscpp::FileDescriptor. Same semantics (non-copyable, movable, closes on destruction),
 // but failures are returned as a std::error_code (errno in the generic category) inside a std::expected.
 
-#ifndef EXCEPTIONLESS_FILE_DESCRIPTOR_HPP
-#define EXCEPTIONLESS_FILE_DESCRIPTOR_HPP
+#ifndef OSCPP_EXCEPTIONLESS_FILE_DESCRIPTOR_HPP
+#define OSCPP_EXCEPTIONLESS_FILE_DESCRIPTOR_HPP
 #include <cstddef>
 #include <expected>
 #include <system_error>
@@ -52,4 +52,4 @@ class __attribute__((visibility("default"))) FileDescriptor {
 };
 
 }
-#endif // EXCEPTIONLESS_FILE_DESCRIPTOR_HPP
+#endif // OSCPP_EXCEPTIONLESS_FILE_DESCRIPTOR_HPP

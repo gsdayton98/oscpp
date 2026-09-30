@@ -1,7 +1,7 @@
 // -*- mode:C++; c-basic-offset:2; indent-tabs-mode:nil -*-
 ////
 // OSCPP File Descriptor
-// Copyright 2023 Glen S. Dayton. Rights reserved according to the included license terms.
+// Copyright 2023 Glen S. Dayton. Rights reserved according to terms of included license.
 // Created by Glen Dayton on 8/14/23.
 //
 // Captures the use semantics of a typical handle or file descriptor.  Prohibits copying but provides a clone()
@@ -94,4 +94,4 @@ namespace oscpp {
         auto write(const void *buffer, std::size_t length) -> std::size_t;
     };
 }
-#endif //OSCPP_FILE_DESCRIPTOR_HPP
+#endif // OSCPP_FILE_DESCRIPTOR_HPP

@@ -1,5 +1,5 @@
 // -*- mode: c++ -*-
-// @copyright 2021 Glen S. Dayton. Rights reserved according to included license.
+// Copyright 2021 Glen S. Dayton. Rights reserved according to terms of included license.
 ////
 ///StopWatch class
 //
@@ -33,4 +33,4 @@ namespace oscpp {
         [[nodiscard]] auto read() const -> double;
     };
 }
-#endif // STOPWATCH_HPP_INCL
+#endif // OSCPP_STOPWATCH_HPP

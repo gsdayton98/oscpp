@@ -1,6 +1,6 @@
 // -*- mode:C++; c-basic-offset:2; indent-tabs-mode:nil -*-
 ////
-// Copyright 2023. Glen S. Dayton. Rights reserved according to included license.
+// Copyright 2023 Glen S. Dayton. Rights reserved according to terms of included license.
 // Created by Glen Dayton on 7/17/23.
 //
 //  RandomDevice
@@ -52,4 +52,4 @@ namespace oscpp {
 
     static_assert(std::uniform_random_bit_generator<RandomDevice>);
 }
-#endif //OSCPP_RANDOM_DEVICE_HPP
+#endif // OSCPP_RANDOM_DEVICE_HPP

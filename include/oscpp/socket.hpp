@@ -1,9 +1,9 @@
 // -*- mode:C++; c-basic-offset:2; indent-tabs-mode:nil -*-
 ////
-///! Copyright 2023. Glen S. Dayton. Rights reserved according to included license.
+///! Copyright 2023 Glen S. Dayton. Rights reserved according to terms of included license.
 //! Created by Glen Dayton on 8/13/23.
 //!
-//! Provides a C++ wrapper aruound a POSIX socket.
+//! Provides a C++ wrapper around a POSIX socket.
 
 #ifndef OSCPP_SOCKET_HPP
 #define OSCPP_SOCKET_HPP
@@ -49,4 +49,4 @@ namespace oscpp {
         [[nodiscard]] auto release() noexcept -> int { return impl.release(); }
     };
 }
-#endif //OSCPP_SOCKET_HPP
+#endif // OSCPP_SOCKET_HPP

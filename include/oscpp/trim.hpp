@@ -1,4 +1,4 @@
-// Copyright 2016.  Glen S. Dayton. Rights reserved according to included license.
+// Copyright 2016 Glen S. Dayton. Rights reserved according to terms of included license.
 #ifndef OSCPP_TRIM_HPP
 #define OSCPP_TRIM_HPP
 #include <string>
@@ -13,4 +13,4 @@ namespace oscpp {
     __attribute__((visibility("default")))
     void trim(std::string &s);
 }
-#endif
+#endif // OSCPP_TRIM_HPP

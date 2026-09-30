@@ -3,7 +3,6 @@
 //
 // Created by Glen Dayton on 7/29/23.
 //
-// Copyright 2016. Glen S. Dayton. Rights reserved according to terms of included license.
 #include <stdexcept>
 #include "oscpp/dynamiclibrary.hpp"
 

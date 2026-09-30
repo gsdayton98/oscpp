@@ -1,5 +1,5 @@
 // -*- mode:C++; c-basic-offset:2; indent-tabs-mode:nil -*-
-// Copyright 2016. Glen S. Dayton. Rights reserved according to terms of included license.
+// Copyright 2016 Glen S. Dayton. Rights reserved according to terms of included license.
 #ifndef OSCPP_DYNAMIC_LIBRARY_HPP
 #define OSCPP_DYNAMIC_LIBRARY_HPP
 #include <utility>

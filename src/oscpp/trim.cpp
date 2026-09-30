@@ -1,5 +1,5 @@
 // -*- mode: c++ -*-;
-// Copyright 2016.  Glen S. Dayton. Rights reserved according to included license.
+// Copyright 2016 Glen S. Dayton. Rights reserved according to terms of included license.
 #include <string>
 #include "oscpp/trim.hpp"
 

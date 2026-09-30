@@ -1,5 +1,5 @@
 // -*- mode:C++; c-basic-offset:2; indent-tabs-mode:nil -*-
-// Copyright 2026. Glen S. Dayton. Rights reserved according to included license.
+// Copyright 2026 Glen S. Dayton. Rights reserved according to terms of included license.
 //
 // Non-throwing counterpart of oscpp::RandomDevice. Construction and each draw report failure as a std::error_code
 // inside a std::expected. Because a draw can fail, this is deliberately not a std::uniform_random_bit_generator;
