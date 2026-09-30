@@ -6,8 +6,18 @@
 #include <utility>
 #include <fstream>
 #include <boost/test/unit_test.hpp>
+#include <type_traits>
+#include <utility>
 #include "oscpp_exceptionless/file.hpp"
 #include "temp_directory.hpp"
+
+// Nothing in oscpp_exceptionless may throw.
+using EF = oscpp_exceptionless::File;
+static_assert(noexcept(EF::create("path")));
+static_assert(noexcept(std::declval<EF &>().map()));
+static_assert(noexcept(std::declval<const EF &>().fstat()));
+static_assert(noexcept(std::declval<EF &>().unmap()) && noexcept(std::declval<EF &>().release()));
+static_assert(std::is_nothrow_move_constructible_v<EF> && std::is_nothrow_move_assignable_v<EF>);
 
 BOOST_AUTO_TEST_SUITE(ExceptionlessFile)
 

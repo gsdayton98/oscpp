@@ -9,8 +9,8 @@
 
 namespace {
 template <typename T>
-auto unwrap(std::expected<T, std::string> &&result) -> T {
-    if (!result) throw std::runtime_error(result.error());
+auto unwrap(std::expected<T, oscpp_exceptionless::DynamicLibraryError> &&result) -> T {
+    if (!result) throw std::runtime_error(result.error().what());
     return std::move(*result);
 }
 }

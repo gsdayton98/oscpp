@@ -1,7 +1,17 @@
 // -*- mode:C++; c-basic-offset:2; indent-tabs-mode:nil -*-
 // Copyright 2026 Glen S. Dayton. Rights reserved according to terms of included license.
 #include <boost/test/unit_test.hpp>
+#include <type_traits>
+#include <utility>
 #include "oscpp_exceptionless/random_device.hpp"
+
+// Nothing in oscpp_exceptionless may throw.
+using ERD = oscpp_exceptionless::RandomDevice;
+static_assert(noexcept(ERD::create()));
+static_assert(noexcept(ERD::create("/dev/urandom")));
+static_assert(noexcept(std::declval<ERD &>().next()));
+static_assert(noexcept(std::declval<const ERD &>().entropy()));
+static_assert(std::is_nothrow_move_constructible_v<ERD>);
 
 BOOST_AUTO_TEST_SUITE(ExceptionlessRandomDevice)
 

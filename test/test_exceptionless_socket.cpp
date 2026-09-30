@@ -1,9 +1,18 @@
 // -*- mode:C++; c-basic-offset:2; indent-tabs-mode:nil -*-
 #include <boost/test/unit_test.hpp>
+#include <type_traits>
+#include <utility>
 #include <fcntl.h>
 #include <unistd.h>
 #include <utility>
 #include "oscpp_exceptionless/socket.hpp"
+
+// Nothing in oscpp_exceptionless may throw.
+using ES = oscpp_exceptionless::Socket;
+static_assert(noexcept(ES::create()));
+static_assert(noexcept(std::declval<const ES &>().clone()));
+static_assert(noexcept(std::declval<ES &>().release()));
+static_assert(std::is_nothrow_move_constructible_v<ES> && std::is_nothrow_move_assignable_v<ES>);
 
 BOOST_AUTO_TEST_SUITE(ExceptionlessSocket)
 

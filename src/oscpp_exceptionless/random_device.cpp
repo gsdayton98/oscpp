@@ -3,6 +3,7 @@
 
 #include <exception>
 #include <new>
+#include <string>
 #include "oscpp_exceptionless/random_device.hpp"
 
 namespace {
@@ -35,10 +36,10 @@ auto oscpp_exceptionless::RandomDevice::create() noexcept -> std::expected<Rando
   }
 }
 
-auto oscpp_exceptionless::RandomDevice::create(const std::string &token) noexcept
+auto oscpp_exceptionless::RandomDevice::create(const char *token) noexcept
     -> std::expected<RandomDevice, std::error_code> {
   try {
-    return RandomDevice {std::make_unique<std::random_device>(token)};
+    return RandomDevice {std::make_unique<std::random_device>(std::string{token})};
   } catch (...) {
     return std::unexpected(currentError());
   }

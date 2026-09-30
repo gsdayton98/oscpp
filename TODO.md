@@ -34,8 +34,10 @@ Items are ordered by priority within each section. Nothing here has been fixed y
     `strerror_r` GNU/XSI portability item below.
   - `oscpp::DynamicLibrary` still throws plain `std::runtime_error`, because `dlerror()` text has no errno to put in
     a `std::error_code`. Decide between a custom `std::error_category` and leaving it.
-  - `oscpp_exceptionless::DynamicLibrary` reports errors as the `dlerror()` string (`std::expected<T, std::string>`)
-    since there is no errno to put in an `error_code`. Consider a custom `std::error_category` if callers need to
+  - `oscpp_exceptionless::DynamicLibrary` reports errors as a `DynamicLibraryError`: a fixed 256-byte, trivially
+    copyable buffer holding the `dlerror()` text (truncated if longer). It is not a `std::string` because building or
+    copying one can throw `std::bad_alloc`, and there is no errno to put in an `error_code`. `RandomDevice::create`
+    takes a `const char *` token for the same reason. Consider a custom `std::error_category` if callers need to
     branch on the failure.
   - `oscpp_exceptionless::RandomDevice` is not a `std::uniform_random_bit_generator`, because a draw can fail.
     libc++ silently accepts unrecognized tokens, so the token failure path is untested.

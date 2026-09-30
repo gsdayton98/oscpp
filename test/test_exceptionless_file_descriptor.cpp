@@ -1,11 +1,21 @@
 // -*- mode:C++; c-basic-offset:2; indent-tabs-mode:nil -*-
 #include <boost/test/unit_test.hpp>
+#include <type_traits>
+#include <utility>
 #include <cerrno>
 #include <fcntl.h>
 #include <cstring>
 #include <unistd.h>
 #include <utility>
 #include "oscpp_exceptionless/file_descriptor.hpp"
+
+// Nothing in oscpp_exceptionless may throw.
+using EFD = oscpp_exceptionless::FileDescriptor;
+static_assert(noexcept(EFD::create(0)));
+static_assert(noexcept(std::declval<const EFD &>().clone()));
+static_assert(noexcept(std::declval<EFD &>().read(nullptr, 0)) && noexcept(std::declval<EFD &>().write(nullptr, 0)));
+static_assert(noexcept(std::declval<EFD &>().release()));
+static_assert(std::is_nothrow_move_constructible_v<EFD> && std::is_nothrow_move_assignable_v<EFD>);
 
 BOOST_AUTO_TEST_SUITE(ExceptionlessFileDescriptor)
 

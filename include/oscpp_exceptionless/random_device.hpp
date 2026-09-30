@@ -10,7 +10,6 @@
 #include <expected>
 #include <memory>
 #include <random>
-#include <string>
 #include <system_error>
 
 namespace oscpp_exceptionless {
@@ -23,7 +22,7 @@ class __attribute__((visibility("default"))) RandomDevice {
   [[nodiscard]] static auto create() noexcept -> std::expected<RandomDevice, std::error_code>;
 
   /// Use the entropy source named by an implementation-defined token (for example "/dev/urandom").
-  [[nodiscard]] static auto create(const std::string &token) noexcept -> std::expected<RandomDevice, std::error_code>;
+  [[nodiscard]] static auto create(const char *token) noexcept -> std::expected<RandomDevice, std::error_code>;
 
   RandomDevice(const RandomDevice &) = delete;
   RandomDevice &operator=(const RandomDevice &) = delete;
