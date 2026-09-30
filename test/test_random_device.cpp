@@ -10,7 +10,7 @@
 #include <numeric>
 #include <random>
 #include <vector>
-#include "random_device.hpp"
+#include "oscpp/random_device.hpp"
 
 BOOST_AUTO_TEST_SUITE(RandomDevice)
 

@@ -4,7 +4,7 @@
 // Created by Glen Dayton on 8/11/23.
 //
 #include <algorithm>
-#include "circular_buffer.hpp"
+#include "oscpp/circular_buffer.hpp"
 
 
 // For convenience we instantiate instances of some common types.

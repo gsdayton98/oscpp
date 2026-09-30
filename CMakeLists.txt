@@ -17,25 +17,29 @@ set(INCLUDEDIR include)
 
 set(CMAKE_CXX_STANDARD 23)
 
-set(HEADERS include/circular_buffer.hpp
-        include/dynamiclibrary.hpp
-        include/file.hpp
-        include/file_descriptor.hpp
-        include/random_device.hpp
-        include/socket.hpp
-        include/stopwatch.hpp
-        include/sysexception.hpp
-        include/trim.hpp)
+set(HEADERS include/oscpp/circular_buffer.hpp
+        include/oscpp/dynamiclibrary.hpp
+        include/oscpp/file.hpp
+        include/oscpp/file_descriptor.hpp
+        include/oscpp/random_device.hpp
+        include/oscpp/socket.hpp
+        include/oscpp/stopwatch.hpp
+        include/oscpp/sysexception.hpp
+        include/oscpp/trim.hpp
+        include/oscpp_exceptionless/file_descriptor.hpp
+        include/oscpp_exceptionless/socket.hpp)
 
-set(SOURCES src/circular_buffer.cpp
-        src/dynamiclibrary.cpp
-        src/file.cpp
-        src/file_descriptor.cpp
-        src/random_device.cpp
-        src/socket.cpp
-        src/stopwatch.cpp
-        src/sysexception.cpp
-        src/trim.cpp)
+set(SOURCES src/oscpp/circular_buffer.cpp
+        src/oscpp/dynamiclibrary.cpp
+        src/oscpp/file.cpp
+        src/oscpp/file_descriptor.cpp
+        src/oscpp/random_device.cpp
+        src/oscpp/socket.cpp
+        src/oscpp/stopwatch.cpp
+        src/oscpp/sysexception.cpp
+        src/oscpp/trim.cpp
+        src/oscpp_exceptionless/file_descriptor.cpp
+        src/oscpp_exceptionless/socket.cpp)
 
 add_library(oscpp SHARED ${HEADERS} ${SOURCES})
 target_include_directories(oscpp
@@ -46,13 +50,14 @@ target_include_directories(oscpp
 target_compile_options(oscpp PRIVATE -fvisibility=hidden)
 set_target_properties(oscpp PROPERTIES VERSION ${PROJECT_VERSION})
 set_target_properties(oscpp PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR})
-set_target_properties(oscpp PROPERTIES PUBLIC_HEADER "${HEADERS}")
 
 install(TARGETS ${PROJECT_NAME} EXPORT oscpp
         ARCHIVE  DESTINATION "${LIBDIR}"
         LIBRARY  DESTINATION "${LIBDIR}"
         RUNTIME  DESTINATION "${BINDIR}"
         PUBLIC_HEADER DESTINATION "${INCLUDEDIR}")
+# Preserve the oscpp/ and oscpp_exceptionless/ header directories.
+install(DIRECTORY include/oscpp include/oscpp_exceptionless DESTINATION "${INCLUDEDIR}" FILES_MATCHING PATTERN "*.hpp")
 install(EXPORT oscpp NAMESPACE oscpp:: DESTINATION "${LIBDIR}/cmake/oscpp")
 export(TARGETS ${PROJECT_NAME} NAMESPACE oscpp:: FILE oscpp.cmake)
 

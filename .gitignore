@@ -6,3 +6,4 @@ OSCPP.vtg
 .idea
 cmake-build-*
 
+build/

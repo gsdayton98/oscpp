@@ -10,7 +10,7 @@
 #include <stdexcept>
 #include <unistd.h>
 #include <boost/test/unit_test.hpp>
-#include "stopwatch.hpp"
+#include "oscpp/stopwatch.hpp"
 BOOST_AUTO_TEST_SUITE(StopWatch)
 BOOST_AUTO_TEST_CASE(test_stopwatch)
 {

@@ -1,6 +1,6 @@
 // -*- mode: c++ -*-;
 // @copyright 2021 Glen S. Dayton. Rights reserved according to included license.
-#include "stopwatch.hpp"
+#include "oscpp/stopwatch.hpp"
 using namespace std::chrono;
 
  auto oscpp::StopWatch::read() const -> double {

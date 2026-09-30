@@ -6,7 +6,8 @@
 
 #define BOOST_BOOST_AUTO_TEST_MODULE Test socket
 #include <boost/test/unit_test.hpp>
-#include "socket.hpp"
+#include "oscpp/socket.hpp"
+#include "oscpp/sysexception.hpp"
 #include <sys/socket.h>
 #include <fcntl.h>
 
@@ -28,8 +29,7 @@ static auto isCloseOnExec(const int fd) -> bool {
 
 BOOST_AUTO_TEST_CASE(testSocket)
 {
-    auto [testSocket, createError] = oscpp::Socket::create(PF_LOCAL, SOCK_STREAM, 0);
-    BOOST_REQUIRE_EQUAL(createError, 0);
+    auto testSocket = oscpp::Socket::create(PF_LOCAL, SOCK_STREAM, 0);
     const auto testSysDescriptor = testSocket.descriptor();
     BOOST_REQUIRE(isCloseOnExec(testSysDescriptor));
     BOOST_REQUIRE(checkSocketOpen(testSysDescriptor));
@@ -37,8 +37,7 @@ BOOST_AUTO_TEST_CASE(testSocket)
     // Clone the descriptor and check both the original and clone are open.
     int newSysDescriptor;
     {
-        auto [newSocket, cloneError] = testSocket.clone();
-        BOOST_REQUIRE_EQUAL(cloneError, 0);
+        auto newSocket = testSocket.clone();
         newSysDescriptor = newSocket.descriptor();
         BOOST_REQUIRE_LT(0, newSysDescriptor);
         BOOST_REQUIRE(isCloseOnExec(newSysDescriptor));
@@ -50,6 +49,11 @@ BOOST_AUTO_TEST_CASE(testSocket)
     BOOST_REQUIRE_EQUAL(testSysDescriptor, testSocket.descriptor());
     BOOST_REQUIRE(!checkSocketOpen(newSysDescriptor));
     BOOST_REQUIRE(checkSocketOpen(testSysDescriptor));
+}
+
+BOOST_AUTO_TEST_CASE(testCreateThrows)
+{
+    BOOST_CHECK_THROW(oscpp::Socket::create(-1, SOCK_STREAM, 0), oscpp::SysException);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

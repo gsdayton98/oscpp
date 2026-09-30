@@ -22,15 +22,17 @@ oscpp is a C++23 header/source library that wraps POSIX/OS-specific facilities (
 
 Requires CMake >= 3.25 and a C++23 compiler. Tests require Boost (`unit_test_framework` component, dynamic linking).
 
+Build out of tree, never inside the source directory. The build directory for Claude is `../build/oscpp/claude`.
+
 ```sh
-cmake -S . -B build
-cmake --build build
+cmake -S . -B ../build/oscpp/claude
+cmake --build ../build/oscpp/claude
 ```
 
 Install (default prefix is `$HOME` unless overridden):
 
 ```sh
-cmake --install build
+cmake --install ../build/oscpp/claude
 ```
 
 ## Test
@@ -38,19 +40,20 @@ cmake --install build
 Tests use Boost.Test (one executable per source file under `test/`), registered with CTest.
 
 ```sh
-ctest --test-dir build              # run all tests
-ctest --test-dir build -R test_file # run a single test by name
-build/test/test_file                # or run a test binary directly
+ctest --test-dir ../build/oscpp/claude              # run all tests
+ctest --test-dir ../build/oscpp/claude -R test_file # run a single test by name
+../build/oscpp/claude/test/test_file # or run a test binary directly
 ```
 
 Test executable names mirror their source file (e.g. `test/test_socket.cpp` -> `test_socket`), configured individually in `test/CMakeLists.txt` — a new test file needs a matching `add_executable`/`target_link_libraries`/`add_test` block added there.
 
 ## Architecture Conventions
 
-- Everything lives in the `oscpp` namespace, one header/source pair per component under `include/` and `src/` (note: some source filenames drop letters from the header name, e.g. `dynamiclibrary.hpp` -> `src/dynamiclibary.cpp`).
+- Everything lives in the `oscpp` namespace, one header/source pair per component under `include/oscpp/` and `src/oscpp/`. Include as `#include "oscpp/<component>.hpp"`.
 - Public classes/functions are annotated `__attribute__((visibility("default")))` since the library is built with `-fvisibility=hidden`; anything meant to be usable outside the shared library must carry this attribute.
 - Resource-owning types (`FileDescriptor`, `Socket`, `File`) follow a consistent RAII pattern: copy constructor/assignment deleted, move constructor provided, destructor releases the resource, and a `clone()`/`create()` static factory is used instead of a public copy path.
 - Error handling is via `oscpp::SysException` (in `sysexception.hpp`), constructed from `errno`, rather than return codes.
-- Test files follow the pattern `test/test_<component>.cpp`, using `BOOST_TEST_DYN_LINK` + `BOOST_AUTO_TEST_CASE`, and include the header under test directly by name (e.g. `#include "trim.hpp"`) via the `../include` include path set in `test/CMakeLists.txt`.
+  Every `oscpp` module may have a non-throwing counterpart in the `oscpp_exceptionless` namespace, which is a co-equal of `oscpp`, not nested in it. Code using one should not use the other. Headers and sources live in `include/oscpp_exceptionless/<component>.hpp` and `src/oscpp_exceptionless/<component>.cpp` (include as `"oscpp_exceptionless/<component>.hpp"`), with no aggregate header. Factories return `std::expected<T, std::error_code>` (errno in the generic category). `oscpp` classes wrap their `oscpp_exceptionless` counterpart and translate errors into `SysException`. Currently: `FileDescriptor`, `Socket`.
+- Test files follow the pattern `test/test_<component>.cpp`, using `BOOST_TEST_DYN_LINK` + `BOOST_AUTO_TEST_CASE`, and include the header under test directly by name (e.g. `#include "oscpp/trim.hpp"`) via the `../include` include path set in `test/CMakeLists.txt`.
 
 test/mock_strerror.cpp exists an an example of dynamic symbol interjection. It is currently unused, but preserve it.

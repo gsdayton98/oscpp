@@ -10,7 +10,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <boost/test/unit_test.hpp>
-#include "file.hpp"
+#include "oscpp/file.hpp"
 
 constexpr unsigned int NUMBER_POINTS = 1024u;
 constexpr auto testFileName = "testFile.dat";

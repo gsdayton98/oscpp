@@ -3,7 +3,7 @@
 
 #define BOOST_BOOST_AUTO_TEST_MODULE Test systemException
 #include <boost/test/unit_test.hpp>
-#include "sysexception.hpp"
+#include "oscpp/sysexception.hpp"
 using std::string;
 BOOST_AUTO_TEST_SUITE(SystemException)
 

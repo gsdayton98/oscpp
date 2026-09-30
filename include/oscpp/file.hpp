@@ -12,7 +12,7 @@
 #define OSCPP_FILE_HPP
 #include <fcntl.h>
 #include <sys/stat.h>
-#include "sysexception.hpp"
+#include "oscpp/sysexception.hpp"
 
 namespace oscpp {
 

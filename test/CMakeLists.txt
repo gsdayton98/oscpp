@@ -7,6 +7,8 @@ find_package (Boost REQUIRED COMPONENTS unit_test_framework CONFIG)
 add_executable(oscpp_tests oscpp_tests.cpp
         test_circular_buffer.cpp
         test_dynamic_library.cpp
+        test_exceptionless_file_descriptor.cpp
+        test_exceptionless_socket.cpp
         test_file.cpp
         test_file_descriptor.cpp
         test_random_device.cpp

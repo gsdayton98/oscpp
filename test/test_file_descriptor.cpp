@@ -10,9 +10,9 @@
 #include <boost/test/unit_test.hpp>
 
 #include <fcntl.h>
-#include "file_descriptor.hpp"
+#include "oscpp/file_descriptor.hpp"
 #include <string>
-#include "sysexception.hpp"
+#include "oscpp/sysexception.hpp"
 BOOST_AUTO_TEST_SUITE(FileDescriptor)
 
 static auto fileDescriptorOpen(const int fd) -> bool {
@@ -44,8 +44,7 @@ BOOST_AUTO_TEST_CASE(testFileDescriptor) {
     // Clone the descriptor and check both the original and clone are open.
     int newSysDescriptor;
     {
-        auto [newSocket, cloneError] = fileDescriptor.clone();
-        BOOST_REQUIRE_EQUAL(cloneError, 0);
+        auto newSocket = fileDescriptor.clone();
         newSysDescriptor = newSocket.descriptor();
         BOOST_REQUIRE_LT(0, newSysDescriptor);
         BOOST_REQUIRE(isCloseOnExec(newSysDescriptor));
@@ -57,6 +56,11 @@ BOOST_AUTO_TEST_CASE(testFileDescriptor) {
     BOOST_REQUIRE_EQUAL(sysDescriptor, fileDescriptor.descriptor());
     BOOST_REQUIRE(!fileDescriptorOpen(newSysDescriptor));
     BOOST_REQUIRE(fileDescriptorOpen(sysDescriptor));
+}
+
+BOOST_AUTO_TEST_CASE(testCloneThrows) {
+    const auto invalid = oscpp::FileDescriptor::create(-1);
+    BOOST_CHECK_THROW((void) invalid.clone(), oscpp::SysException);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

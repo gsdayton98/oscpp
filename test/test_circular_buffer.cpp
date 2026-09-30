@@ -6,7 +6,7 @@
 #include <atomic>
 #include <thread>
 #include <vector>
-#include "circular_buffer.hpp"
+#include "oscpp/circular_buffer.hpp"
 
 template
 class oscpp::CircularBuffer<uintptr_t>;

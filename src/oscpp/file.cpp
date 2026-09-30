@@ -2,7 +2,7 @@
 // @copyright  2021 Glen S. Dayton. Rights reserved according to terms of included license.
 //  @author Glen S.Dayton
 
-#include "file.hpp"
+#include "oscpp/file.hpp"
 #include <sys/types.h>
 #include <sys/mman.h>
 #include <sys/stat.h>

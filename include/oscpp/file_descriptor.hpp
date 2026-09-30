@@ -10,6 +10,7 @@
 #ifndef OSCPP_FILE_DESCRIPTOR_HPP
 #define OSCPP_FILE_DESCRIPTOR_HPP
 #include <utility>
+#include "oscpp_exceptionless/file_descriptor.hpp"
 
 
 namespace oscpp {
@@ -18,13 +19,13 @@ namespace oscpp {
         /**
          * Implementation-dependent file handle or descriptor.
          */
-        int handle;
+        oscpp_exceptionless::FileDescriptor impl;
 
         /**
          * Use the create() method to create new file descriptors
          * @param fileDescriptor
          */
-        [[maybe_unused]] explicit FileDescriptor(const int fileDescriptor) noexcept : handle {fileDescriptor} {}
+        explicit FileDescriptor(oscpp_exceptionless::FileDescriptor &&descriptor) noexcept : impl {std::move(descriptor)} {}
 
     public:
 
@@ -39,12 +40,12 @@ namespace oscpp {
          * Move constructor creates a new FileDescriptor with the same handle and disables the old handle to prevent
          * it from getting closed.
          */
-        [[maybe_unused]] FileDescriptor(FileDescriptor &&) noexcept;
+        [[maybe_unused]] FileDescriptor(FileDescriptor &&) noexcept = default;
 
         /**
          * Close the descriptor.
          */
-        ~FileDescriptor() noexcept;
+        ~FileDescriptor() noexcept = default;
 
         /**
          * Cannot copy a file descriptor.  Use the clone method to duplicate the descriptor into a new descriptor.
@@ -59,15 +60,16 @@ namespace oscpp {
 
         /**
          * Duplicate the existing FileDescriptor into a new FileDescriptor. The new descriptor is close-on-exec.
-         * @return A new (FileDescriptor, error code) pair. Do not use the File Descriptor if error code is non-zero.
+         * @return The new FileDescriptor.
+         * @throws oscpp::SysException on failure. See oscpp_exceptionless::FileDescriptor::clone for a non-throwing version.
          */
-        [[maybe_unused]] [[nodiscard]] auto clone() const noexcept -> std::pair<FileDescriptor, int>;
+        [[maybe_unused]] [[nodiscard]] auto clone() const -> FileDescriptor;
 
         /**
          * Return the low-level implementation specific file descriptor.
          * @return Operating system file handle
          */
-        [[maybe_unused]] [[nodiscard]] auto descriptor() const noexcept -> int { return handle; }
+        [[maybe_unused]] [[nodiscard]] auto descriptor() const noexcept -> int { return impl.descriptor(); }
     };
 }
 #endif //OSCPP_FILE_DESCRIPTOR_HPP

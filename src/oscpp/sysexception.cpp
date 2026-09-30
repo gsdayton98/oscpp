@@ -2,7 +2,7 @@
 // Copyright 2016. Glen S. Dayton. Rights reserved according to included license.
 #include <cstring>
 #include <string>
-#include "sysexception.hpp"
+#include "oscpp/sysexception.hpp"
 
 
 auto oscpp::SysException::message(const int errorNumber) -> std::string {

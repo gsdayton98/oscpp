@@ -6,7 +6,7 @@
 // Copyright 2016. Glen S. Dayton. Rights reserved according to terms of included license.
 #include <dlfcn.h>
 #include <stdexcept>
-#include "dynamiclibrary.hpp"
+#include "oscpp/dynamiclibrary.hpp"
 
 //  Open the current application image.
 oscpp::DynamicLibrary::DynamicLibrary()
