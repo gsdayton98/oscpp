@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.25)
-project(oscpp VERSION 1.0.0 DESCRIPTION "Library for operating system like functions" LANGUAGES CXX)
+project(oscpp VERSION 2.0.0 DESCRIPTION "Library for operating system like functions" LANGUAGES CXX)
 
 # Build the tests only when oscpp is the top-level project, so consumers using FetchContent don't need Boost.
 option(OSCPP_BUILD_TESTING "Build the oscpp tests (requires Boost.Test)" ${PROJECT_IS_TOP_LEVEL})
@@ -145,7 +145,7 @@ configure_package_config_file(
 write_basic_package_version_file(
         "oscpp-config-version.cmake"
         VERSION ${PROJECT_VERSION}
-        COMPATIBILITY AnyNewerVersion)
+        COMPATIBILITY SameMajorVersion)
 
 install(FILES
         "${CMAKE_CURRENT_BINARY_DIR}/oscpp-config.cmake"

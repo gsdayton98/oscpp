@@ -26,19 +26,18 @@ Items are ordered by priority within each section. Nothing here has been fixed y
   `src/oscpp_exceptionless/`) returns `std::expected<T, std::error_code>` (errno in the generic category). Callers use
   one or the other. `oscpp` types may wrap their `oscpp_exceptionless` counterpart and translate errors to exceptions.
   Done for `FileDescriptor` and `Socket`; the old `std::pair<T, int>` returns are gone.
-- [ ] Finish the error-handling split:
+- [x] Finish the error-handling split:
   - [x] `oscpp_exceptionless` counterparts now exist for `File`, `DynamicLibrary` and `RandomDevice`, and the `oscpp`
     versions wrap them. Pure-computation modules (`trim`, `StopWatch`, `CircularBuffer`) need none.
   - [x] `SysException` now derives from `std::system_error` (callers can inspect `code()`), has an `error_code`
     constructor, and uses `std::generic_category().message()` instead of `strerror_r`. This also removes the
     `strerror_r` GNU/XSI portability item below.
-  - `oscpp::DynamicLibrary` still throws plain `std::runtime_error`, because `dlerror()` text has no errno to put in
-    a `std::error_code`. Decide between a custom `std::error_category` and leaving it.
+  - [x] `oscpp::DynamicLibrary` keeps throwing `std::runtime_error`: `dlerror()` text has no errno to put in a
+    `std::error_code`, and this library is too low level to need finer-grained errors.
   - `oscpp_exceptionless::DynamicLibrary` reports errors as a `DynamicLibraryError`: a fixed 256-byte, trivially
     copyable buffer holding the `dlerror()` text (truncated if longer). It is not a `std::string` because building or
     copying one can throw `std::bad_alloc`, and there is no errno to put in an `error_code`. `RandomDevice::create`
-    takes a `const char *` token for the same reason. Consider a custom `std::error_category` if callers need to
-    branch on the failure.
+    takes a `const char *` token for the same reason.
   - `oscpp_exceptionless::RandomDevice` is not a `std::uniform_random_bit_generator`, because a draw can fail.
     libc++ silently accepts unrecognized tokens, so the token failure path is untested.
 - [x] **`Socket` and `FileDescriptor` duplicated each other.** `oscpp_exceptionless::Socket` now owns a
@@ -122,8 +121,7 @@ Items are ordered by priority within each section. Nothing here has been fixed y
   `check-format` CMake targets reformat and verify. clang-format isn't available from Homebrew on Intel macOS, so install
   it with `pip install clang-format` or `pipx install clang-format`.
 - [x] The `-*- mode:C++ ... -*-` modelines are kept (they carry the Emacs settings); `.editorconfig` covers other editors.
-- [ ] Bump the version and add a CHANGELOG once the API changes above land, since the error-handling split (`create`/`clone`
-  now throw, non-throwing forms moved to `oscpp_exceptionless`) is source-breaking.
+- [x] Version bumped to 2.0.0 (`SOVERSION` 2, package compatibility `SameMajorVersion`) and `CHANGELOG.md` added.
 
 ## Deferred until a Linux environment exists
 

@@ -56,6 +56,8 @@ Presets: `CMakePresets.json` defines `debug`, `release`, `asan` (address and und
 
 CI: `.github/workflows/ci.yml` runs on pushes to `main` and on pull requests. It builds and tests the `debug`, `release`, `asan` and `tsan` presets on macOS, installs oscpp and builds `test/package_consumer` against the installed package with `find_package(oscpp)`, and checks formatting on Linux with `clang-format==23.1.1` (pinned, because formatting differs between versions). Keep those steps runnable locally with the same commands.
 
+Changelog: record user-visible changes in `CHANGELOG.md` under `[Unreleased]` (Keep a Changelog format), and breaking changes under a "Breaking changes" heading, since the project follows Semantic Versioning. The version lives in `project(oscpp VERSION ...)` in `CMakeLists.txt`.
+
 Sanitizers without presets: configure a separate build directory with `-DOSCPP_SANITIZE=address\;undefined` or `-DOSCPP_SANITIZE=thread` (for example `../build/oscpp/claude-asan` and `../build/oscpp/claude-tsan`). `thread` can't be combined with `address`. Run the stress tests under `thread`.
 
 Multithreaded stress tests are not unit tests. They live in their own executable (`test/stress_circular_buffer.cpp` -> `stress_circular_buffer`) and carry the CTest label `stress`. Run them alone with `ctest --test-dir ../build/oscpp/claude -L stress`.
