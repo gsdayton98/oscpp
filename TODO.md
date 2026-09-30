@@ -13,7 +13,7 @@ Items are ordered by priority within each section. Nothing here has been fixed y
   (return `{nullptr, 0}`) or document it. Also fix the `off_t` to `size_t` sign conversion (`src/file.cpp:21`).
 - [x] `dup()` and `socket()` don't set close-on-exec. Use `fcntl(F_DUPFD_CLOEXEC)` in `FileDescriptor::clone` and
   `Socket::clone`, and set `FD_CLOEXEC` on new sockets.
-- [ ] `CircularBuffer` dtor definition triggers `-Wdtor-name` (`include/circular_buffer.hpp:124`). Two other
+- [x] `CircularBuffer` dtor definition triggers `-Wdtor-name` (`include/circular_buffer.hpp:124`). Two other
   problems there:
   - The out-of-class definitions are indented as if they were inside the namespace, and `tryGet`'s closing brace is
     misaligned. This looks like a botched merge.
