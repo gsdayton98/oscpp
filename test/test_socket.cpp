@@ -8,6 +8,7 @@
 #include <boost/test/unit_test.hpp>
 #include "socket.hpp"
 #include <sys/socket.h>
+#include <fcntl.h>
 
 BOOST_AUTO_TEST_SUITE(Socket)
 
@@ -20,11 +21,17 @@ static auto checkSocketOpen(const int socket_fd) -> bool {
 
 
 
+static auto isCloseOnExec(const int fd) -> bool {
+    const int flags = fcntl(fd, F_GETFD);
+    return flags >= 0 && (flags & FD_CLOEXEC) != 0;
+}
+
 BOOST_AUTO_TEST_CASE(testSocket)
 {
     auto [testSocket, createError] = oscpp::Socket::create(PF_LOCAL, SOCK_STREAM, 0);
     BOOST_REQUIRE_EQUAL(createError, 0);
     const auto testSysDescriptor = testSocket.descriptor();
+    BOOST_REQUIRE(isCloseOnExec(testSysDescriptor));
     BOOST_REQUIRE(checkSocketOpen(testSysDescriptor));
 
     // Clone the descriptor and check both the original and clone are open.
@@ -34,6 +41,7 @@ BOOST_AUTO_TEST_CASE(testSocket)
         BOOST_REQUIRE_EQUAL(cloneError, 0);
         newSysDescriptor = newSocket.descriptor();
         BOOST_REQUIRE_LT(0, newSysDescriptor);
+        BOOST_REQUIRE(isCloseOnExec(newSysDescriptor));
         BOOST_REQUIRE(testSysDescriptor != newSysDescriptor);
         BOOST_REQUIRE(checkSocketOpen(newSysDescriptor));
         BOOST_REQUIRE(checkSocketOpen(testSysDescriptor));

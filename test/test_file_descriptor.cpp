@@ -21,6 +21,11 @@ static auto fileDescriptorOpen(const int fd) -> bool {
 }
 
 
+static auto isCloseOnExec(const int fd) -> bool {
+    const int flags = fcntl(fd, F_GETFD);
+    return flags >= 0 && (flags & FD_CLOEXEC) != 0;
+}
+
 BOOST_AUTO_TEST_CASE(testFileDescriptor) {
     // open a file to get a file descriptor to use in tests
     auto *testFileName = "testFile.txt";
@@ -43,6 +48,7 @@ BOOST_AUTO_TEST_CASE(testFileDescriptor) {
         BOOST_REQUIRE_EQUAL(cloneError, 0);
         newSysDescriptor = newSocket.descriptor();
         BOOST_REQUIRE_LT(0, newSysDescriptor);
+        BOOST_REQUIRE(isCloseOnExec(newSysDescriptor));
         BOOST_REQUIRE(sysDescriptor != newSysDescriptor);
         BOOST_REQUIRE(fileDescriptorOpen(newSysDescriptor));
         BOOST_REQUIRE(fileDescriptorOpen(sysDescriptor));

@@ -7,6 +7,7 @@
 // Implementation of FileDescriptor.
 
 #include <cerrno>
+#include <fcntl.h>
 #include "file_descriptor.hpp"
 #include <unistd.h>
 
@@ -31,7 +32,7 @@ auto oscpp::FileDescriptor::create(const int descriptor) noexcept -> FileDescrip
 
 [[maybe_unused]] [[nodiscard]] auto oscpp::FileDescriptor::clone() const noexcept -> std::pair<FileDescriptor, int> {
     int errorCode = 0;
-    const auto newSysDescriptor = dup(handle);
+    const auto newSysDescriptor = fcntl(handle, F_DUPFD_CLOEXEC, 0);
     if (newSysDescriptor < 0) {
         errorCode = errno;
     }

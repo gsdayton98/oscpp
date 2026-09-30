@@ -27,8 +27,10 @@ namespace oscpp {
 
         Socket &operator=(const Socket &) = delete;
 
+        /// Create a socket. The descriptor is close-on-exec.
         static auto create(int domain = PF_INET, int socketType = SOCK_STREAM, int protocol = 0) noexcept -> std::pair<Socket, int>;
 
+        /// Duplicate the socket descriptor. The duplicate is close-on-exec.
         [[maybe_unused]] [[nodiscard]] auto clone() const noexcept -> std::pair<Socket, int>;
 
         [[maybe_unused]] [[nodiscard]] int descriptor() const noexcept { return handle; }

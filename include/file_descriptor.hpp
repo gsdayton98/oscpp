@@ -58,7 +58,7 @@ namespace oscpp {
         FileDescriptor &operator=(FileDescriptor &&) = delete;
 
         /**
-         * Duplicate the existing FileDescriptor into a new FileDescriptor.
+         * Duplicate the existing FileDescriptor into a new FileDescriptor. The new descriptor is close-on-exec.
          * @return A new (FileDescriptor, error code) pair. Do not use the File Descriptor if error code is non-zero.
          */
         [[maybe_unused]] [[nodiscard]] auto clone() const noexcept -> std::pair<FileDescriptor, int>;
