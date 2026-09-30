@@ -9,13 +9,13 @@
 
 auto oscpp::Socket::create(const int domain, const int socketType, const int protocol) -> Socket {
     auto result = oscpp_exceptionless::Socket::create(domain, socketType, protocol);
-    if (!result) throw SysException(result.error().value());
+    if (!result) throw SysException(result.error());
     return Socket(std::move(*result));
 }
 
 
 [[maybe_unused]] auto oscpp::Socket::clone() const -> Socket {
     auto result = impl.clone();
-    if (!result) throw SysException(result.error().value());
+    if (!result) throw SysException(result.error());
     return Socket(std::move(*result));
 }

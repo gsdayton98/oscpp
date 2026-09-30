@@ -18,6 +18,6 @@ auto oscpp::FileDescriptor::create(const int descriptor) noexcept -> FileDescrip
 
 [[maybe_unused]] [[nodiscard]] auto oscpp::FileDescriptor::clone() const -> FileDescriptor {
     auto result = impl.clone();
-    if (!result) throw SysException(result.error().value());
+    if (!result) throw SysException(result.error());
     return FileDescriptor {std::move(*result)};
 }

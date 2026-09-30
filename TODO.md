@@ -29,9 +29,11 @@ Items are ordered by priority within each section. Nothing here has been fixed y
 - [ ] Finish the error-handling split:
   - [x] `oscpp_exceptionless` counterparts now exist for `File`, `DynamicLibrary` and `RandomDevice`, and the `oscpp`
     versions wrap them. Pure-computation modules (`trim`, `StopWatch`, `CircularBuffer`) need none.
-  - Make `SysException` derive from `std::system_error` so callers can inspect `code()`. That fixes
-    `DynamicLibrary` throwing plain `std::runtime_error`. `std::generic_category().message(errno)` would also
-    replace the `strerror_r` buffer code in `SysException::message`.
+  - [x] `SysException` now derives from `std::system_error` (callers can inspect `code()`), has an `error_code`
+    constructor, and uses `std::generic_category().message()` instead of `strerror_r`. This also removes the
+    `strerror_r` GNU/XSI portability item below.
+  - `oscpp::DynamicLibrary` still throws plain `std::runtime_error`, because `dlerror()` text has no errno to put in
+    a `std::error_code`. Decide between a custom `std::error_category` and leaving it.
   - `oscpp_exceptionless::DynamicLibrary` reports errors as the `dlerror()` string (`std::expected<T, std::string>`)
     since there is no errno to put in an `error_code`. Consider a custom `std::error_category` if callers need to
     branch on the failure.
@@ -148,8 +150,6 @@ Items are ordered by priority within each section. Nothing here has been fixed y
 
 Not verified, so not actionable yet. Re-check when a Linux clang environment is available.
 
-- [ ] `SysException::message` uses the XSI `strerror_r` (returns `int`). glibc with `_GNU_SOURCE` exposes the GNU
-  variant (returns `char*`), which would break the `switch`. Clang on Linux may hit this.
 - [ ] `dlopen(path, 0)`: glibc requires `RTLD_LAZY` or `RTLD_NOW` (covered by the flags item above).
 - [ ] `/dev/random` blocking behavior on older kernels.
 - [ ] Tests that hard-code macOS paths and error text.
