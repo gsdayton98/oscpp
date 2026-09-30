@@ -9,7 +9,7 @@ Items are ordered by priority within each section. Nothing here has been fixed y
 - [x] **`RandomDevice` doesn't model `UniformRandomBitGenerator`** (`include/random_device.hpp`). It has no
   `result_type`, so it can't be passed to `std::shuffle` or `std::uniform_int_distribution`. Add `using result_type = unsigned int;`.
   It also hard-codes `/dev/random`; let the caller pick the token, defaulting to `std::random_device{}`.
-- [ ] `File::map()` on an empty file fails, because `mmap` with length 0 gives `EINVAL`. Either handle that case
+- [x] `File::map()` on an empty file fails, because `mmap` with length 0 gives `EINVAL`. Either handle that case
   (return `{nullptr, 0}`) or document it. Also fix the `off_t` to `size_t` sign conversion (`src/file.cpp:21`).
 - [ ] `dup()` and `socket()` don't set close-on-exec. Use `fcntl(F_DUPFD_CLOEXEC)` in `FileDescriptor::clone` and
   `Socket::clone`, and set `FD_CLOEXEC` on new sockets.

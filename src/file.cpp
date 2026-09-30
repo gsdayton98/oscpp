@@ -16,15 +16,21 @@ std::pair<void*, size_t> oscpp::File::map() {
 
   if (mappedFile) {
     (void) munmap( mappedFile,  mappedLen);
-  }
-
-  mappedLen = stats.st_size;
-  mappedFile = mmap(nullptr, mappedLen, PROT_READ, MAP_FILE | MAP_PRIVATE, fd, 0L);
-  if (mappedFile == MAP_FAILED) {
     mappedFile = nullptr;
-    throw SysException{};
+    mappedLen = 0;
   }
 
+  // mmap() rejects a zero length with EINVAL, so an empty file maps to nothing.
+  const auto length = static_cast<size_t>(stats.st_size);
+  if (length == 0) {
+    return std::make_pair(nullptr, size_t{0});
+  }
+
+  void *const region = mmap(nullptr, length, PROT_READ, MAP_FILE | MAP_PRIVATE, fd, 0L);
+  if (region == MAP_FAILED) throw SysException{};
+
+  mappedFile = region;
+  mappedLen = length;
   return std::make_pair(mappedFile, mappedLen);
 }
 

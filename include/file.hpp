@@ -63,7 +63,7 @@ class __attribute__((visibility("default"))) File {
 
   /**
    * Memory-map the file for reading. If the file is already mapped, the previous mapping is
-   * released before creating the new one.
+   * released before creating the new one. An empty file maps to {nullptr, 0}.
    * @return Pointer to the mapped region and its length in bytes.
    * @throws oscpp::SysException if the file's status cannot be read or the mapping fails.
    */

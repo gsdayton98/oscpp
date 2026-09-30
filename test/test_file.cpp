@@ -4,6 +4,7 @@
 //!  Test File
 #define BOOST_BOOST_AUTO_TEST_MODULE Test File
 
+#include <cstdio>
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
@@ -13,6 +14,7 @@
 
 constexpr unsigned int NUMBER_POINTS = 1024u;
 constexpr auto testFileName = "testFile.dat";
+constexpr auto emptyFileName = "emptyFile.dat";
 
 struct TextFileFixture {
 
@@ -56,6 +58,17 @@ BOOST_AUTO_TEST_CASE(Test_map)
     BOOST_TEST_REQUIRE(static_cast<unsigned int *>(mappedFile)[0] == 0u);
     BOOST_TEST_REQUIRE(static_cast<unsigned int *>(mappedFile)[1] == 1u);
     BOOST_TEST_REQUIRE(static_cast<unsigned int *>(mappedFile)[NUMBER_POINTS - 1] == NUMBER_POINTS - 1u);
+}
+
+BOOST_AUTO_TEST_CASE(Test_map_empty_file)
+{
+    { std::ofstream empty(emptyFileName, std::ios::out | std::ios::trunc); }
+
+    oscpp::File file(emptyFileName);
+    auto [mappedFile, mappedLen] = file.map();
+    BOOST_TEST_REQUIRE(mappedFile == nullptr);
+    BOOST_TEST_REQUIRE(mappedLen == 0u);
+    std::remove(emptyFileName);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
