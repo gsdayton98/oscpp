@@ -44,4 +44,16 @@ BOOST_AUTO_TEST_CASE(testMove)
     BOOST_CHECK(fcntl(sysDescriptor, F_GETFD) < 0);
 }
 
+// The socket owns a FileDescriptor, which shares its descriptor and can be cloned independently.
+BOOST_AUTO_TEST_CASE(testFileDescriptorAccessor)
+{
+    auto created = oscpp_exceptionless::Socket::create(PF_LOCAL, SOCK_STREAM, 0);
+    BOOST_REQUIRE(created.has_value());
+    BOOST_CHECK_EQUAL(created->fileDescriptor().descriptor(), created->descriptor());
+
+    const auto duplicate = created->fileDescriptor().clone();
+    BOOST_REQUIRE(duplicate.has_value());
+    BOOST_CHECK(duplicate->descriptor() != created->descriptor());
+}
+
 BOOST_AUTO_TEST_SUITE_END()
