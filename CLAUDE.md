@@ -57,7 +57,7 @@ A new unit test file goes in the `oscpp_tests` source list in `test/CMakeLists.t
 
 ## Architecture Conventions
 
-- The throwing API lives in the `oscpp` namespace, one header/source pair per component under `include/oscpp/` and `src/oscpp/`. Include as `#include "oscpp/<component>.hpp"`.
+- The throwing API lives in the `oscpp` namespace, one header/source pair per component under `include/oscpp/` and `src/oscpp/`. Include as `#include "oscpp/<component>.hpp"`. `circular_buffer` is a header-only template with no source file.
 - Public classes/functions are annotated `__attribute__((visibility("default")))` since the library is built with `-fvisibility=hidden`; anything meant to be usable outside the shared library must carry this attribute.
 - Resource-owning types (`FileDescriptor`, `Socket`, `File`) follow a consistent RAII pattern: copy constructor/assignment deleted, move constructor provided, destructor releases the resource, and a `clone()`/`create()` static factory is used instead of a public copy path.
 - Error handling in `oscpp` is via `oscpp::SysException` (in `sysexception.hpp`), a `std::system_error` constructed from `errno` or a `std::error_code`, rather than return codes.

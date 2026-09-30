@@ -4,9 +4,6 @@
 
 #include "oscpp/circular_buffer.hpp"
 
-template
-class oscpp::CircularBuffer<uintptr_t>;
-
 BOOST_AUTO_TEST_SUITE(CircularBuffer)
 
 namespace {

@@ -59,15 +59,12 @@ Items are ordered by priority within each section. Nothing here has been fixed y
 - [x] `trim`: the docs and a comment say it trims NULs and whitespace from the right end, `isspace` now gets an
   `unsigned char` (it is undefined for negative `char` values; covered by a test), and `<cctype>` is not needed. A
   `std::string_view` overload was considered and not added, since `trim` modifies its argument in place.
-- [ ] `CircularBuffer`:
-  - The docs say "static array", but the storage is heap-allocated.
-  - Elements must be default-constructible, since `new T[]` is used.
-  - There's no move support and no `try_*`/timeout variants.
-  - `using std::unique_lock; using std::mutex;` at global scope in a public header leaks names, so remove them.
-  - Implementations in the header plus explicit instantiations in `.cpp`, with no `extern template`, is confusing.
-    Decide whether it's header-only (then drop the `.cpp`) or has a closed instantiation set (then add
-    `extern template`).
-  - Add `<cstddef>` and `<algorithm>` includes.
+- [x] `CircularBuffer` cleanup: it is now header-only (`src/oscpp/circular_buffer.cpp` and its explicit instantiations are
+  gone, so any `ElementType` works without a closed instantiation set), the leaked `using std::unique_lock; using std::mutex;`
+  declarations are removed, `<algorithm>`, `<cstddef>`, `<mutex>` and `<condition_variable>` are included, `size_t` is
+  `std::size_t`, and the docs describe the heap-allocated storage. The stress tests still pass under TSan.
+- [ ] `CircularBuffer` still has no move support and no timeout variants (`try_*_for`), and requires a
+  default-constructible, copy-assignable `ElementType` (now documented; `new T[]` is still used).
 - [x] `file.hpp` and `socket.hpp` include `<utility>` and `<cstddef>` where used. `<fcntl.h>` and `<sys/stat.h>` stay in `file.hpp`
   because the default arguments and `struct stat` need them.
 - [ ] `SysException` messages carry no context. Add an optional `what_arg` (e.g. `"open(/path): No such file"`), and use

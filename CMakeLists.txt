@@ -58,8 +58,7 @@ set(HEADERS include/oscpp/circular_buffer.hpp
         include/oscpp_exceptionless/random_device.hpp
         include/oscpp_exceptionless/socket.hpp)
 
-set(SOURCES src/oscpp/circular_buffer.cpp
-        src/oscpp/dynamiclibrary.cpp
+set(SOURCES src/oscpp/dynamiclibrary.cpp
         src/oscpp/file.cpp
         src/oscpp/file_descriptor.cpp
         src/oscpp/random_device.cpp

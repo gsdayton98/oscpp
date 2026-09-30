@@ -5,18 +5,17 @@
 #define OSCPP_CIRCULAR_BUFFER_HPP
 
 
-#include <mutex>
+#include <algorithm>
 #include <condition_variable>
-
-using std::unique_lock;
-using std::mutex;
-
+#include <cstddef>
+#include <mutex>
 
 /**
- * Circular Buffer, a double-ended queue that uses a static array and reuses
- * memory.
+ * Circular Buffer: a thread-safe, fixed-capacity FIFO queue that reuses its memory. Storage is a heap-allocated array
+ * whose size is rounded up to a power of two. put() and get() block while the buffer is full or empty; tryPut() and
+ * tryGet() don't.
  *
- * Instantiations provided for some common types such as int, unsigned int, char, and others.
+ * This is a header-only template. ElementType must be default-constructible and copy-assignable.
  *
  * @author Glen Dayton
  */
@@ -27,14 +26,14 @@ namespace oscpp {
         /**
          * Minimum size of the buffer must include space for the wrap-around.
          */
-        static constexpr size_t MinSize = 4u;
+        static constexpr std::size_t MinSize = 4u;
         /**
          * Create an empty circular buffer at least 'nSize' big.
          * The actual size of the buffer will be rounded up to a power of 2.
          *
          * @param nSize Minimum size of the buffer
          */
-        explicit CircularBuffer(size_t nSize);
+        explicit CircularBuffer(std::size_t nSize);
 
         /// Deallocate the buffer
         ~CircularBuffer();
@@ -44,7 +43,7 @@ namespace oscpp {
         CircularBuffer &operator=(const CircularBuffer &) = delete;
 
         /// Return the capacity of the buffer
-        [[nodiscard]] auto capacity() const -> size_t;
+        [[nodiscard]] auto capacity() const -> std::size_t;
 
         /// Predicate for testing whether buffer is empty
         [[nodiscard]] auto empty() const -> bool;
@@ -59,7 +58,7 @@ namespace oscpp {
         auto get() -> ElementType;
 
         /// returns the number of elements in the buffer
-        [[nodiscard]] auto size() const -> size_t;
+        [[nodiscard]] auto size() const -> std::size_t;
 
         /**
          * Try getting a value from the buffer
@@ -82,11 +81,11 @@ namespace oscpp {
     protected:
         // Utility for rounding up the size of the buffer to a power of 2 to
         // simplify modulo operation
-        static auto roundup(size_t n) -> size_t;
+        static auto roundup(std::size_t n) -> std::size_t;
 
         // Utility for getting the index of the next element in the buffer,
         // modulo the size of the buffer.
-        [[nodiscard]] auto next(size_t i) const -> size_t;
+        [[nodiscard]] auto next(std::size_t i) const -> std::size_t;
 
     private:
         // Non-locking versions of empty()/full() for use by callers that
@@ -95,11 +94,11 @@ namespace oscpp {
         [[nodiscard]] auto emptyLocked() const -> bool;
         [[nodiscard]] auto fullLocked() const -> bool;
 
-        const size_t bufferCapacity;
-        const size_t bufferCapacityMinus1;
+        const std::size_t bufferCapacity;
+        const std::size_t bufferCapacityMinus1;
         ElementType *const buffer;
-        size_t head;
-        size_t tail;
+        std::size_t head;
+        std::size_t tail;
 
         // Protects head and tail, and is held while waiting on notEmpty/notFull.
         // mutable so const methods (empty(), full(), size()) can lock it.
@@ -112,7 +111,7 @@ namespace oscpp {
 namespace oscpp {
 
     template<typename ElementType>
-    CircularBuffer<ElementType>::CircularBuffer(const size_t nSize)
+    CircularBuffer<ElementType>::CircularBuffer(const std::size_t nSize)
         : bufferCapacity{roundup(nSize)},
           bufferCapacityMinus1{bufferCapacity - 1UL},
           buffer{new ElementType[bufferCapacity]},
@@ -130,7 +129,7 @@ namespace oscpp {
     /// Returned capacity is one less that the actual space available because one space separates the write and
     /// read pointers.
     template<typename ElementType>
-    [[nodiscard]] auto CircularBuffer<ElementType>::capacity() const -> size_t { return bufferCapacity - 1; }
+    [[nodiscard]] auto CircularBuffer<ElementType>::capacity() const -> std::size_t { return bufferCapacity - 1; }
 
     /// Predicate for testing whether buffer is empty
     template<typename ElementType>
@@ -171,7 +170,7 @@ namespace oscpp {
 
     /// returns the number of elements in the buffer
     template<typename ElementType>
-    [[nodiscard]] auto CircularBuffer<ElementType>::size() const -> size_t {
+    [[nodiscard]] auto CircularBuffer<ElementType>::size() const -> std::size_t {
         std::unique_lock lock(guard);
         return ((head + bufferCapacity) - tail) & bufferCapacityMinus1;
     }
@@ -222,7 +221,7 @@ namespace oscpp {
      */
     template<typename ElementType>
     auto CircularBuffer<ElementType>::put(ElementType value) -> void {
-        unique_lock lock(guard);
+        std::unique_lock lock(guard);
         notFull.wait(lock, [this]{ return ! fullLocked();});
         buffer[head] = value;
         head = next(head);
@@ -233,8 +232,8 @@ namespace oscpp {
     // Utility for rounding up the size of the buffer to a power of 2 to
     // simplify modulo operation
     template<typename ElementType>
-    auto CircularBuffer<ElementType>::roundup(const size_t n) -> size_t {
-        size_t k = 1;
+    auto CircularBuffer<ElementType>::roundup(const std::size_t n) -> std::size_t {
+        std::size_t k = 1;
         auto nn = std::max(CircularBuffer::MinSize, n);
         while (k < nn) {
             k <<= 1;
@@ -245,7 +244,7 @@ namespace oscpp {
     // Utility for getting the index of the next element in the buffer,
     // modulo the size of the buffer.
     template<typename ElementType>
-    [[nodiscard]] auto CircularBuffer<ElementType>::next(const size_t i) const -> size_t {
+    [[nodiscard]] auto CircularBuffer<ElementType>::next(const std::size_t i) const -> std::size_t {
         return (i + 1) & bufferCapacityMinus1;
     }
 }
