@@ -89,7 +89,8 @@ Items are ordered by priority within each section. Nothing here has been fixed y
 - [x] Warnings interface target `oscpp_warnings` (`-Wall -Wextra -Wpedantic -Wconversion -Wshadow`) is applied to the
   library and tests, but not propagated to consumers. `-DOSCPP_WERROR=ON` makes warnings errors. The build is currently
   warning-free, including the sanitizer build. Boost headers are passed as `-isystem` so only oscpp's code is checked.
-- [ ] Add `CMakePresets.json` (debug, release, asan) with binary dirs outside the source tree.
+- [x] `CMakePresets.json` with `debug`, `release`, `asan` and `tsan` configure, build and test presets (binary dirs in
+  `../build/oscpp/<preset>`, warnings as errors), plus `debug-unit` and `tsan-stress` test presets.
 - [x] Deleted `sampleDynamic.cpp` (never wired up) and `mock_strerror.cpp` (unused; `SysException::message` no longer
   calls `strerror_r`). The CLAUDE.md instruction to keep `mock_strerror.cpp` was removed at the same time.
 

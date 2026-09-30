@@ -51,7 +51,9 @@ Warnings: oscpp's own code builds with `-Wall -Wextra -Wpedantic -Wconversion -W
 
 Formatting: sources use 2-space indentation, enforced by `.clang-format` (and `.editorconfig`). Run `cmake --build ../build/oscpp/claude --target format` to reformat and `--target check-format` to verify; both need `clang-format` (`pip install clang-format` or `pipx install clang-format` work where Homebrew has no binary, for example on Intel macOS). Every file starts with the same two lines: the Emacs modeline `// -*- mode:C++; c-basic-offset:2; indent-tabs-mode:nil -*-` and `// Copyright 2026 Glen S. Dayton. Rights reserved according to terms of included license.`
 
-Sanitizers: configure a separate build directory with `-DOSCPP_SANITIZE=address\;undefined` or `-DOSCPP_SANITIZE=thread` (for example `../build/oscpp/claude-asan` and `../build/oscpp/claude-tsan`). `thread` can't be combined with `address`. Run the stress tests under `thread`.
+Presets: `CMakePresets.json` defines `debug`, `release`, `asan` (address and undefined sanitizers) and `tsan` (thread sanitizer) for configure, build and test, each building in `../build/oscpp/<preset>` with warnings as errors. For example `cmake --preset asan && cmake --build --preset asan && ctest --preset asan`. The extra test presets `debug-unit` (skips the stress tests) and `tsan-stress` (only the stress tests, under ThreadSanitizer) select subsets. Personal overrides go in `CMakeUserPresets.json`, which is git-ignored.
+
+Sanitizers without presets: configure a separate build directory with `-DOSCPP_SANITIZE=address\;undefined` or `-DOSCPP_SANITIZE=thread` (for example `../build/oscpp/claude-asan` and `../build/oscpp/claude-tsan`). `thread` can't be combined with `address`. Run the stress tests under `thread`.
 
 Multithreaded stress tests are not unit tests. They live in their own executable (`test/stress_circular_buffer.cpp` -> `stress_circular_buffer`) and carry the CTest label `stress`. Run them alone with `ctest --test-dir ../build/oscpp/claude -L stress`.
 

@@ -71,6 +71,17 @@ ctest --test-dir ../build/oscpp
 | `OSCPP_SANITIZE`        | Sanitizers, for example `-DOSCPP_SANITIZE=address\;undefined` or `-DOSCPP_SANITIZE=thread`. |
 | `OSCPP_WERROR`          | Treat warnings in oscpp's own code as errors.                                             |
 
+CMake presets cover the common configurations (`debug`, `release`, `asan`, `tsan`), each building in
+`../build/oscpp/<preset>` with warnings as errors:
+
+```sh
+cmake --preset asan
+cmake --build --preset asan
+ctest --preset asan
+```
+
+The `debug-unit` test preset skips the stress tests, and `tsan-stress` runs only them under ThreadSanitizer.
+
 The multithreaded stress tests carry the CTest label `stress`: `ctest -L stress` runs only them, `ctest -LE stress`
 skips them.
 
