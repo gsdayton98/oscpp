@@ -92,8 +92,9 @@ Items are ordered by priority within each section. Nothing here has been fixed y
 - [ ] Register tests via `boost_tests` discovery (or at least one `add_test` per suite) so `ctest -R` can select
   individual suites. CLAUDE.md currently describes the old one-executable-per-file layout.
 - [x] Sanitizer option: `-DOSCPP_SANITIZE=address\;undefined` or `-DOSCPP_SANITIZE=thread` (see `CMakeLists.txt`).
-- [ ] Add a warnings interface target (`-Wall -Wextra -Wpedantic -Wconversion -Wshadow`). Fix the remaining sign-compare warnings in
-  `test_circular_buffer.cpp:144,345` and `test_system_exception.cpp:19`.
+- [x] Warnings interface target `oscpp_warnings` (`-Wall -Wextra -Wpedantic -Wconversion -Wshadow`) is applied to the
+  library and tests, but not propagated to consumers. `-DOSCPP_WERROR=ON` makes warnings errors. The build is currently
+  warning-free, including the sanitizer build. Boost headers are passed as `-isystem` so only oscpp's code is checked.
 - [ ] Add `CMakePresets.json` (debug, release, asan) with binary dirs outside the source tree.
 - [ ] `sampleDynamic.cpp` isn't referenced by any CMake target. Wire it up (used by the dynamic-library test) or
   delete it. `mock_strerror.cpp` is unused but must be **kept**, per CLAUDE.md.

@@ -35,6 +35,14 @@ if(OSCPP_SANITIZE)
     add_link_options(-fsanitize=${oscpp_sanitize_flags})
 endif()
 
+# Warnings used to build oscpp's own sources and tests. Not propagated to consumers.
+option(OSCPP_WERROR "Treat warnings in oscpp's own code as errors" OFF)
+add_library(oscpp_warnings INTERFACE)
+target_compile_options(oscpp_warnings INTERFACE -Wall -Wextra -Wpedantic -Wconversion -Wshadow)
+if(OSCPP_WERROR)
+    target_compile_options(oscpp_warnings INTERFACE -Werror)
+endif()
+
 set(HEADERS include/oscpp/circular_buffer.hpp
         include/oscpp/dynamiclibrary.hpp
         include/oscpp/file.hpp
@@ -67,6 +75,7 @@ set(SOURCES src/oscpp/circular_buffer.cpp
 
 add_library(oscpp SHARED ${HEADERS} ${SOURCES})
 add_library(oscpp::oscpp ALIAS oscpp)
+target_link_libraries(oscpp PRIVATE $<BUILD_INTERFACE:oscpp_warnings>)
 target_include_directories(oscpp
         PUBLIC
             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

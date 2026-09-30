@@ -44,7 +44,7 @@ BOOST_AUTO_TEST_CASE(test_trim_empty) {
 }
 
 BOOST_AUTO_TEST_CASE(test_trim_all_whitespace) {
-  for (const string original : {string{" "}, string{"   "}, string{"\t\n\r \v\f"}, string{"\0", 1}, string{" \t\0 \n", 5}}) {
+  for (const string &original : {string{" "}, string{"   "}, string{"\t\n\r \v\f"}, string{"\0", 1}, string{" \t\0 \n", 5}}) {
     string s = original;
     oscpp::trim(s);
     BOOST_CHECK_MESSAGE(s.empty(), "not empty after trimming a string of length " << original.size());

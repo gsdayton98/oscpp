@@ -96,7 +96,7 @@ BOOST_AUTO_TEST_CASE(Full)
     BOOST_CHECK(buffer.empty());
     BOOST_CHECK(!buffer.full());
 
-    for (auto n=0; n < TESTSIZE-1; ++n) {
+    for (int n = 0; n < static_cast<int>(TESTSIZE) - 1; ++n) {
         BOOST_CHECK(buffer.tryPut(n));
     }
     BOOST_CHECK(buffer.full());
@@ -188,7 +188,7 @@ BOOST_AUTO_TEST_CASE(Noninstantiated)
     };
     oscpp::CircularBuffer<Example> buffer{8};
 
-    for (int n=0; n < TESTSIZE - 1; ++n) {
+    for (int n = 0; n < static_cast<int>(TESTSIZE) - 1; ++n) {
         Example s = {.x= n, .y= 2.0f*n};
         buffer.put(s);
     }

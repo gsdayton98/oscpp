@@ -16,7 +16,7 @@ BOOST_AUTO_TEST_CASE(test_system_exception) {
 
   constexpr std::size_t N_TEST_CASES = sizeof(expected) / sizeof(expected[0]);
 
-  for (int err = 0; err < N_TEST_CASES; ++err) {
+  for (int err = 0; err < static_cast<int>(N_TEST_CASES); ++err) {
     oscpp::SysException ex(err);
     BOOST_CHECK_EQUAL(string(expected[err]), string(ex.what()));
   }
