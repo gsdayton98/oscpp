@@ -27,7 +27,10 @@ endforeach()
 target_compile_options(oscpp_tests PRIVATE ${OSCPP_BOOST_ISYSTEM})
 target_compile_definitions(oscpp_tests PRIVATE BOOST_TEST_DYN_LINK)
 target_link_libraries(oscpp_tests PRIVATE oscpp oscpp_warnings Boost::unit_test_framework)
-add_test(NAME boost_tests COMMAND oscpp_tests)
+
+# Each test case becomes its own CTest test named <suite>/<case>, so `ctest -R File` runs just the File suite.
+include(${PROJECT_SOURCE_DIR}/cmake/OscppBoostTestDiscovery.cmake)
+oscpp_boost_test_discover_tests(oscpp_tests)
 
 # Multithreaded stress tests are too slow to be unit tests. Run them on their own with `ctest -L stress`, or skip
 # them with `ctest -LE stress`.

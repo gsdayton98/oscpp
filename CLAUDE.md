@@ -38,13 +38,14 @@ cmake --install ../build/oscpp/claude
 ## Test
 
 Tests use Boost.Test, registered with CTest. All unit tests build into a single executable, `oscpp_tests`
-(driver in `test/oscpp_tests.cpp`), run by CTest as `boost_tests`. CTest therefore can't select individual suites; run
-the binary directly for that.
+(driver in `test/oscpp_tests.cpp`). CTest discovers every test case in it after the build (`cmake/OscppBoostTestDiscovery.cmake`, which lists the executable's contents), so each case is its own CTest test named `<suite>/<case>` and `ctest -R` can select suites or single cases. New test cases need no CMake change.
 
 ```sh
 ctest --test-dir ../build/oscpp/claude                                # run all tests
 ctest --test-dir ../build/oscpp/claude -LE stress                     # unit tests only
-../build/oscpp/claude/test/oscpp_tests --run_test=File                # one suite (or File/Test_map for one case)
+ctest --test-dir ../build/oscpp/claude -R '^File/'                    # one suite
+ctest --test-dir ../build/oscpp/claude -R 'File/Test_map$'            # one case
+../build/oscpp/claude/test/oscpp_tests --run_test=File/Test_map       # or run the binary directly
 ```
 
 Warnings: oscpp's own code builds with `-Wall -Wextra -Wpedantic -Wconversion -Wshadow` and must stay warning-free. Configure with `-DOSCPP_WERROR=ON` to make warnings errors.
@@ -57,7 +58,7 @@ Sanitizers without presets: configure a separate build directory with `-DOSCPP_S
 
 Multithreaded stress tests are not unit tests. They live in their own executable (`test/stress_circular_buffer.cpp` -> `stress_circular_buffer`) and carry the CTest label `stress`. Run them alone with `ctest --test-dir ../build/oscpp/claude -L stress`.
 
-A new unit test file goes in the `oscpp_tests` source list in `test/CMakeLists.txt`. A new stress test needs its own `add_executable`/`target_link_libraries`/`add_test` block there, with the `stress` label.
+A new unit test file goes in the `oscpp_tests` source list in `test/CMakeLists.txt` (re-run the build so discovery sees new cases). A new stress test needs its own `add_executable`/`target_link_libraries`/`add_test` block there, with the `stress` label.
 
 ## Architecture Conventions
 

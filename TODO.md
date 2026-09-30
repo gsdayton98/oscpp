@@ -83,8 +83,8 @@ Items are ordered by priority within each section. Nothing here has been fixed y
 - [x] The export file is `oscpp-targets.cmake`, and `oscpp::oscpp` is an `ALIAS` so in-tree and installed usage match. Verified
   with an install plus a `find_package(oscpp)` consumer project.
 - [x] Removed the nested `project(oscpp_test)` and the redundant `../include` directory from `test/CMakeLists.txt`.
-- [ ] Register tests via `boost_tests` discovery (or at least one `add_test` per suite) so `ctest -R` can select
-  individual suites. CLAUDE.md currently describes the old one-executable-per-file layout.
+- [x] Tests are registered by discovery (`cmake/OscppBoostTestDiscovery.cmake`): each Boost.Test case is its own CTest test named
+  `<suite>/<case>`, so `ctest -R` selects suites and single cases, and new cases need no CMake change.
 - [x] Sanitizer option: `-DOSCPP_SANITIZE=address\;undefined` or `-DOSCPP_SANITIZE=thread` (see `CMakeLists.txt`).
 - [x] Warnings interface target `oscpp_warnings` (`-Wall -Wextra -Wpedantic -Wconversion -Wshadow`) is applied to the
   library and tests, but not propagated to consumers. `-DOSCPP_WERROR=ON` makes warnings errors. The build is currently

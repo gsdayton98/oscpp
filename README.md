@@ -80,7 +80,8 @@ cmake --build --preset asan
 ctest --preset asan
 ```
 
-The `debug-unit` test preset skips the stress tests, and `tsan-stress` runs only them under ThreadSanitizer.
+`ctest -R` selects tests by name: every Boost.Test case is its own CTest test named `<suite>/<case>`, for example
+`ctest -R ^File/` or `ctest -R File/Test_map`. The `debug-unit` test preset skips the stress tests, and `tsan-stress` runs only them under ThreadSanitizer.
 
 The multithreaded stress tests carry the CTest label `stress`: `ctest -L stress` runs only them, `ctest -LE stress`
 skips them.
