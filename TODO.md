@@ -55,8 +55,8 @@ Items are ordered by priority within each section. Nothing here has been fixed y
   Not added: `valid()`/`release()` on `DynamicLibrary`, and `const` versions of `read`/`write`.
 - [x] **`[[maybe_unused]]` was applied to public classes and methods** (`DynamicLibrary`, `FileDescriptor`, `Socket`,
   `trim`). It's meaningless there and hides real dead-code warnings. Removed.
-- [ ] **Replace the repeated `__attribute__((visibility("default")))`** with an `OSCPP_API` macro in an
-  `export.hpp`. Then `#include`s no longer depend on compiler-specific syntax, and MSVC becomes possible later.
+- [x] `OSCPP_API` macro in `include/oscpp_export.hpp` replaces the repeated `__attribute__((visibility("default")))`. On Windows it
+  expands to `dllexport`/`dllimport` (`OSCPP_EXPORTS` is defined when building the library), which is untested.
 - [x] `trim`: the docs and a comment say it trims NULs and whitespace from the right end, `isspace` now gets an
   `unsigned char` (it is undefined for negative `char` values; covered by a test), and `<cctype>` is not needed. A
   `std::string_view` overload was considered and not added, since `trim` modifies its argument in place.

@@ -11,8 +11,9 @@
 #include <cerrno>
 #include <string>
 #include <system_error>
+#include "oscpp_export.hpp"
 namespace oscpp {
-class __attribute__((visibility("default"))) SysException : public std::system_error {
+class OSCPP_API SysException : public std::system_error {
  public:
   /// Construct from an errno value (default: the current errno) in the generic category.
   explicit SysException(const int errorNumber = errno)

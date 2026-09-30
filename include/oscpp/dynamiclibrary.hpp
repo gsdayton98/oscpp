@@ -5,12 +5,13 @@
 #define OSCPP_DYNAMIC_LIBRARY_HPP
 #include <utility>
 #include "oscpp_exceptionless/dynamiclibrary.hpp"
+#include "oscpp_export.hpp"
 
 namespace oscpp {
 /**
  *  Get information about a dynamic library. See oscpp_exceptionless::DynamicLibrary for a non-throwing version.
  */
-class __attribute__((visibility("default"))) DynamicLibrary {
+class OSCPP_API DynamicLibrary {
  public:
   /**
    * Open the current application image.

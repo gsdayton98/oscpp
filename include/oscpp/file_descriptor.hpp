@@ -12,10 +12,11 @@
 #include <cstddef>
 #include <utility>
 #include "oscpp_exceptionless/file_descriptor.hpp"
+#include "oscpp_export.hpp"
 
 namespace oscpp {
 
-class __attribute__((visibility("default"))) FileDescriptor {
+class OSCPP_API FileDescriptor {
   /**
    * Implementation-dependent file handle or descriptor.
    */

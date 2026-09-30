@@ -8,9 +8,10 @@
 #ifndef OSCPP_STOPWATCH_HPP
 #define OSCPP_STOPWATCH_HPP
 #include <chrono>
+#include "oscpp_export.hpp"
 
 namespace oscpp {
-class __attribute__((visibility("default"))) StopWatch {
+class OSCPP_API StopWatch {
   std::chrono::steady_clock::time_point start;
 
  public:

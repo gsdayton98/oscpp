@@ -11,9 +11,10 @@
 #include <sys/socket.h>
 #include <utility>
 #include "oscpp_exceptionless/socket.hpp"
+#include "oscpp_export.hpp"
 
 namespace oscpp {
-class __attribute__((visibility("default"))) Socket {
+class OSCPP_API Socket {
   oscpp_exceptionless::Socket impl;
 
  private:

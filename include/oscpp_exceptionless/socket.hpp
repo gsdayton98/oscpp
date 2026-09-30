@@ -13,10 +13,11 @@
 #include <system_error>
 #include <utility>
 #include "oscpp_exceptionless/file_descriptor.hpp"
+#include "oscpp_export.hpp"
 
 namespace oscpp_exceptionless {
 
-class __attribute__((visibility("default"))) Socket {
+class OSCPP_API Socket {
   FileDescriptor fd;
 
   explicit Socket(FileDescriptor &&descriptor) noexcept : fd{std::move(descriptor)} {}

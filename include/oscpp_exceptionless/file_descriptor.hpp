@@ -9,10 +9,11 @@
 #include <cstddef>
 #include <expected>
 #include <system_error>
+#include "oscpp_export.hpp"
 
 namespace oscpp_exceptionless {
 
-class __attribute__((visibility("default"))) FileDescriptor {
+class OSCPP_API FileDescriptor {
   int handle;
 
   explicit FileDescriptor(const int fileDescriptor) noexcept : handle{fileDescriptor} {}

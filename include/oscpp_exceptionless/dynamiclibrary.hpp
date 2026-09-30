@@ -13,11 +13,12 @@
 #include <cstddef>
 #include <expected>
 #include <type_traits>
+#include "oscpp_export.hpp"
 
 namespace oscpp_exceptionless {
 
 /// A dlerror() message: fixed-size, trivially copyable, and never allocates. Text longer than the buffer is truncated.
-struct __attribute__((visibility("default"))) DynamicLibraryError {
+struct OSCPP_API DynamicLibraryError {
   static constexpr std::size_t Capacity = 256;
 
   char message[Capacity];
@@ -35,7 +36,7 @@ struct __attribute__((visibility("default"))) DynamicLibraryError {
 
 static_assert(std::is_trivially_copyable_v<DynamicLibraryError>);
 
-class __attribute__((visibility("default"))) DynamicLibrary {
+class OSCPP_API DynamicLibrary {
  public:
   /// Flags passed to dlopen() unless the caller chooses others.
   static constexpr int DefaultFlags = RTLD_NOW | RTLD_LOCAL;

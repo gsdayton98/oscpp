@@ -15,6 +15,7 @@
 #include <utility>
 #include "oscpp/sysexception.hpp"
 #include "oscpp_exceptionless/file.hpp"
+#include "oscpp_export.hpp"
 
 namespace oscpp {
 
@@ -23,7 +24,7 @@ namespace oscpp {
  * Quite specifically, I don't provide a conversion constructor from a file descriptor because  a file descriptor is a
  * reference to a resource I don't own.
  */
-class __attribute__((visibility("default"))) File {
+class OSCPP_API File {
  public:
   /**
    * Open the file at the given path.

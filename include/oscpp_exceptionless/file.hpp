@@ -13,10 +13,11 @@
 #include <sys/stat.h>
 #include <system_error>
 #include <utility>
+#include "oscpp_export.hpp"
 
 namespace oscpp_exceptionless {
 
-class __attribute__((visibility("default"))) File {
+class OSCPP_API File {
  public:
   /**
    * Open the file at the given path.

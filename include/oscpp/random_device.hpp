@@ -15,12 +15,13 @@
 #include <string>
 #include <system_error>
 #include "oscpp_exceptionless/random_device.hpp"
+#include "oscpp_export.hpp"
 namespace oscpp {
 /**
  * Satisfies std::uniform_random_bit_generator, so it can be used with the standard distributions and
  * std::shuffle. See oscpp_exceptionless::RandomDevice for a non-throwing version.
  */
-class __attribute__((visibility("default"))) RandomDevice {
+class OSCPP_API RandomDevice {
   oscpp_exceptionless::RandomDevice impl;
 
  public:

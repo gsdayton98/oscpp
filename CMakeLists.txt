@@ -43,7 +43,8 @@ if(OSCPP_WERROR)
     target_compile_options(oscpp_warnings INTERFACE -Werror)
 endif()
 
-set(HEADERS include/oscpp/circular_buffer.hpp
+set(HEADERS include/oscpp_export.hpp
+        include/oscpp/circular_buffer.hpp
         include/oscpp/dynamiclibrary.hpp
         include/oscpp/file.hpp
         include/oscpp/file_descriptor.hpp
@@ -82,8 +83,9 @@ target_include_directories(oscpp
 
 # Consumers inherit the C++23 requirement.
 target_compile_features(oscpp PUBLIC cxx_std_23)
-# Everything is hidden unless marked __attribute__((visibility("default"))).
+# Everything is hidden unless marked OSCPP_API (include/oscpp_export.hpp).
 set_target_properties(oscpp PROPERTIES CXX_VISIBILITY_PRESET hidden VISIBILITY_INLINES_HIDDEN ON)
+target_compile_definitions(oscpp PRIVATE OSCPP_EXPORTS)
 set_target_properties(oscpp PROPERTIES VERSION ${PROJECT_VERSION})
 set_target_properties(oscpp PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR})
 
@@ -92,6 +94,7 @@ install(TARGETS ${PROJECT_NAME} EXPORT oscpp-targets
         LIBRARY  DESTINATION "${CMAKE_INSTALL_LIBDIR}"
         RUNTIME  DESTINATION "${CMAKE_INSTALL_BINDIR}")
 # Preserve the oscpp/ and oscpp_exceptionless/ header directories.
+install(FILES include/oscpp_export.hpp DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
 install(DIRECTORY include/oscpp include/oscpp_exceptionless DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}" FILES_MATCHING PATTERN "*.hpp")
 install(EXPORT oscpp-targets NAMESPACE oscpp:: DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/oscpp")
 export(TARGETS ${PROJECT_NAME} NAMESPACE oscpp:: FILE oscpp-targets.cmake)

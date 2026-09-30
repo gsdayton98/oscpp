@@ -4,6 +4,7 @@
 #ifndef OSCPP_TRIM_HPP
 #define OSCPP_TRIM_HPP
 #include <string>
+#include "oscpp_export.hpp"
 
 namespace oscpp {
 
@@ -12,6 +13,6 @@ namespace oscpp {
  *
  * @param s      String to trim.
  */
-__attribute__((visibility("default"))) void trim(std::string &s);
+OSCPP_API void trim(std::string &s);
 } // namespace oscpp
 #endif // OSCPP_TRIM_HPP

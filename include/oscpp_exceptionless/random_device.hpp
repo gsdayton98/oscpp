@@ -11,10 +11,11 @@
 #include <memory>
 #include <random>
 #include <system_error>
+#include "oscpp_export.hpp"
 
 namespace oscpp_exceptionless {
 
-class __attribute__((visibility("default"))) RandomDevice {
+class OSCPP_API RandomDevice {
  public:
   using result_type = std::random_device::result_type;
 
