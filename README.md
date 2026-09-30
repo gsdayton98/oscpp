@@ -86,6 +86,11 @@ ctest --preset asan
 The multithreaded stress tests carry the CTest label `stress`: `ctest -L stress` runs only them, `ctest -LE stress`
 skips them.
 
+## Continuous integration
+
+GitHub Actions builds and tests the `debug`, `release`, `asan` and `tsan` presets on macOS, checks that the installed
+package works from another CMake project (`test/package_consumer`), and checks formatting with `clang-format`.
+
 ## Installing
 
 The install prefix defaults to `$HOME` when you don't choose one, so a test install needs no privileges. Pass

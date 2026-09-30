@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  # Build and test with the CMake presets: warnings are errors, and asan and tsan run under their sanitizers.
+  build:
+    name: ${{ matrix.preset }}
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        preset: [debug, release, asan, tsan]
+    env:
+      # Homebrew's prefix, so find_package(Boost) finds it.
+      CMAKE_PREFIX_PATH: /opt/homebrew
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Boost
+        run: brew install boost
+      - name: Configure
+        run: cmake --preset ${{ matrix.preset }}
+      - name: Build
+        run: cmake --build --preset ${{ matrix.preset }}
+      - name: Test
+        run: ctest --preset ${{ matrix.preset }}
+
+  # The installed package works from another CMake project.
+  package:
+    name: install and find_package
+    runs-on: macos-latest
+    env:
+      CMAKE_PREFIX_PATH: /opt/homebrew
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Boost
+        run: brew install boost
+      - name: Build and install oscpp
+        run: |
+          cmake --preset release
+          cmake --build --preset release
+          cmake --install ../build/oscpp/release --prefix "$RUNNER_TEMP/oscpp-install"
+      - name: Build the consumer against the installed package
+        run: |
+          cmake -S test/package_consumer -B "$RUNNER_TEMP/consumer" -DCMAKE_PREFIX_PATH="$RUNNER_TEMP/oscpp-install"
+          cmake --build "$RUNNER_TEMP/consumer"
+      - name: Run the consumer
+        run: DYLD_LIBRARY_PATH="$RUNNER_TEMP/oscpp-install/lib" "$RUNNER_TEMP/consumer/package_consumer"
+
+  # Formatting needs only clang-format, not a build. The version is pinned because formatting differs between versions.
+  format:
+    name: check-format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install clang-format
+        run: pip install clang-format==23.1.1
+      - name: Check formatting
+        run: git ls-files 'include/*.hpp' 'src/*.cpp' 'test/*.hpp' 'test/*.cpp' | xargs clang-format --dry-run -Werror

@@ -54,6 +54,8 @@ Formatting: sources use 2-space indentation, enforced by `.clang-format` (and `.
 
 Presets: `CMakePresets.json` defines `debug`, `release`, `asan` (address and undefined sanitizers) and `tsan` (thread sanitizer) for configure, build and test, each building in `../build/oscpp/<preset>` with warnings as errors. For example `cmake --preset asan && cmake --build --preset asan && ctest --preset asan`. The extra test presets `debug-unit` (skips the stress tests) and `tsan-stress` (only the stress tests, under ThreadSanitizer) select subsets. Personal overrides go in `CMakeUserPresets.json`, which is git-ignored.
 
+CI: `.github/workflows/ci.yml` runs on pushes to `main` and on pull requests. It builds and tests the `debug`, `release`, `asan` and `tsan` presets on macOS, installs oscpp and builds `test/package_consumer` against the installed package with `find_package(oscpp)`, and checks formatting on Linux with `clang-format==23.1.1` (pinned, because formatting differs between versions). Keep those steps runnable locally with the same commands.
+
 Sanitizers without presets: configure a separate build directory with `-DOSCPP_SANITIZE=address\;undefined` or `-DOSCPP_SANITIZE=thread` (for example `../build/oscpp/claude-asan` and `../build/oscpp/claude-tsan`). `thread` can't be combined with `address`. Run the stress tests under `thread`.
 
 Multithreaded stress tests are not unit tests. They live in their own executable (`test/stress_circular_buffer.cpp` -> `stress_circular_buffer`) and carry the CTest label `stress`. Run them alone with `ctest --test-dir ../build/oscpp/claude -L stress`.

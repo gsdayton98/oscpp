@@ -106,7 +106,10 @@ Items are ordered by priority within each section. Nothing here has been fixed y
   `/usr/lib/libc++.1.dylib`. Fine while macOS-only; revisit when Linux returns.
 - [x] `test_random_device` no longer asserts `entropy() > 0`; it reports it, and the generator use with the standard
   distributions is covered by `test_random_device_as_generator`.
-- [ ] Add CI (GitHub Actions on macOS with clang, ASan/UBSan job, TSan job for `CircularBuffer`).
+- [x] CI (`.github/workflows/ci.yml`): macOS jobs for the `debug`, `release`, `asan` and `tsan` presets (warnings as errors), an
+  install plus `find_package` consumer check (`test/package_consumer`), and a Linux `check-format` job with clang-format pinned.
+  The workflow has not run on GitHub yet; the same commands were run locally. Still to watch: newer runner compilers may
+  add warnings that `-Werror` turns into failures.
 
 ## P4: Docs and hygiene
 
