@@ -1,0 +1,35 @@
+// -*- mode:C++; c-basic-offset:2; indent-tabs-mode:nil -*-
+// Copyright 2026 Glen S. Dayton. Rights reserved according to terms of included license.
+//
+// StopWatch class
+//
+// Simple utility for timing sections of code.
+
+#ifndef OSCPP_STOPWATCH_HPP
+#define OSCPP_STOPWATCH_HPP
+#include <chrono>
+#include "oscpp_export.hpp"
+
+namespace oscpp {
+class OSCPP_API StopWatch {
+  std::chrono::steady_clock::time_point start;
+
+ public:
+  /**
+   * @brief Construct a new StopWatch object and start it.
+   */
+  StopWatch() : start{std::chrono::steady_clock::now()} {}
+
+  /**
+   * @brief Reset the stopwatch to the current time.
+   */
+  auto reset() -> void { start = std::chrono::steady_clock::now(); }
+
+  /**
+   * @brief Read the elapsed time since the stopwatch was started.
+   * @return Elapsed time in seconds.
+   */
+  [[nodiscard]] auto read() const -> double;
+};
+} // namespace oscpp
+#endif // OSCPP_STOPWATCH_HPP

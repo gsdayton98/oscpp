@@ -1,0 +1,11 @@
+# Matches the c-basic-offset:2 Emacs modelines in the sources.
+BasedOnStyle: LLVM
+IndentWidth: 2
+ColumnLimit: 120
+AccessModifierOffset: -1
+PointerAlignment: Right
+AllowShortFunctionsOnASingleLine: Inline
+AlignAfterOpenBracket: Align
+BreakBeforeBraces: Attach
+NamespaceIndentation: None
+SortIncludes: Never

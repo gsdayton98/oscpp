@@ -1,8 +1,7 @@
-// -*- mode: c++ -*-
-////
-// ©2026 Glen S. Dayton. Rights reserved according to terms of included license.
+// -*- mode:C++; c-basic-offset:2; indent-tabs-mode:nil -*-
+// Copyright 2026 Glen S. Dayton. Rights reserved according to terms of included license.
 //
-//  Boost test driver.
+// Boost test driver.
 
 #define BOOST_TEST_MAIN
 #include <boost/test/unit_test.hpp>

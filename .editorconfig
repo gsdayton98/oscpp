@@ -1,0 +1,19 @@
+# EditorConfig (https://editorconfig.org). The Emacs modelines in the sources say the same thing for Emacs.
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+max_line_length = 120
+
+[*.{hpp,cpp}]
+indent_size = 2
+
+[{CMakeLists.txt,*.cmake,*.cmake.in}]
+indent_size = 4
+
+[*.md]
+trim_trailing_whitespace = false

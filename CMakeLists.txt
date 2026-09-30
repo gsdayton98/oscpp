@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.25)
-project(oscpp VERSION 1.0.0 DESCRIPTION "Library for operating system like functions" LANGUAGES CXX)
-enable_testing()
+project(oscpp VERSION 2.0.0 DESCRIPTION "Library for operating system like functions" LANGUAGES CXX)
+
+# Build the tests only when oscpp is the top-level project, so consumers using FetchContent don't need Boost.
+option(OSCPP_BUILD_TESTING "Build the oscpp tests (requires Boost.Test)" ${PROJECT_IS_TOP_LEVEL})
 
 include(GNUInstallDirs)
 # Override system installation when developing.
@@ -10,53 +12,118 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set(CMAKE_INSTALL_PREFIX "$ENV{HOME}" CACHE PATH "Install prefix" FORCE)
 endif()
 
-
-set(BINDIR bin)
-set(LIBDIR lib)
-set(INCLUDEDIR include)
-
 set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
-set(HEADERS include/circular_buffer.hpp
-        include/dynamiclibrary.hpp
-        include/file.hpp
-        include/file_descriptor.hpp
-        include/random_device.hpp
-        include/socket.hpp
-        include/stopwatch.hpp
-        include/sysexception.hpp
-        include/trim.hpp)
+# Sanitizers for development builds. Set OSCPP_SANITIZE to a semicolon-separated list of sanitizers, for example
+#   -DOSCPP_SANITIZE=address\;undefined      or      -DOSCPP_SANITIZE=thread
+# The flags apply to the library, the tests and the stress tests. "thread" can't be combined with "address".
+set(OSCPP_SANITIZE "" CACHE STRING "Sanitizers to enable (address, undefined, thread), semicolon separated")
+if(OSCPP_SANITIZE)
+    foreach(sanitizer IN LISTS OSCPP_SANITIZE)
+        if(NOT sanitizer MATCHES "^(address|undefined|thread)$")
+            message(FATAL_ERROR "OSCPP_SANITIZE: unknown sanitizer '${sanitizer}' (use address, undefined or thread)")
+        endif()
+    endforeach()
+    if("thread" IN_LIST OSCPP_SANITIZE AND "address" IN_LIST OSCPP_SANITIZE)
+        message(FATAL_ERROR "OSCPP_SANITIZE: 'thread' can't be combined with 'address'")
+    endif()
+    list(JOIN OSCPP_SANITIZE "," oscpp_sanitize_flags)
+    message(STATUS "Sanitizers enabled: ${oscpp_sanitize_flags}")
+    add_compile_options(-fsanitize=${oscpp_sanitize_flags} -fno-omit-frame-pointer -g)
+    add_link_options(-fsanitize=${oscpp_sanitize_flags})
+endif()
 
-set(SOURCES src/circular_buffer.cpp
-        src/dynamiclibrary.cpp
-        src/file.cpp
-        src/file_descriptor.cpp
-        src/random_device.cpp
-        src/socket.cpp
-        src/stopwatch.cpp
-        src/sysexception.cpp
-        src/trim.cpp)
+# Warnings used to build oscpp's own sources and tests. Not propagated to consumers.
+option(OSCPP_WERROR "Treat warnings in oscpp's own code as errors" OFF)
+add_library(oscpp_warnings INTERFACE)
+target_compile_options(oscpp_warnings INTERFACE -Wall -Wextra -Wpedantic -Wconversion -Wshadow)
+if(OSCPP_WERROR)
+    target_compile_options(oscpp_warnings INTERFACE -Werror)
+endif()
+
+set(HEADERS include/oscpp_export.hpp
+        include/oscpp/circular_buffer.hpp
+        include/oscpp/dynamiclibrary.hpp
+        include/oscpp/file.hpp
+        include/oscpp/file_descriptor.hpp
+        include/oscpp/random_device.hpp
+        include/oscpp/socket.hpp
+        include/oscpp/stopwatch.hpp
+        include/oscpp/sysexception.hpp
+        include/oscpp/trim.hpp
+        include/oscpp_exceptionless/dynamiclibrary.hpp
+        include/oscpp_exceptionless/file.hpp
+        include/oscpp_exceptionless/file_descriptor.hpp
+        include/oscpp_exceptionless/random_device.hpp
+        include/oscpp_exceptionless/socket.hpp)
+
+set(SOURCES src/oscpp/dynamiclibrary.cpp
+        src/oscpp/file.cpp
+        src/oscpp/file_descriptor.cpp
+        src/oscpp/random_device.cpp
+        src/oscpp/socket.cpp
+        src/oscpp/stopwatch.cpp
+        src/oscpp/sysexception.cpp
+        src/oscpp/trim.cpp
+        src/oscpp_exceptionless/dynamiclibrary.cpp
+        src/oscpp_exceptionless/file.cpp
+        src/oscpp_exceptionless/file_descriptor.cpp
+        src/oscpp_exceptionless/random_device.cpp
+        src/oscpp_exceptionless/socket.cpp)
 
 add_library(oscpp SHARED ${HEADERS} ${SOURCES})
+add_library(oscpp::oscpp ALIAS oscpp)
+target_link_libraries(oscpp PRIVATE $<BUILD_INTERFACE:oscpp_warnings>)
 target_include_directories(oscpp
         PUBLIC
             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
             $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
-target_compile_options(oscpp PRIVATE -fvisibility=hidden)
+# Consumers inherit the C++23 requirement.
+target_compile_features(oscpp PUBLIC cxx_std_23)
+# Everything is hidden unless marked OSCPP_API (include/oscpp_export.hpp).
+set_target_properties(oscpp PROPERTIES CXX_VISIBILITY_PRESET hidden VISIBILITY_INLINES_HIDDEN ON)
+target_compile_definitions(oscpp PRIVATE OSCPP_EXPORTS)
 set_target_properties(oscpp PROPERTIES VERSION ${PROJECT_VERSION})
 set_target_properties(oscpp PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR})
-set_target_properties(oscpp PROPERTIES PUBLIC_HEADER "${HEADERS}")
 
-install(TARGETS ${PROJECT_NAME} EXPORT oscpp
-        ARCHIVE  DESTINATION "${LIBDIR}"
-        LIBRARY  DESTINATION "${LIBDIR}"
-        RUNTIME  DESTINATION "${BINDIR}"
-        PUBLIC_HEADER DESTINATION "${INCLUDEDIR}")
-install(EXPORT oscpp NAMESPACE oscpp:: DESTINATION "${LIBDIR}/cmake/oscpp")
-export(TARGETS ${PROJECT_NAME} NAMESPACE oscpp:: FILE oscpp.cmake)
+install(TARGETS ${PROJECT_NAME} EXPORT oscpp-targets
+        ARCHIVE  DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+        LIBRARY  DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+        RUNTIME  DESTINATION "${CMAKE_INSTALL_BINDIR}")
+# Preserve the oscpp/ and oscpp_exceptionless/ header directories.
+install(FILES include/oscpp_export.hpp DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
+install(DIRECTORY include/oscpp include/oscpp_exceptionless DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}" FILES_MATCHING PATTERN "*.hpp")
+install(EXPORT oscpp-targets NAMESPACE oscpp:: DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/oscpp")
+export(TARGETS ${PROJECT_NAME} NAMESPACE oscpp:: FILE oscpp-targets.cmake)
 
-add_subdirectory(test)
+# Formatting: `cmake --build <dir> --target format` reformats the sources with .clang-format, and
+# `--target check-format` fails if any file isn't already formatted. Set OSCPP_CLANG_FORMAT to choose the executable.
+find_program(OSCPP_CLANG_FORMAT clang-format)
+if(OSCPP_CLANG_FORMAT AND PROJECT_IS_TOP_LEVEL)
+    file(GLOB_RECURSE OSCPP_FORMAT_FILES CONFIGURE_DEPENDS
+            "${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp"
+            "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
+            "${CMAKE_CURRENT_SOURCE_DIR}/test/*.hpp"
+            "${CMAKE_CURRENT_SOURCE_DIR}/test/*.cpp")
+    add_custom_target(format
+            COMMAND ${OSCPP_CLANG_FORMAT} -i ${OSCPP_FORMAT_FILES}
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+            COMMENT "Formatting sources with clang-format"
+            VERBATIM)
+    add_custom_target(check-format
+            COMMAND ${OSCPP_CLANG_FORMAT} --dry-run -Werror ${OSCPP_FORMAT_FILES}
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+            COMMENT "Checking source formatting with clang-format"
+            VERBATIM)
+endif()
+
+if(OSCPP_BUILD_TESTING)
+    enable_testing()
+    add_subdirectory(test)
+endif()
 
 # Packaging support
 set(CPACK_PACKAGE_VENDOR "Glen Dayton")
@@ -78,7 +145,7 @@ configure_package_config_file(
 write_basic_package_version_file(
         "oscpp-config-version.cmake"
         VERSION ${PROJECT_VERSION}
-        COMPATIBILITY AnyNewerVersion)
+        COMPATIBILITY SameMajorVersion)
 
 install(FILES
         "${CMAKE_CURRENT_BINARY_DIR}/oscpp-config.cmake"
