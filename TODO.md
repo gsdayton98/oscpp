@@ -44,14 +44,13 @@ Items are ordered by priority within each section. Nothing here has been fixed y
   inheritance invites slicing) and exposes it through `fileDescriptor()`. `oscpp::Socket` wraps the exceptionless
   socket. Still missing: socket operations (bind, connect, send, recv) and `read`/`write` on `FileDescriptor`.
 - [x] `DynamicLibrary` takes a `dlopen` flags parameter (default `RTLD_NOW | RTLD_LOCAL`) in both namespaces, instead of the literal `0`.
-- [ ] Add missing members:
-  - move assignment for `File`, `FileDescriptor` and `Socket` (currently deleted or absent; implement with
-    close-then-take or swap)
-  - a move constructor for `DynamicLibrary`
-  - `release()` and `explicit operator bool` / `valid()` on the handle types
-  - `read`/`write` on `FileDescriptor`
-  - a public `descriptor()` on `File`
-  - a public `unmap()` on `File`
+- [x] Missing members added in both namespaces:
+  - move assignment for `File`, `FileDescriptor`, `Socket` and `DynamicLibrary` (close-then-take, safe for
+    self-assignment); `DynamicLibrary` already had a move constructor
+  - `valid()`, `explicit operator bool` and `release()` on `File`, `FileDescriptor` and `Socket`
+  - `read`/`write` on `FileDescriptor` (POSIX semantics: short counts, 0 at end of file)
+  - a public `descriptor()` and `unmap()` on `File`
+  Not added: `valid()`/`release()` on `DynamicLibrary`, and `const` versions of `read`/`write`.
 - [x] **`[[maybe_unused]]` was applied to public classes and methods** (`DynamicLibrary`, `FileDescriptor`, `Socket`,
   `trim`). It's meaningless there and hides real dead-code warnings. Removed.
 - [ ] **Replace the repeated `__attribute__((visibility("default")))`** with an `OSCPP_API` macro in an
@@ -63,8 +62,8 @@ Items are ordered by priority within each section. Nothing here has been fixed y
   gone, so any `ElementType` works without a closed instantiation set), the leaked `using std::unique_lock; using std::mutex;`
   declarations are removed, `<algorithm>`, `<cstddef>`, `<mutex>` and `<condition_variable>` are included, `size_t` is
   `std::size_t`, and the docs describe the heap-allocated storage. The stress tests still pass under TSan.
-- [ ] `CircularBuffer` still has no move support and no timeout variants (`try_*_for`), and requires a
-  default-constructible, copy-assignable `ElementType` (now documented; `new T[]` is still used).
+- [ ] Deferred (nothing uses `CircularBuffer` yet): timeout variants (`try_*_for`) and move support. A default-constructible
+  `ElementType` is an accepted requirement.
 - [x] `file.hpp` and `socket.hpp` include `<utility>` and `<cstddef>` where used. `<fcntl.h>` and `<sys/stat.h>` stay in `file.hpp`
   because the default arguments and `struct stat` need them.
 - [ ] `SysException` messages carry no context. Add an optional `what_arg` (e.g. `"open(/path): No such file"`), and use

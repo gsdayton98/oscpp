@@ -27,6 +27,9 @@ class __attribute__((visibility("default"))) Socket {
   ~Socket() noexcept = default;
   Socket &operator=(const Socket &) = delete;
 
+  /// Close the descriptor this socket holds (if any), then take ownership of the other's.
+  Socket &operator=(Socket &&) noexcept = default;
+
   /// Create a socket. The descriptor is close-on-exec.
   [[nodiscard]] static auto create(int domain = PF_INET, int socketType = SOCK_STREAM, int protocol = 0) noexcept
       -> std::expected<Socket, std::error_code>;
@@ -35,6 +38,13 @@ class __attribute__((visibility("default"))) Socket {
   [[nodiscard]] auto clone() const noexcept -> std::expected<Socket, std::error_code>;
 
   [[nodiscard]] int descriptor() const noexcept { return fd.descriptor(); }
+
+  /// True if this socket holds a descriptor (it is not moved-from or released).
+  [[nodiscard]] auto valid() const noexcept -> bool { return fd.valid(); }
+  explicit operator bool() const noexcept { return valid(); }
+
+  /// Give up ownership without closing. The caller becomes responsible for closing the returned descriptor.
+  [[nodiscard]] auto release() noexcept -> int { return fd.release(); }
 
   /// The underlying descriptor, for operations that work on any descriptor. The socket keeps ownership.
   [[nodiscard]] auto fileDescriptor() const noexcept -> const FileDescriptor & { return fd; }

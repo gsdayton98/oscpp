@@ -3,7 +3,9 @@
 //!  Copyright 2026 Glen S. Dayton. Rights reserved according to terms of included license.
 //!  Test File
 
+#include <fcntl.h>
 #include <string>
+#include <unistd.h>
 #include <utility>
 #include <fstream>
 #include <iostream>
@@ -113,6 +115,51 @@ BOOST_AUTO_TEST_CASE(Test_create_flags_and_mode)
 
     // O_EXCL makes a second create fail.
     BOOST_CHECK_THROW(oscpp::File(created.c_str(), O_WRONLY | O_CREAT | O_EXCL | O_CLOEXEC, 0600), oscpp::SysException);
+}
+
+BOOST_FIXTURE_TEST_CASE(Test_move_assignment, TextFileFixture)
+{
+    oscpp::File first(testFileName.c_str());
+    const int firstDescriptor = first.descriptor();
+    {
+        oscpp::File second(emptyFileName.c_str());
+        const int secondDescriptor = second.descriptor();
+        first = std::move(second);
+        BOOST_CHECK(fcntl(firstDescriptor, F_GETFD) < 0);
+        BOOST_CHECK_EQUAL(first.descriptor(), secondDescriptor);
+        BOOST_CHECK(!second.valid()); // NOLINT(bugprone-use-after-move)
+    }
+    struct stat buffer {};
+    BOOST_CHECK_EQUAL(first.fstat(buffer).st_size, 0);
+}
+
+BOOST_FIXTURE_TEST_CASE(Test_descriptor_and_valid, TextFileFixture)
+{
+    oscpp::File file(testFileName.c_str());
+    BOOST_CHECK(file);
+    BOOST_CHECK(fcntl(file.descriptor(), F_GETFD) >= 0);
+}
+
+BOOST_FIXTURE_TEST_CASE(Test_unmap, TextFileFixture)
+{
+    oscpp::File file(testFileName.c_str());
+    (void) file.map();
+    file.unmap();
+    file.unmap(); // harmless when nothing is mapped
+    const auto remapped = file.map();
+    BOOST_TEST_REQUIRE(static_cast<unsigned int *>(remapped.first)[1] == 1u);
+}
+
+BOOST_FIXTURE_TEST_CASE(Test_release, TextFileFixture)
+{
+    oscpp::File file(testFileName.c_str());
+    const int descriptor = file.descriptor();
+    BOOST_CHECK_EQUAL(file.release(), descriptor);
+    BOOST_CHECK(!file);
+    BOOST_CHECK(fcntl(descriptor, F_GETFD) >= 0); // not closed; the caller owns it
+    close(descriptor);
+    struct stat buffer {};
+    BOOST_CHECK_THROW(file.fstat(buffer), oscpp::SysException);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

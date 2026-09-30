@@ -32,7 +32,9 @@ class __attribute__((visibility("default"))) File {
 
   /// Transfers ownership of the descriptor and any active mapping; the source becomes inert.
   File(File &&other) noexcept;
-  File &operator=(File &&) = delete;
+
+  /// Release the file (mapping and descriptor) this object holds, then take ownership of the other's.
+  File &operator=(File &&other) noexcept;
 
   ~File() noexcept;
 
@@ -43,13 +45,27 @@ class __attribute__((visibility("default"))) File {
    */
   [[nodiscard]] auto map() noexcept -> std::expected<std::pair<void *, std::size_t>, std::error_code>;
 
+  /// Release the current memory mapping, if any. Pointers returned by map() are invalid afterward.
+  void unmap() noexcept;
+
+  /// The underlying descriptor. The file keeps ownership.
+  [[nodiscard]] auto descriptor() const noexcept -> int { return fd; }
+
+  /// True if this file holds a descriptor (it is not moved-from or released).
+  [[nodiscard]] auto valid() const noexcept -> bool { return fd >= 0; }
+  explicit operator bool() const noexcept { return valid(); }
+
+  /// Give up ownership of the descriptor without closing it; any mapping is released first. The caller becomes
+  /// responsible for closing the returned descriptor.
+  [[nodiscard]] auto release() noexcept -> int;
+
   /// Get file status information for the open file.
   [[nodiscard]] auto fstat() const noexcept -> std::expected<struct stat, std::error_code>;
 
  private:
   explicit File(const int descriptor) noexcept : fd {descriptor} {}
 
-  void unmap() noexcept;
+  void close() noexcept;
 
   int fd;
   void *mappedFile {nullptr};

@@ -29,6 +29,17 @@ oscpp_exceptionless::DynamicLibrary::DynamicLibrary(DynamicLibrary &&other) noex
   other.handle = nullptr;
 }
 
+auto oscpp_exceptionless::DynamicLibrary::operator=(DynamicLibrary &&other) noexcept -> DynamicLibrary & {
+  if (this != &other) {
+    if (handle != nullptr) {
+      (void) dlclose(handle);
+    }
+    handle = other.handle;
+    other.handle = nullptr;
+  }
+  return *this;
+}
+
 oscpp_exceptionless::DynamicLibrary::~DynamicLibrary() noexcept {
   if (handle != nullptr) {
     (void) dlclose(handle);

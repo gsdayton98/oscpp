@@ -6,6 +6,7 @@
 
 #ifndef EXCEPTIONLESS_FILE_DESCRIPTOR_HPP
 #define EXCEPTIONLESS_FILE_DESCRIPTOR_HPP
+#include <cstddef>
 #include <expected>
 #include <system_error>
 
@@ -24,12 +25,30 @@ class __attribute__((visibility("default"))) FileDescriptor {
   FileDescriptor(FileDescriptor &&) noexcept;
   ~FileDescriptor() noexcept;
   FileDescriptor &operator=(const FileDescriptor &) = delete;
-  FileDescriptor &operator=(FileDescriptor &&) = delete;
+
+  /// Close the descriptor this object holds (if any), then take ownership of the other's. Self-assignment is harmless.
+  FileDescriptor &operator=(FileDescriptor &&other) noexcept;
 
   /// Duplicate the descriptor. The duplicate is close-on-exec.
   [[nodiscard]] auto clone() const noexcept -> std::expected<FileDescriptor, std::error_code>;
 
   [[nodiscard]] auto descriptor() const noexcept -> int { return handle; }
+
+  /// True if this object holds a descriptor (it is not moved-from, released or created from a negative value).
+  [[nodiscard]] auto valid() const noexcept -> bool { return handle >= 0; }
+  explicit operator bool() const noexcept { return valid(); }
+
+  /// Give up ownership without closing. The caller becomes responsible for closing the returned descriptor.
+  [[nodiscard]] auto release() noexcept -> int;
+
+  /// Read up to `length` bytes. Like read(2), may transfer fewer bytes; 0 means end of file.
+  /// @return The number of bytes read.
+  [[nodiscard]] auto read(void *buffer, std::size_t length) noexcept -> std::expected<std::size_t, std::error_code>;
+
+  /// Write up to `length` bytes. Like write(2), may transfer fewer bytes than requested.
+  /// @return The number of bytes written.
+  [[nodiscard]] auto write(const void *buffer, std::size_t length) noexcept
+      -> std::expected<std::size_t, std::error_code>;
 };
 
 }

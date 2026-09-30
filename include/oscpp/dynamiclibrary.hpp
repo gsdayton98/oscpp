@@ -48,6 +48,9 @@ namespace oscpp {
 
         DynamicLibrary &operator=(const DynamicLibrary &) = delete;
 
+        /// Close the library this object holds (if any), then take ownership of the other's.
+        DynamicLibrary &operator=(DynamicLibrary &&) noexcept = default;
+
     private:
         oscpp_exceptionless::DynamicLibrary impl;
     };

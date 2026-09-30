@@ -26,7 +26,8 @@ class __attribute__((visibility("default"))) DynamicLibrary {
   DynamicLibrary(const DynamicLibrary &) = delete;
   DynamicLibrary &operator=(const DynamicLibrary &) = delete;
   DynamicLibrary(DynamicLibrary &&other) noexcept;
-  DynamicLibrary &operator=(DynamicLibrary &&) = delete;
+  /// Close the library this object holds (if any), then take ownership of the other's.
+  DynamicLibrary &operator=(DynamicLibrary &&other) noexcept;
 
   /// Close the library.
   ~DynamicLibrary() noexcept;

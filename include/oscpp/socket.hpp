@@ -28,6 +28,9 @@ namespace oscpp {
 
         Socket &operator=(const Socket &) = delete;
 
+        /// Close the descriptor this socket holds (if any), then take ownership of the other's.
+        Socket &operator=(Socket &&) noexcept = default;
+
         /// Create a socket. The descriptor is close-on-exec.
         /// @throws oscpp::SysException on failure. See oscpp_exceptionless::Socket::create for a non-throwing version.
         static auto create(int domain = PF_INET, int socketType = SOCK_STREAM, int protocol = 0) -> Socket;
@@ -37,6 +40,13 @@ namespace oscpp {
         [[nodiscard]] auto clone() const -> Socket;
 
         [[nodiscard]] int descriptor() const noexcept { return impl.descriptor(); }
+
+        /// True if this socket holds a descriptor (it is not moved-from or released).
+        [[nodiscard]] auto valid() const noexcept -> bool { return impl.valid(); }
+        explicit operator bool() const noexcept { return valid(); }
+
+        /// Give up ownership without closing. The caller becomes responsible for closing the returned descriptor.
+        [[nodiscard]] auto release() noexcept -> int { return impl.release(); }
     };
 }
 #endif //OSCPP_SOCKET_HPP

@@ -4,6 +4,7 @@
 #include <boost/test/unit_test.hpp>
 #include <stdexcept>
 #include <string>
+#include <utility>
 #include "oscpp/dynamiclibrary.hpp"
 using std::string;
 BOOST_AUTO_TEST_SUITE(DynamicLibrary)
@@ -36,6 +37,16 @@ BOOST_AUTO_TEST_CASE(testFlags) {
     BOOST_CHECK(lazy.symbol("strlen") != nullptr);
     const oscpp::DynamicLibrary global{"/usr/lib/libc++.1.dylib", RTLD_NOW | RTLD_GLOBAL};
     BOOST_CHECK(global.symbol("strlen") != nullptr);
+}
+
+BOOST_AUTO_TEST_CASE(testMoveConstructionAndAssignment) {
+    oscpp::DynamicLibrary first;
+    oscpp::DynamicLibrary moved{std::move(first)};
+    BOOST_CHECK(moved.symbol("strlen") != nullptr);
+
+    oscpp::DynamicLibrary target{RTLD_LAZY | RTLD_LOCAL};
+    target = std::move(moved);
+    BOOST_CHECK(target.symbol("strlen") != nullptr);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

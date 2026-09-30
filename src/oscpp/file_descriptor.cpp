@@ -20,3 +20,17 @@ auto oscpp::FileDescriptor::create(const int descriptor) noexcept -> FileDescrip
     if (!result) throw SysException(result.error());
     return FileDescriptor {std::move(*result)};
 }
+
+
+auto oscpp::FileDescriptor::read(void *buffer, const std::size_t length) -> std::size_t {
+    const auto result = impl.read(buffer, length);
+    if (!result) throw SysException(result.error());
+    return *result;
+}
+
+
+auto oscpp::FileDescriptor::write(const void *buffer, const std::size_t length) -> std::size_t {
+    const auto result = impl.write(buffer, length);
+    if (!result) throw SysException(result.error());
+    return *result;
+}

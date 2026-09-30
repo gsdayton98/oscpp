@@ -11,6 +11,8 @@
 #include <fcntl.h>
 #include "oscpp/file_descriptor.hpp"
 #include <string>
+#include <cstring>
+#include <unistd.h>
 #include <utility>
 #include "oscpp/sysexception.hpp"
 #include "temp_directory.hpp"
@@ -77,6 +79,63 @@ BOOST_AUTO_TEST_CASE(testMove) {
     }
     // Only the final owner closes the descriptor.
     BOOST_CHECK(!fileDescriptorOpen(sysDescriptor));
+}
+
+BOOST_AUTO_TEST_CASE(testMoveAssignment) {
+    const int first = open("/dev/null", O_RDONLY);
+    const int second = open("/dev/null", O_RDONLY);
+    BOOST_REQUIRE(first >= 0 && second >= 0);
+    {
+        auto target = oscpp::FileDescriptor::create(first);
+        auto source = oscpp::FileDescriptor::create(second);
+        target = std::move(source);
+        BOOST_CHECK(!fileDescriptorOpen(first));
+        BOOST_CHECK_EQUAL(target.descriptor(), second);
+        BOOST_CHECK(!source.valid()); // NOLINT(bugprone-use-after-move)
+
+        auto &alias = target;
+        target = std::move(alias);
+        BOOST_CHECK(fileDescriptorOpen(second));
+    }
+    BOOST_CHECK(!fileDescriptorOpen(second));
+}
+
+BOOST_AUTO_TEST_CASE(testValidAndRelease) {
+    const int sysDescriptor = open("/dev/null", O_RDONLY);
+    BOOST_REQUIRE(sysDescriptor >= 0);
+    auto descriptor = oscpp::FileDescriptor::create(sysDescriptor);
+    BOOST_CHECK(descriptor.valid());
+    BOOST_CHECK(static_cast<bool>(descriptor));
+
+    const int released = descriptor.release();
+    BOOST_CHECK_EQUAL(released, sysDescriptor);
+    BOOST_CHECK(!descriptor);
+    BOOST_CHECK(fileDescriptorOpen(released));
+    close(released);
+}
+
+BOOST_AUTO_TEST_CASE(testReadWrite) {
+    int ends[2];
+    BOOST_REQUIRE_EQUAL(pipe(ends), 0);
+    auto reader = oscpp::FileDescriptor::create(ends[0]);
+    auto writer = oscpp::FileDescriptor::create(ends[1]);
+
+    constexpr char message[] = "hello";
+    BOOST_CHECK_EQUAL(writer.write(message, sizeof(message)), sizeof(message));
+
+    char buffer[16] = {};
+    BOOST_CHECK_EQUAL(reader.read(buffer, sizeof(buffer)), sizeof(message));
+    BOOST_CHECK_EQUAL(std::strcmp(buffer, message), 0);
+
+    writer = oscpp::FileDescriptor::create(-1);
+    BOOST_CHECK_EQUAL(reader.read(buffer, sizeof(buffer)), 0u);
+}
+
+BOOST_AUTO_TEST_CASE(testReadWriteThrow) {
+    auto invalid = oscpp::FileDescriptor::create(-1);
+    char buffer[4];
+    BOOST_CHECK_THROW((void) invalid.read(buffer, sizeof(buffer)), oscpp::SysException);
+    BOOST_CHECK_THROW((void) invalid.write(buffer, sizeof(buffer)), oscpp::SysException);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

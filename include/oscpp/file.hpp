@@ -46,9 +46,9 @@ class __attribute__((visibility("default"))) File {
   File(File&& other) noexcept = default;
 
   /**
-   * Move version of the assignment operator doesn't make sense.
+   * Release the file (mapping and descriptor) this object holds, then take ownership of the other's.
    */
-  File& operator=(File&&) = delete;
+  File& operator=(File&&) noexcept = default;
 
   ~File() = default;
 
@@ -59,6 +59,22 @@ class __attribute__((visibility("default"))) File {
    * @throws oscpp::SysException if the file's status cannot be read or the mapping fails.
    */
   std::pair<void*, std::size_t> map();
+
+  /**
+   * Release the current memory mapping, if any. Pointers returned by map() are invalid afterward.
+   */
+  void unmap() noexcept { impl.unmap(); }
+
+  /// The underlying descriptor. The file keeps ownership.
+  [[nodiscard]] int descriptor() const noexcept { return impl.descriptor(); }
+
+  /// True if this file holds a descriptor (it is not moved-from or released).
+  [[nodiscard]] bool valid() const noexcept { return impl.valid(); }
+  explicit operator bool() const noexcept { return valid(); }
+
+  /// Give up ownership of the descriptor without closing it; any mapping is released first. The caller becomes
+  /// responsible for closing the returned descriptor.
+  [[nodiscard]] int release() noexcept { return impl.release(); }
 
   /**
    * Get file status information for the open file.

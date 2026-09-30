@@ -27,12 +27,34 @@ oscpp_exceptionless::File::File(File &&other) noexcept
   other.mappedLen = 0;
 }
 
-oscpp_exceptionless::File::~File() noexcept {
+oscpp_exceptionless::File::~File() noexcept { close(); }
+
+void oscpp_exceptionless::File::close() noexcept {
   unmap();
   if (fd >= 0) {
     (void) ::close(fd);
     fd = -1;
   }
+}
+
+auto oscpp_exceptionless::File::operator=(File &&other) noexcept -> File & {
+  if (this != &other) {
+    close();
+    fd = other.fd;
+    mappedFile = other.mappedFile;
+    mappedLen = other.mappedLen;
+    other.fd = -1;
+    other.mappedFile = nullptr;
+    other.mappedLen = 0;
+  }
+  return *this;
+}
+
+auto oscpp_exceptionless::File::release() noexcept -> int {
+  unmap();
+  const int descriptor = fd;
+  fd = -1;
+  return descriptor;
 }
 
 void oscpp_exceptionless::File::unmap() noexcept {
