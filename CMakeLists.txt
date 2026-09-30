@@ -17,6 +17,25 @@ set(INCLUDEDIR include)
 
 set(CMAKE_CXX_STANDARD 23)
 
+# Sanitizers for development builds. Set OSCPP_SANITIZE to a semicolon-separated list of sanitizers, for example
+#   -DOSCPP_SANITIZE=address\;undefined      or      -DOSCPP_SANITIZE=thread
+# The flags apply to the library, the tests and the stress tests. "thread" can't be combined with "address".
+set(OSCPP_SANITIZE "" CACHE STRING "Sanitizers to enable (address, undefined, thread), semicolon separated")
+if(OSCPP_SANITIZE)
+    foreach(sanitizer IN LISTS OSCPP_SANITIZE)
+        if(NOT sanitizer MATCHES "^(address|undefined|thread)$")
+            message(FATAL_ERROR "OSCPP_SANITIZE: unknown sanitizer '${sanitizer}' (use address, undefined or thread)")
+        endif()
+    endforeach()
+    if("thread" IN_LIST OSCPP_SANITIZE AND "address" IN_LIST OSCPP_SANITIZE)
+        message(FATAL_ERROR "OSCPP_SANITIZE: 'thread' can't be combined with 'address'")
+    endif()
+    list(JOIN OSCPP_SANITIZE "," oscpp_sanitize_flags)
+    message(STATUS "Sanitizers enabled: ${oscpp_sanitize_flags}")
+    add_compile_options(-fsanitize=${oscpp_sanitize_flags} -fno-omit-frame-pointer -g)
+    add_link_options(-fsanitize=${oscpp_sanitize_flags})
+endif()
+
 set(HEADERS include/oscpp/circular_buffer.hpp
         include/oscpp/dynamiclibrary.hpp
         include/oscpp/file.hpp

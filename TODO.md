@@ -39,9 +39,10 @@ Items are ordered by priority within each section. Nothing here has been fixed y
     branch on the failure.
   - `oscpp_exceptionless::RandomDevice` is not a `std::uniform_random_bit_generator`, because a draw can fail.
     libc++ silently accepts unrecognized tokens, so the token failure path is untested.
-- [ ] **`Socket` and `FileDescriptor` duplicate each other**, in both namespaces. Socket is a handle plus
-  `descriptor()`/`clone()`, with no bind, connect, send or recv. Have it own a `FileDescriptor` (or share a base) and add
-  the missing operations, or document it as a bare handle.
+- [x] **`Socket` and `FileDescriptor` duplicated each other.** `oscpp_exceptionless::Socket` now owns a
+  `oscpp_exceptionless::FileDescriptor` (composition, not inheritance: `clone()` must return a `Socket`, and
+  inheritance invites slicing) and exposes it through `fileDescriptor()`. `oscpp::Socket` wraps the exceptionless
+  socket. Still missing: socket operations (bind, connect, send, recv) and `read`/`write` on `FileDescriptor`.
 - [ ] `DynamicLibrary`: take a `dlopen` flags parameter (default `RTLD_NOW | RTLD_LOCAL`) instead of the literal `0`.
 - [ ] Add missing members:
   - move assignment for `File`, `FileDescriptor` and `Socket` (currently deleted or absent; implement with
@@ -97,8 +98,8 @@ Items are ordered by priority within each section. Nothing here has been fixed y
   drop the redundant `../include` include directory, since the target already links the PUBLIC include dir.
 - [ ] Register tests via `boost_tests` discovery (or at least one `add_test` per suite) so `ctest -R` can select
   individual suites. CLAUDE.md currently describes the old one-executable-per-file layout.
-- [ ] Add a warnings interface target (`-Wall -Wextra -Wpedantic -Wconversion -Wshadow`) and a sanitizer option. The
-  ASan/UBSan run above was clean, so this is cheap to keep. Fix the remaining sign-compare warnings in
+- [x] Sanitizer option: `-DOSCPP_SANITIZE=address\;undefined` or `-DOSCPP_SANITIZE=thread` (see `CMakeLists.txt`).
+- [ ] Add a warnings interface target (`-Wall -Wextra -Wpedantic -Wconversion -Wshadow`). Fix the remaining sign-compare warnings in
   `test_circular_buffer.cpp:144,345` and `test_system_exception.cpp:19`.
 - [ ] Add `CMakePresets.json` (debug, release, asan) with binary dirs outside the source tree.
 - [ ] `sampleDynamic.cpp` isn't referenced by any CMake target. Wire it up (used by the dynamic-library test) or

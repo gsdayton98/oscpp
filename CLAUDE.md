@@ -47,6 +47,8 @@ ctest --test-dir ../build/oscpp/claude -LE stress                     # unit tes
 ../build/oscpp/claude/test/oscpp_tests --run_test=File                # one suite (or File/Test_map for one case)
 ```
 
+Sanitizers: configure a separate build directory with `-DOSCPP_SANITIZE=address\;undefined` or `-DOSCPP_SANITIZE=thread` (for example `../build/oscpp/claude-asan` and `../build/oscpp/claude-tsan`). `thread` can't be combined with `address`. Run the stress tests under `thread`.
+
 Multithreaded stress tests are not unit tests. They live in their own executable (`test/stress_circular_buffer.cpp` -> `stress_circular_buffer`) and carry the CTest label `stress`. Run them alone with `ctest --test-dir ../build/oscpp/claude -L stress`.
 
 A new unit test file goes in the `oscpp_tests` source list in `test/CMakeLists.txt`. A new stress test needs its own `add_executable`/`target_link_libraries`/`add_test` block there, with the `stress` label.
