@@ -96,8 +96,8 @@ Items are ordered by priority within each section. Nothing here has been fixed y
   library and tests, but not propagated to consumers. `-DOSCPP_WERROR=ON` makes warnings errors. The build is currently
   warning-free, including the sanitizer build. Boost headers are passed as `-isystem` so only oscpp's code is checked.
 - [ ] Add `CMakePresets.json` (debug, release, asan) with binary dirs outside the source tree.
-- [ ] `sampleDynamic.cpp` isn't referenced by any CMake target. Wire it up (used by the dynamic-library test) or
-  delete it. `mock_strerror.cpp` is unused but must be **kept**, per CLAUDE.md.
+- [x] Deleted `sampleDynamic.cpp` (never wired up) and `mock_strerror.cpp` (unused; `SysException::message` no longer
+  calls `strerror_r`). The CLAUDE.md instruction to keep `mock_strerror.cpp` was removed at the same time.
 
 ## P3: Tests
 
