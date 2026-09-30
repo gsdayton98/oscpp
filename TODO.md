@@ -127,9 +127,6 @@ Items are ordered by priority within each section. Nothing here has been fixed y
 
 ## P4: Docs and hygiene
 
-- [ ] Update CLAUDE.md. The Test section describes one executable per source file, but there is now a single
-  `oscpp_tests`. It says `Stopwatch` but the class is `StopWatch`. (The error-handling split, header layout and
-  out-of-tree build directory are already documented.)
 - [ ] README: fix the typos ("associed", "aruound" in `socket.hpp`, "oen" in `circular_buffer.hpp`), remove trailing
   whitespace in the table, and add build, install and `find_package(oscpp)` usage sections plus a minimal example.
 - [ ] `.gitignore` carries stale Visual Studio entries (`OSCPP.vpwhistu`, `OSCPP.vtg`, `Debug`). Replace with
