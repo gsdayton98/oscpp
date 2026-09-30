@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.25)
 project(oscpp VERSION 1.0.0 DESCRIPTION "Library for operating system like functions" LANGUAGES CXX)
-enable_testing()
+
+# Build the tests only when oscpp is the top-level project, so consumers using FetchContent don't need Boost.
+option(OSCPP_BUILD_TESTING "Build the oscpp tests (requires Boost.Test)" ${PROJECT_IS_TOP_LEVEL})
 
 include(GNUInstallDirs)
 # Override system installation when developing.
@@ -10,12 +12,9 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set(CMAKE_INSTALL_PREFIX "$ENV{HOME}" CACHE PATH "Install prefix" FORCE)
 endif()
 
-
-set(BINDIR bin)
-set(LIBDIR lib)
-set(INCLUDEDIR include)
-
 set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Sanitizers for development builds. Set OSCPP_SANITIZE to a semicolon-separated list of sanitizers, for example
 #   -DOSCPP_SANITIZE=address\;undefined      or      -DOSCPP_SANITIZE=thread
@@ -67,26 +66,32 @@ set(SOURCES src/oscpp/circular_buffer.cpp
         src/oscpp_exceptionless/socket.cpp)
 
 add_library(oscpp SHARED ${HEADERS} ${SOURCES})
+add_library(oscpp::oscpp ALIAS oscpp)
 target_include_directories(oscpp
         PUBLIC
             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
             $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
-target_compile_options(oscpp PRIVATE -fvisibility=hidden)
+# Consumers inherit the C++23 requirement.
+target_compile_features(oscpp PUBLIC cxx_std_23)
+# Everything is hidden unless marked __attribute__((visibility("default"))).
+set_target_properties(oscpp PROPERTIES CXX_VISIBILITY_PRESET hidden VISIBILITY_INLINES_HIDDEN ON)
 set_target_properties(oscpp PROPERTIES VERSION ${PROJECT_VERSION})
 set_target_properties(oscpp PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR})
 
-install(TARGETS ${PROJECT_NAME} EXPORT oscpp
-        ARCHIVE  DESTINATION "${LIBDIR}"
-        LIBRARY  DESTINATION "${LIBDIR}"
-        RUNTIME  DESTINATION "${BINDIR}"
-        PUBLIC_HEADER DESTINATION "${INCLUDEDIR}")
+install(TARGETS ${PROJECT_NAME} EXPORT oscpp-targets
+        ARCHIVE  DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+        LIBRARY  DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+        RUNTIME  DESTINATION "${CMAKE_INSTALL_BINDIR}")
 # Preserve the oscpp/ and oscpp_exceptionless/ header directories.
-install(DIRECTORY include/oscpp include/oscpp_exceptionless DESTINATION "${INCLUDEDIR}" FILES_MATCHING PATTERN "*.hpp")
-install(EXPORT oscpp NAMESPACE oscpp:: DESTINATION "${LIBDIR}/cmake/oscpp")
-export(TARGETS ${PROJECT_NAME} NAMESPACE oscpp:: FILE oscpp.cmake)
+install(DIRECTORY include/oscpp include/oscpp_exceptionless DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}" FILES_MATCHING PATTERN "*.hpp")
+install(EXPORT oscpp-targets NAMESPACE oscpp:: DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/oscpp")
+export(TARGETS ${PROJECT_NAME} NAMESPACE oscpp:: FILE oscpp-targets.cmake)
 
-add_subdirectory(test)
+if(OSCPP_BUILD_TESTING)
+    enable_testing()
+    add_subdirectory(test)
+endif()
 
 # Packaging support
 set(CPACK_PACKAGE_VENDOR "Glen Dayton")

@@ -56,8 +56,6 @@ Items are ordered by priority within each section. Nothing here has been fixed y
   `trim`). It's meaningless there and hides real dead-code warnings. Remove it.
 - [ ] **Replace the repeated `__attribute__((visibility("default")))`** with an `OSCPP_API` macro in an
   `export.hpp`. Then `#include`s no longer depend on compiler-specific syntax, and MSVC becomes possible later.
-- [ ] `File::open` is a private static that shadows `::open`, and `File::close` shadows `::close`. Rename them
-  (e.g. `openOrThrow`) so calls read unambiguously.
 - [ ] `trim`:
   - The name suggests both ends, but it trims only trailing whitespace and NULs, and the NUL part is undocumented.
     Rename it to `rtrim`, or add `ltrim`/`trim` and document the NUL behavior.
@@ -80,22 +78,17 @@ Items are ordered by priority within each section. Nothing here has been fixed y
 
 ## P2: Build system (`CMakeLists.txt`, `test/CMakeLists.txt`)
 
-- [ ] Add an `OSCPP_BUILD_TESTING` option (default ON only when top-level). Currently `add_subdirectory(test)` is
-  unconditional, so anyone consuming oscpp via `FetchContent` needs Boost.
-- [ ] Don't hard-override `BINDIR/LIBDIR/INCLUDEDIR`. Use the `CMAKE_INSTALL_*DIR` variables from `GNUInstallDirs`,
-  which are already included. The current values ignore the platform's conventions.
+- [x] `OSCPP_BUILD_TESTING` option (default ON only when top-level), so `FetchContent` consumers don't need Boost.
+- [x] Install directories come from `GNUInstallDirs` (`CMAKE_INSTALL_*DIR`) instead of hard-coded `bin`/`lib`/`include`.
 - [ ] Forcing `CMAKE_INSTALL_PREFIX` to `$HOME` is surprising for a library. Document it, or gate it behind an option
   (e.g. `OSCPP_DEV_PREFIX`).
-- [ ] Use `CXX_VISIBILITY_PRESET hidden` / `VISIBILITY_INLINES_HIDDEN` and `CMAKE_CXX_STANDARD_REQUIRED ON` /
-  `CMAKE_CXX_EXTENSIONS OFF`. Better still, use `target_compile_features(oscpp PUBLIC cxx_std_23)` so consumers inherit
-  the requirement.
+- [x] Visibility preset hidden, `VISIBILITY_INLINES_HIDDEN`, `CMAKE_CXX_STANDARD_REQUIRED ON`, `CMAKE_CXX_EXTENSIONS OFF`, and
+  `target_compile_features(oscpp PUBLIC cxx_std_23)` so consumers inherit the requirement.
 - [x] `PUBLIC_HEADER` flattened the install layout. Headers now live in `include/oscpp/` and
   `include/oscpp_exceptionless/` and install to the same directories (`install(DIRECTORY ...)`).
-- [ ] Rename the export file: `install(EXPORT oscpp ... )` writes `oscpp.cmake`, which sits beside `oscpp-config.cmake`
-  and is easy to confuse. Use `oscpp-targets.cmake`. Also add an `ALIAS oscpp::oscpp` so in-tree and installed usage
-  match.
-- [ ] `test/CMakeLists.txt` starts a nested `project(oscpp_test)` before `cmake_minimum_required`. Remove it, and
-  drop the redundant `../include` include directory, since the target already links the PUBLIC include dir.
+- [x] The export file is `oscpp-targets.cmake`, and `oscpp::oscpp` is an `ALIAS` so in-tree and installed usage match. Verified
+  with an install plus a `find_package(oscpp)` consumer project.
+- [x] Removed the nested `project(oscpp_test)` and the redundant `../include` directory from `test/CMakeLists.txt`.
 - [ ] Register tests via `boost_tests` discovery (or at least one `add_test` per suite) so `ctest -R` can select
   individual suites. CLAUDE.md currently describes the old one-executable-per-file layout.
 - [x] Sanitizer option: `-DOSCPP_SANITIZE=address\;undefined` or `-DOSCPP_SANITIZE=thread` (see `CMakeLists.txt`).

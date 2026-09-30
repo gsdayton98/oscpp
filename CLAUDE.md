@@ -22,7 +22,7 @@ oscpp is a C++23 header/source library that wraps POSIX/OS-specific facilities (
 
 Requires CMake >= 3.25 and a C++23 compiler. Tests require Boost (`unit_test_framework` component, dynamic linking).
 
-Build out of tree, never inside the source directory. The build directory for Claude is `../build/oscpp/claude`.
+Tests build by default only when oscpp is the top-level project; pass `-DOSCPP_BUILD_TESTING=OFF` to skip them (and the Boost requirement). Build out of tree, never inside the source directory. The build directory for Claude is `../build/oscpp/claude`.
 
 ```sh
 cmake -S . -B ../build/oscpp/claude
