@@ -80,8 +80,9 @@ Items are ordered by priority within each section. Nothing here has been fixed y
 
 - [x] `OSCPP_BUILD_TESTING` option (default ON only when top-level), so `FetchContent` consumers don't need Boost.
 - [x] Install directories come from `GNUInstallDirs` (`CMAKE_INSTALL_*DIR`) instead of hard-coded `bin`/`lib`/`include`.
-- [ ] Forcing `CMAKE_INSTALL_PREFIX` to `$HOME` is surprising for a library. Document it, or gate it behind an option
-  (e.g. `OSCPP_DEV_PREFIX`).
+- [x] Install prefix defaults to `$HOME` so test installs need no privileged account. This is intentional: it applies
+  only when no prefix was given, and `--prefix` or `-DCMAKE_INSTALL_PREFIX=` always wins (documented in `CMakeLists.txt`
+  and `CLAUDE.md`). Not a change to make.
 - [x] Visibility preset hidden, `VISIBILITY_INLINES_HIDDEN`, `CMAKE_CXX_STANDARD_REQUIRED ON`, `CMAKE_CXX_EXTENSIONS OFF`, and
   `target_compile_features(oscpp PUBLIC cxx_std_23)` so consumers inherit the requirement.
 - [x] `PUBLIC_HEADER` flattened the install layout. Headers now live in `include/oscpp/` and
