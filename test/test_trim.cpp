@@ -57,4 +57,15 @@ BOOST_AUTO_TEST_CASE(test_trim_keeps_leading_whitespace) {
   BOOST_CHECK_EQUAL(s, "  inside  spaces");
 }
 
+// Bytes with the high bit set (for example UTF-8 text) are negative as plain char; they must not reach isspace() as such.
+BOOST_AUTO_TEST_CASE(test_trim_high_bit_characters) {
+  string s = "caf\xc3\xa9 \t";
+  oscpp::trim(s);
+  BOOST_CHECK_EQUAL(s, "caf\xc3\xa9");
+
+  string onlyHighBit = "\xff\xfe";
+  oscpp::trim(onlyHighBit);
+  BOOST_CHECK_EQUAL(onlyHighBit.size(), 2u);
+}
+
 BOOST_AUTO_TEST_SUITE_END()

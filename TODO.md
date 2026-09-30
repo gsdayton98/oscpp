@@ -56,12 +56,9 @@ Items are ordered by priority within each section. Nothing here has been fixed y
   `trim`). It's meaningless there and hides real dead-code warnings. Removed.
 - [ ] **Replace the repeated `__attribute__((visibility("default")))`** with an `OSCPP_API` macro in an
   `export.hpp`. Then `#include`s no longer depend on compiler-specific syntax, and MSVC becomes possible later.
-- [ ] `trim`:
-  - The name suggests both ends, but it trims only trailing whitespace and NULs, and the NUL part is undocumented.
-    Rename it to `rtrim`, or add `ltrim`/`trim` and document the NUL behavior.
-  - `isspace(char)` is UB for negative values, so cast to `unsigned char`.
-  - `<cctype>` isn't included.
-  - Consider a `std::string_view` overload.
+- [x] `trim`: the docs and a comment say it trims NULs and whitespace from the right end, `isspace` now gets an
+  `unsigned char` (it is undefined for negative `char` values; covered by a test), and `<cctype>` is not needed. A
+  `std::string_view` overload was considered and not added, since `trim` modifies its argument in place.
 - [ ] `CircularBuffer`:
   - The docs say "static array", but the storage is heap-allocated.
   - Elements must be default-constructible, since `new T[]` is used.
