@@ -10,6 +10,7 @@
 #include "oscpp/sysexception.hpp"
 #include <sys/socket.h>
 #include <fcntl.h>
+#include <utility>
 
 BOOST_AUTO_TEST_SUITE(Socket)
 
@@ -54,6 +55,21 @@ BOOST_AUTO_TEST_CASE(testSocket)
 BOOST_AUTO_TEST_CASE(testCreateThrows)
 {
     BOOST_CHECK_THROW(oscpp::Socket::create(-1, SOCK_STREAM, 0), oscpp::SysException);
+}
+
+BOOST_AUTO_TEST_CASE(testMove)
+{
+    int sysDescriptor;
+    {
+        auto original = oscpp::Socket::create(PF_LOCAL, SOCK_STREAM, 0);
+        sysDescriptor = original.descriptor();
+        const oscpp::Socket moved{std::move(original)};
+        BOOST_CHECK_EQUAL(moved.descriptor(), sysDescriptor);
+        BOOST_CHECK_EQUAL(original.descriptor(), -1); // NOLINT(bugprone-use-after-move)
+        BOOST_CHECK(checkSocketOpen(sysDescriptor));
+    }
+    // Only the final owner closes the descriptor.
+    BOOST_CHECK(!checkSocketOpen(sysDescriptor));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -110,15 +110,9 @@ Items are ordered by priority within each section. Nothing here has been fixed y
   nothing. The module is defined in `oscpp_tests.cpp`.
 - [x] Tests that write files now use the `TempDirectory` helper (`test/temp_directory.hpp`): a unique directory under the
   system temp directory, removed on destruction, with per-test fixtures. Nothing is written to the working directory.
-- [ ] Missing coverage:
-  - `File`: open failure throws `SysException`, move construction, re-`map()`, write flags.
-  - `FileDescriptor`: move semantics. (`create(-1)` and the clone failure path are covered in both namespaces.)
-  - `Socket`: move. (The `create` failure path is covered in both namespaces.)
-  - `oscpp_exceptionless` tests for each new counterpart.
-  - `DynamicLibrary`: missing library and missing symbol throw.
-  - `StopWatch`: `reset`.
-  - `trim`: empty string and all-whitespace edge cases.
-  - `CircularBuffer`: the multithreaded producer/consumer tests now live in `stress_circular_buffer` (label `stress`); run them under TSan.
+- [ ] Missing coverage: `CircularBuffer` multithreaded producer/consumer tests now live in `stress_circular_buffer` (label
+  `stress`); run them under TSan. The rest of the earlier coverage list (`File`, `FileDescriptor`, `Socket`,
+  `DynamicLibrary`, `StopWatch::reset`, `trim` edge cases, and the `oscpp_exceptionless` counterparts) is done.
 - [ ] `test_system_exception.cpp` expects the macOS text "Undefined error: 0" and `test_dynamic_library.cpp` hard-codes
   `/usr/lib/libc++.1.dylib`. Fine while macOS-only; revisit when Linux returns.
 - [ ] `test_random_device` only asserts `entropy() > 0`, which is not guaranteed by the standard. Assert that it

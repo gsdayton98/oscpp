@@ -12,6 +12,7 @@
 #include <fcntl.h>
 #include "oscpp/file_descriptor.hpp"
 #include <string>
+#include <utility>
 #include "oscpp/sysexception.hpp"
 #include "temp_directory.hpp"
 BOOST_AUTO_TEST_SUITE(FileDescriptor)
@@ -63,6 +64,20 @@ BOOST_AUTO_TEST_CASE(testFileDescriptor) {
 BOOST_AUTO_TEST_CASE(testCloneThrows) {
     const auto invalid = oscpp::FileDescriptor::create(-1);
     BOOST_CHECK_THROW((void) invalid.clone(), oscpp::SysException);
+}
+
+BOOST_AUTO_TEST_CASE(testMove) {
+    const int sysDescriptor = open("/dev/null", O_RDONLY);
+    BOOST_REQUIRE_LE(0, sysDescriptor);
+    {
+        auto original = oscpp::FileDescriptor::create(sysDescriptor);
+        const oscpp::FileDescriptor moved{std::move(original)};
+        BOOST_CHECK_EQUAL(moved.descriptor(), sysDescriptor);
+        BOOST_CHECK_EQUAL(original.descriptor(), -1); // NOLINT(bugprone-use-after-move)
+        BOOST_CHECK(fileDescriptorOpen(sysDescriptor));
+    }
+    // Only the final owner closes the descriptor.
+    BOOST_CHECK(!fileDescriptorOpen(sysDescriptor));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

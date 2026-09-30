@@ -30,8 +30,32 @@ BOOST_AUTO_TEST_CASE(test_trim) {
     string testCase = sample[testNumber];
     oscpp::trim(testCase);
     BOOST_CHECK_EQUAL(expected[testNumber], testCase.size());
-    BOOST_CHECK_EQUAL((int) expectedLastCharacter[testNumber], (int) testCase.back());
+    // back() on an empty string is undefined, so only check the last character of non-empty results.
+    if (!testCase.empty()) {
+      BOOST_CHECK_EQUAL((int) expectedLastCharacter[testNumber], (int) testCase.back());
+    }
   }
+}
+
+BOOST_AUTO_TEST_CASE(test_trim_empty) {
+  string s;
+  oscpp::trim(s);
+  BOOST_CHECK(s.empty());
+}
+
+BOOST_AUTO_TEST_CASE(test_trim_all_whitespace) {
+  for (const string original : {string{" "}, string{"   "}, string{"\t\n\r \v\f"}, string{"\0", 1}, string{" \t\0 \n", 5}}) {
+    string s = original;
+    oscpp::trim(s);
+    BOOST_CHECK_MESSAGE(s.empty(), "not empty after trimming a string of length " << original.size());
+  }
+}
+
+// Only the trailing end is trimmed.
+BOOST_AUTO_TEST_CASE(test_trim_keeps_leading_whitespace) {
+  string s = "  inside  spaces  ";
+  oscpp::trim(s);
+  BOOST_CHECK_EQUAL(s, "  inside  spaces");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

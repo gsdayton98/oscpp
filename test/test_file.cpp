@@ -5,11 +5,13 @@
 #define BOOST_BOOST_AUTO_TEST_MODULE Test File
 
 #include <string>
+#include <utility>
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
 #include <boost/test/unit_test.hpp>
 #include "oscpp/file.hpp"
+#include "oscpp/sysexception.hpp"
 #include "temp_directory.hpp"
 
 constexpr unsigned int NUMBER_POINTS = 1024u;
@@ -63,6 +65,55 @@ BOOST_FIXTURE_TEST_CASE(Test_map_empty_file, TextFileFixture)
     auto [mappedFile, mappedLen] = file.map();
     BOOST_TEST_REQUIRE(mappedFile == nullptr);
     BOOST_TEST_REQUIRE(mappedLen == 0u);
+}
+
+BOOST_AUTO_TEST_CASE(Test_open_failure)
+{
+    const TempDirectory directory;
+    const auto missing = directory.path("does_not_exist.dat");
+    try {
+        oscpp::File file(missing.c_str());
+        BOOST_FAIL("expected oscpp::SysException");
+    } catch (const oscpp::SysException &ex) {
+        BOOST_CHECK(ex.code() == std::errc::no_such_file_or_directory);
+    }
+}
+
+BOOST_FIXTURE_TEST_CASE(Test_move_construction, TextFileFixture)
+{
+    oscpp::File original(testFileName.c_str());
+    oscpp::File moved(std::move(original));
+
+    struct stat buffer {};
+    BOOST_CHECK_EQUAL(static_cast<unsigned long>(moved.fstat(buffer).st_size), NUMBER_POINTS * sizeof(unsigned int));
+    // The source gave up its descriptor.
+    BOOST_CHECK_THROW(original.fstat(buffer), oscpp::SysException); // NOLINT(bugprone-use-after-move)
+}
+
+BOOST_FIXTURE_TEST_CASE(Test_remap, TextFileFixture)
+{
+    oscpp::File file(testFileName.c_str());
+    const auto first = file.map();
+    const auto second = file.map();
+    BOOST_TEST_REQUIRE(second.first != nullptr);
+    BOOST_TEST_REQUIRE(first.second == second.second);
+    BOOST_TEST_REQUIRE(static_cast<unsigned int *>(second.first)[NUMBER_POINTS - 1] == NUMBER_POINTS - 1u);
+}
+
+// Flags and mode are passed through to open(): create a new file writable-only with restrictive permissions.
+BOOST_AUTO_TEST_CASE(Test_create_flags_and_mode)
+{
+    const TempDirectory directory;
+    const auto created = directory.path("created.dat");
+    oscpp::File file(created.c_str(), O_WRONLY | O_CREAT | O_EXCL | O_CLOEXEC, 0600);
+
+    struct stat buffer {};
+    file.fstat(buffer);
+    BOOST_CHECK_EQUAL(buffer.st_size, 0);
+    BOOST_CHECK_EQUAL(buffer.st_mode & 0777, 0600u);
+
+    // O_EXCL makes a second create fail.
+    BOOST_CHECK_THROW(oscpp::File(created.c_str(), O_WRONLY | O_CREAT | O_EXCL | O_CLOEXEC, 0600), oscpp::SysException);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

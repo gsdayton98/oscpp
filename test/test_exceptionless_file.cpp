@@ -68,6 +68,10 @@ BOOST_FIXTURE_TEST_CASE(testMove, DataFile) {
     BOOST_REQUIRE(file->map().has_value());
     oscpp_exceptionless::File moved {std::move(*file)};
     BOOST_CHECK(moved.fstat().has_value());
+    // The source gave up its descriptor.
+    const auto stale = file->fstat(); // NOLINT(bugprone-use-after-move)
+    BOOST_REQUIRE(!stale.has_value());
+    BOOST_CHECK_EQUAL(stale.error().value(), EBADF);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

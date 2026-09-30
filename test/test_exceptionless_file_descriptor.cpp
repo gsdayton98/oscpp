@@ -2,6 +2,7 @@
 #include <boost/test/unit_test.hpp>
 #include <cerrno>
 #include <fcntl.h>
+#include <utility>
 #include "oscpp_exceptionless/file_descriptor.hpp"
 
 BOOST_AUTO_TEST_SUITE(ExceptionlessFileDescriptor)
@@ -20,6 +21,19 @@ BOOST_AUTO_TEST_CASE(testCloneFails) {
     auto failed = invalid.clone();
     BOOST_REQUIRE(!failed.has_value());
     BOOST_CHECK_EQUAL(failed.error().value(), EBADF);
+}
+
+BOOST_AUTO_TEST_CASE(testMove) {
+    const int sysDescriptor = open("/dev/null", O_RDONLY);
+    BOOST_REQUIRE_LE(0, sysDescriptor);
+    {
+        auto original = oscpp_exceptionless::FileDescriptor::create(sysDescriptor);
+        const oscpp_exceptionless::FileDescriptor moved{std::move(original)};
+        BOOST_CHECK_EQUAL(moved.descriptor(), sysDescriptor);
+        BOOST_CHECK_EQUAL(original.descriptor(), -1); // NOLINT(bugprone-use-after-move)
+        BOOST_CHECK(fcntl(sysDescriptor, F_GETFD) >= 0);
+    }
+    BOOST_CHECK(fcntl(sysDescriptor, F_GETFD) < 0);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

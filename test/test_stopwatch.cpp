@@ -14,19 +14,35 @@
 BOOST_AUTO_TEST_SUITE(StopWatch)
 BOOST_AUTO_TEST_CASE(test_stopwatch)
 {
-    constexpr auto SECOND = 1000000UL;
+    constexpr auto INTERVAL = 50000UL; // microseconds
+    constexpr auto INTERVAL_SECONDS = 0.05;
     oscpp::StopWatch stopwatch;
-    usleep(SECOND);
+    usleep(INTERVAL);
     auto reading = stopwatch.read();
-    BOOST_REQUIRE_LT(1.0, reading);
+    BOOST_REQUIRE_LE(INTERVAL_SECONDS, reading);
 
-    usleep(SECOND);
-    reading = stopwatch.read();
-    BOOST_REQUIRE_LT(2.0, reading);
+    usleep(INTERVAL);
+    const auto secondReading = stopwatch.read();
+    BOOST_REQUIRE_LE(2 * INTERVAL_SECONDS, secondReading);
+    BOOST_REQUIRE_LT(reading, secondReading);
+}
+
+BOOST_AUTO_TEST_CASE(test_stopwatch_reset)
+{
+    constexpr auto INTERVAL = 50000UL; // microseconds
+    constexpr auto INTERVAL_SECONDS = 0.05;
+    oscpp::StopWatch stopwatch;
+    usleep(2 * INTERVAL);
+    const auto beforeReset = stopwatch.read();
+    BOOST_REQUIRE_LE(2 * INTERVAL_SECONDS, beforeReset);
 
     stopwatch.reset();
-    usleep(SECOND);
-    reading = stopwatch.read();
-    BOOST_REQUIRE_LT(1.0, reading);
+    // Immediately after a reset the reading restarts near zero, well below the time already elapsed.
+    BOOST_CHECK_LT(stopwatch.read(), beforeReset);
+    usleep(INTERVAL);
+    const auto afterReset = stopwatch.read();
+    BOOST_CHECK_LE(INTERVAL_SECONDS, afterReset);
+    BOOST_CHECK_LT(afterReset, beforeReset + INTERVAL_SECONDS);
 }
+
 BOOST_AUTO_TEST_SUITE_END()
