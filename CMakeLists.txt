@@ -26,7 +26,10 @@ set(HEADERS include/oscpp/circular_buffer.hpp
         include/oscpp/stopwatch.hpp
         include/oscpp/sysexception.hpp
         include/oscpp/trim.hpp
+        include/oscpp_exceptionless/dynamiclibrary.hpp
+        include/oscpp_exceptionless/file.hpp
         include/oscpp_exceptionless/file_descriptor.hpp
+        include/oscpp_exceptionless/random_device.hpp
         include/oscpp_exceptionless/socket.hpp)
 
 set(SOURCES src/oscpp/circular_buffer.cpp
@@ -38,7 +41,10 @@ set(SOURCES src/oscpp/circular_buffer.cpp
         src/oscpp/stopwatch.cpp
         src/oscpp/sysexception.cpp
         src/oscpp/trim.cpp
+        src/oscpp_exceptionless/dynamiclibrary.cpp
+        src/oscpp_exceptionless/file.cpp
         src/oscpp_exceptionless/file_descriptor.cpp
+        src/oscpp_exceptionless/random_device.cpp
         src/oscpp_exceptionless/socket.cpp)
 
 add_library(oscpp SHARED ${HEADERS} ${SOURCES})

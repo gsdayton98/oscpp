@@ -7,12 +7,16 @@
 //  release of resources.
 //
 // All the methods may throw an oscpp::SysException (a type of std::runtime_error) on errors.
+// See oscpp_exceptionless::File for a non-throwing version.
 
 #ifndef OSCPP_FILE_HPP
 #define OSCPP_FILE_HPP
+#include <cstddef>
 #include <fcntl.h>
 #include <sys/stat.h>
+#include <utility>
 #include "oscpp/sysexception.hpp"
+#include "oscpp_exceptionless/file.hpp"
 
 namespace oscpp {
 
@@ -30,12 +34,7 @@ class __attribute__((visibility("default"))) File {
    * @param mode     Permission bits used if the file is created (default 0).
    * @throws oscpp::SysException if the file cannot be opened.
    */
-  explicit File(const char *filename, const int flags = O_RDONLY | O_CLOEXEC, const int mode = 0)
-  : fd {open(filename, flags, mode)},
-        mappedFile {nullptr},
-        mappedLen {0}
-  {}
-
+  explicit File(const char *filename, int flags = O_RDONLY | O_CLOEXEC, int mode = 0);
 
   File(const File&) = delete;
   File& operator=(const File&) = delete;
@@ -44,22 +43,14 @@ class __attribute__((visibility("default"))) File {
    * Move constructor transfers ownership of the descriptor and any active
    * mapping, and disables the source so its destructor is a no-op.
    */
-  File(File&& other) noexcept
-  : fd {other.fd},
-        mappedFile {other.mappedFile},
-        mappedLen {other.mappedLen}
-  {
-    other.fd = -1;
-    other.mappedFile = nullptr;
-    other.mappedLen = 0;
-  }
+  File(File&& other) noexcept = default;
 
   /**
    * Move version of the assignment operator doesn't make sense.
    */
   File& operator=(File&&) = delete;
 
-  ~File() { close(); }
+  ~File() = default;
 
   /**
    * Memory-map the file for reading. If the file is already mapped, the previous mapping is
@@ -67,7 +58,7 @@ class __attribute__((visibility("default"))) File {
    * @return Pointer to the mapped region and its length in bytes.
    * @throws oscpp::SysException if the file's status cannot be read or the mapping fails.
    */
-  std::pair<void*, size_t> map();
+  std::pair<void*, std::size_t> map();
 
   /**
    * Get file status information for the open file.
@@ -78,12 +69,7 @@ class __attribute__((visibility("default"))) File {
   struct stat& fstat(struct stat& buffer) const;
 
  private:
-  int fd;
-  void *mappedFile;
-  size_t mappedLen;
-
-  static int open(const char *filename, int flags = O_RDONLY | O_CLOEXEC, int mode = 0);
-  void close();
+  oscpp_exceptionless::File impl;
 };
 
 }

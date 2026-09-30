@@ -2,10 +2,12 @@
 // Copyright 2016. Glen S. Dayton. Rights reserved according to terms of included license.
 #ifndef OSCPP_DYNAMIC_LIBRARY_HPP
 #define OSCPP_DYNAMIC_LIBRARY_HPP
+#include <utility>
+#include "oscpp_exceptionless/dynamiclibrary.hpp"
 
 namespace oscpp {
 /**
- *  Get information about a dynamic library.
+ *  Get information about a dynamic library. See oscpp_exceptionless::DynamicLibrary for a non-throwing version.
  */
     class [[maybe_unused]] __attribute__((visibility("default"))) DynamicLibrary {
     public:
@@ -41,14 +43,16 @@ namespace oscpp {
         /**
          * Close the library
          */
-        ~DynamicLibrary();
+        ~DynamicLibrary() = default;
+
+        [[maybe_unused]] DynamicLibrary(DynamicLibrary &&) noexcept = default;
 
         DynamicLibrary(const DynamicLibrary &) = delete;
 
         DynamicLibrary &operator=(const DynamicLibrary &) = delete;
 
     private:
-        void *handle;
+        oscpp_exceptionless::DynamicLibrary impl;
     };
 }
 
