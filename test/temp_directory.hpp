@@ -12,7 +12,6 @@
 #include <string>
 #include <system_error>
 
-
 /**
  * Some tests aren't real unit tests (in that they actually write to the file system).
  * TempDirectory creates a safe location for those test files on the system's temp file system.

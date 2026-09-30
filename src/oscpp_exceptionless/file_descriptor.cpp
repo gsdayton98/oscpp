@@ -1,5 +1,5 @@
 // -*- mode:C++; c-basic-offset:2; indent-tabs-mode:nil -*-
-// Copyright 2023 Glen S. Dayton. Rights reserved according to terms of included license.
+// Copyright 2026 Glen S. Dayton. Rights reserved according to terms of included license.
 
 #include <cerrno>
 #include <fcntl.h>
@@ -7,20 +7,18 @@
 #include <utility>
 #include "oscpp_exceptionless/file_descriptor.hpp"
 
-oscpp_exceptionless::FileDescriptor::FileDescriptor(FileDescriptor &&original) noexcept
-: handle {original.handle}
-{
+oscpp_exceptionless::FileDescriptor::FileDescriptor(FileDescriptor &&original) noexcept : handle{original.handle} {
   original.handle = -1;
 }
 
 oscpp_exceptionless::FileDescriptor::~FileDescriptor() noexcept {
   if (-1 < handle) {
-    (void) ::close(handle);
+    (void)::close(handle);
   }
 }
 
 auto oscpp_exceptionless::FileDescriptor::create(const int descriptor) noexcept -> FileDescriptor {
-  return FileDescriptor {descriptor};
+  return FileDescriptor{descriptor};
 }
 
 auto oscpp_exceptionless::FileDescriptor::clone() const noexcept -> std::expected<FileDescriptor, std::error_code> {
@@ -28,13 +26,13 @@ auto oscpp_exceptionless::FileDescriptor::clone() const noexcept -> std::expecte
   if (newDescriptor < 0) {
     return std::unexpected(std::error_code(errno, std::generic_category()));
   }
-  return FileDescriptor {newDescriptor};
+  return FileDescriptor{newDescriptor};
 }
 
 auto oscpp_exceptionless::FileDescriptor::operator=(FileDescriptor &&other) noexcept -> FileDescriptor & {
   if (this != &other) {
     if (-1 < handle) {
-      (void) ::close(handle);
+      (void)::close(handle);
     }
     handle = other.handle;
     other.handle = -1;

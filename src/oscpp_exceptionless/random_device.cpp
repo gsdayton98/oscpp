@@ -19,18 +19,17 @@ auto currentError() noexcept -> std::error_code {
     return std::make_error_code(std::errc::io_error);
   }
 }
-}
+} // namespace
 
 oscpp_exceptionless::RandomDevice::RandomDevice(std::unique_ptr<std::random_device> d) noexcept
-: device {std::move(d)}
-{}
+    : device{std::move(d)} {}
 
 oscpp_exceptionless::RandomDevice::RandomDevice(RandomDevice &&) noexcept = default;
 oscpp_exceptionless::RandomDevice::~RandomDevice() noexcept = default;
 
 auto oscpp_exceptionless::RandomDevice::create() noexcept -> std::expected<RandomDevice, std::error_code> {
   try {
-    return RandomDevice {std::make_unique<std::random_device>()};
+    return RandomDevice{std::make_unique<std::random_device>()};
   } catch (...) {
     return std::unexpected(currentError());
   }
@@ -39,7 +38,7 @@ auto oscpp_exceptionless::RandomDevice::create() noexcept -> std::expected<Rando
 auto oscpp_exceptionless::RandomDevice::create(const char *token) noexcept
     -> std::expected<RandomDevice, std::error_code> {
   try {
-    return RandomDevice {std::make_unique<std::random_device>(std::string{token})};
+    return RandomDevice{std::make_unique<std::random_device>(std::string{token})};
   } catch (...) {
     return std::unexpected(currentError());
   }
@@ -53,4 +52,6 @@ auto oscpp_exceptionless::RandomDevice::next() noexcept -> std::expected<result_
   }
 }
 
-auto oscpp_exceptionless::RandomDevice::entropy() const noexcept -> double { return device->entropy(); }
+auto oscpp_exceptionless::RandomDevice::entropy() const noexcept -> double {
+  return device->entropy();
+}

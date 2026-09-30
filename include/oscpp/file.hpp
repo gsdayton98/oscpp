@@ -1,10 +1,8 @@
-// -*- mode: c++ -*-
-////
-// Copyright 2021 Glen S. Dayton. Rights reserved according to terms of included license.
-// @author Glen S. Dayton
+// -*- mode:C++; c-basic-offset:2; indent-tabs-mode:nil -*-
+// Copyright 2026 Glen S. Dayton. Rights reserved according to terms of included license.
 //
-//  Wrapper around Posix file operations that protect against inadvertent copying of the file descriptor and guarantee
-//  release of resources.
+// Wrapper around Posix file operations that protect against inadvertent copying of the file descriptor and guarantee
+// release of resources.
 //
 // All the methods may throw an oscpp::SysException (a type of std::runtime_error) on errors.
 // See oscpp_exceptionless::File for a non-throwing version.
@@ -36,19 +34,19 @@ class __attribute__((visibility("default"))) File {
    */
   explicit File(const char *filename, int flags = O_RDONLY | O_CLOEXEC, int mode = 0);
 
-  File(const File&) = delete;
-  File& operator=(const File&) = delete;
+  File(const File &) = delete;
+  File &operator=(const File &) = delete;
 
   /**
    * Move constructor transfers ownership of the descriptor and any active
    * mapping, and disables the source so its destructor is a no-op.
    */
-  File(File&& other) noexcept = default;
+  File(File &&other) noexcept = default;
 
   /**
    * Release the file (mapping and descriptor) this object holds, then take ownership of the other's.
    */
-  File& operator=(File&&) noexcept = default;
+  File &operator=(File &&) noexcept = default;
 
   ~File() = default;
 
@@ -58,7 +56,7 @@ class __attribute__((visibility("default"))) File {
    * @return Pointer to the mapped region and its length in bytes.
    * @throws oscpp::SysException if the file's status cannot be read or the mapping fails.
    */
-  std::pair<void*, std::size_t> map();
+  std::pair<void *, std::size_t> map();
 
   /**
    * Release the current memory mapping, if any. Pointers returned by map() are invalid afterward.
@@ -82,11 +80,11 @@ class __attribute__((visibility("default"))) File {
    * @return The same buffer, populated.
    * @throws oscpp::SysException if the file's status cannot be read.
    */
-  struct stat& fstat(struct stat& buffer) const;
+  struct stat &fstat(struct stat &buffer) const;
 
  private:
   oscpp_exceptionless::File impl;
 };
 
-}
+} // namespace oscpp
 #endif // OSCPP_FILE_HPP

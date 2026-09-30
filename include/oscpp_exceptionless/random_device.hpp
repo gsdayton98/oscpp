@@ -45,5 +45,5 @@ class __attribute__((visibility("default"))) RandomDevice {
   std::unique_ptr<std::random_device> device;
 };
 
-}
+} // namespace oscpp_exceptionless
 #endif // OSCPP_EXCEPTIONLESS_RANDOM_DEVICE_HPP

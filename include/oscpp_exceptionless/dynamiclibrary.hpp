@@ -41,10 +41,13 @@ class __attribute__((visibility("default"))) DynamicLibrary {
   static constexpr int DefaultFlags = RTLD_NOW | RTLD_LOCAL;
 
   /// Open the current application image.
-  [[nodiscard]] static auto create(int flags = DefaultFlags) noexcept -> std::expected<DynamicLibrary, DynamicLibraryError>;
+  [[nodiscard]] static auto create(int flags = DefaultFlags) noexcept
+      -> std::expected<DynamicLibrary, DynamicLibraryError>;
 
-  /// Load the specified path into the image. @param flags dlopen() flags (RTLD_LAZY or RTLD_NOW, optionally RTLD_GLOBAL...).
-  [[nodiscard]] static auto create(const char *path, int flags = DefaultFlags) noexcept -> std::expected<DynamicLibrary, DynamicLibraryError>;
+  /// Load the specified path into the image. @param flags dlopen() flags (RTLD_LAZY or RTLD_NOW, optionally
+  /// RTLD_GLOBAL...).
+  [[nodiscard]] static auto create(const char *path, int flags = DefaultFlags) noexcept
+      -> std::expected<DynamicLibrary, DynamicLibraryError>;
 
   DynamicLibrary(const DynamicLibrary &) = delete;
   DynamicLibrary &operator=(const DynamicLibrary &) = delete;
@@ -59,10 +62,10 @@ class __attribute__((visibility("default"))) DynamicLibrary {
   [[nodiscard]] auto symbol(const char *symbolName) const noexcept -> std::expected<void *, DynamicLibraryError>;
 
  private:
-  explicit DynamicLibrary(void *libraryHandle) noexcept : handle {libraryHandle} {}
+  explicit DynamicLibrary(void *libraryHandle) noexcept : handle{libraryHandle} {}
 
   void *handle;
 };
 
-}
+} // namespace oscpp_exceptionless
 #endif // OSCPP_EXCEPTIONLESS_DYNAMIC_LIBRARY_HPP

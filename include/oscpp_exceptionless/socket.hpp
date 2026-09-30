@@ -1,5 +1,5 @@
 // -*- mode:C++; c-basic-offset:2; indent-tabs-mode:nil -*-
-// Copyright 2023 Glen S. Dayton. Rights reserved according to terms of included license.
+// Copyright 2026 Glen S. Dayton. Rights reserved according to terms of included license.
 //
 // Non-throwing counterpart of oscpp::Socket. A Socket owns a FileDescriptor (composition, not inheritance) and
 // adds the socket-specific operations. Failures are returned as a std::error_code (errno in the generic
@@ -19,7 +19,7 @@ namespace oscpp_exceptionless {
 class __attribute__((visibility("default"))) Socket {
   FileDescriptor fd;
 
-  explicit Socket(FileDescriptor &&descriptor) noexcept : fd {std::move(descriptor)} {}
+  explicit Socket(FileDescriptor &&descriptor) noexcept : fd{std::move(descriptor)} {}
 
  public:
   Socket(const Socket &) = delete;
@@ -50,5 +50,5 @@ class __attribute__((visibility("default"))) Socket {
   [[nodiscard]] auto fileDescriptor() const noexcept -> const FileDescriptor & { return fd; }
 };
 
-}
+} // namespace oscpp_exceptionless
 #endif // OSCPP_EXCEPTIONLESS_SOCKET_HPP

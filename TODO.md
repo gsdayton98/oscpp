@@ -112,10 +112,11 @@ Items are ordered by priority within each section. Nothing here has been fixed y
 - [x] README rewritten: typos fixed, both namespaces explained, an example, and build, install, options and
   `find_package(oscpp)` usage.
 - [x] `.gitignore` stale Visual Studio entries replaced (now `cmake-build-*`, `build/` and `CMakeUserPresets.json`).
-- [ ] Normalize headers. Done by hand: copyright line format (years untouched), `#endif // GUARD` comments with the real
-  guard names (the exceptionless guards are now `OSCPP_EXCEPTIONLESS_*`), trailing newlines, the `aruound` typo.
-  `.clang-format` (2-space indent, 120 columns, matching the Emacs modelines) and `.editorconfig` are added, but the
-  one-time reformat is not run yet because `clang-format` isn't installed here. Run it once, then review the diff.
+- [x] Normalized headers and sources: every file starts with the same Emacs modeline and a `Copyright 2026` line, `#endif //
+  GUARD` comments use the real guard names (the exceptionless guards are `OSCPP_EXCEPTIONLESS_*`), files end with a newline,
+  and everything is formatted with `clang-format` (2-space indent, 120 columns, `.clang-format`). The `format` and
+  `check-format` CMake targets reformat and verify. clang-format isn't available from Homebrew on Intel macOS, so install
+  it with `pip install clang-format` or `pipx install clang-format`.
 - [x] The `-*- mode:C++ ... -*-` modelines are kept (they carry the Emacs settings); `.editorconfig` covers other editors.
 - [ ] Bump the version and add a CHANGELOG once the API changes above land, since the error-handling split (`create`/`clone`
   now throw, non-throwing forms moved to `oscpp_exceptionless`) is source-breaking.

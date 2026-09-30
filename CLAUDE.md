@@ -49,6 +49,8 @@ ctest --test-dir ../build/oscpp/claude -LE stress                     # unit tes
 
 Warnings: oscpp's own code builds with `-Wall -Wextra -Wpedantic -Wconversion -Wshadow` and must stay warning-free. Configure with `-DOSCPP_WERROR=ON` to make warnings errors.
 
+Formatting: sources use 2-space indentation, enforced by `.clang-format` (and `.editorconfig`). Run `cmake --build ../build/oscpp/claude --target format` to reformat and `--target check-format` to verify; both need `clang-format` (`pip install clang-format` or `pipx install clang-format` work where Homebrew has no binary, for example on Intel macOS). Every file starts with the same two lines: the Emacs modeline `// -*- mode:C++; c-basic-offset:2; indent-tabs-mode:nil -*-` and `// Copyright 2026 Glen S. Dayton. Rights reserved according to terms of included license.`
+
 Sanitizers: configure a separate build directory with `-DOSCPP_SANITIZE=address\;undefined` or `-DOSCPP_SANITIZE=thread` (for example `../build/oscpp/claude-asan` and `../build/oscpp/claude-tsan`). `thread` can't be combined with `address`. Run the stress tests under `thread`.
 
 Multithreaded stress tests are not unit tests. They live in their own executable (`test/stress_circular_buffer.cpp` -> `stress_circular_buffer`) and carry the CTest label `stress`. Run them alone with `ctest --test-dir ../build/oscpp/claude -L stress`.

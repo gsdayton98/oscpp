@@ -1,4 +1,4 @@
-// -*- mode: c++; c-basic-offset:2; indent-tabs-mode:nil -*-
+// -*- mode:C++; c-basic-offset:2; indent-tabs-mode:nil -*-
 // Copyright 2026 Glen S. Dayton. Rights reserved according to terms of included license.
 //
 // Non-throwing counterpart of oscpp::File. Wrapper around POSIX file operations that protects against inadvertent
@@ -63,14 +63,14 @@ class __attribute__((visibility("default"))) File {
   [[nodiscard]] auto fstat() const noexcept -> std::expected<struct stat, std::error_code>;
 
  private:
-  explicit File(const int descriptor) noexcept : fd {descriptor} {}
+  explicit File(const int descriptor) noexcept : fd{descriptor} {}
 
   void close() noexcept;
 
   int fd;
-  void *mappedFile {nullptr};
-  std::size_t mappedLen {0};
+  void *mappedFile{nullptr};
+  std::size_t mappedLen{0};
 };
 
-}
+} // namespace oscpp_exceptionless
 #endif // OSCPP_EXCEPTIONLESS_FILE_HPP

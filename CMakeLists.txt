@@ -96,6 +96,27 @@ install(DIRECTORY include/oscpp include/oscpp_exceptionless DESTINATION "${CMAKE
 install(EXPORT oscpp-targets NAMESPACE oscpp:: DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/oscpp")
 export(TARGETS ${PROJECT_NAME} NAMESPACE oscpp:: FILE oscpp-targets.cmake)
 
+# Formatting: `cmake --build <dir> --target format` reformats the sources with .clang-format, and
+# `--target check-format` fails if any file isn't already formatted. Set OSCPP_CLANG_FORMAT to choose the executable.
+find_program(OSCPP_CLANG_FORMAT clang-format)
+if(OSCPP_CLANG_FORMAT AND PROJECT_IS_TOP_LEVEL)
+    file(GLOB_RECURSE OSCPP_FORMAT_FILES CONFIGURE_DEPENDS
+            "${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp"
+            "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
+            "${CMAKE_CURRENT_SOURCE_DIR}/test/*.hpp"
+            "${CMAKE_CURRENT_SOURCE_DIR}/test/*.cpp")
+    add_custom_target(format
+            COMMAND ${OSCPP_CLANG_FORMAT} -i ${OSCPP_FORMAT_FILES}
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+            COMMENT "Formatting sources with clang-format"
+            VERBATIM)
+    add_custom_target(check-format
+            COMMAND ${OSCPP_CLANG_FORMAT} --dry-run -Werror ${OSCPP_FORMAT_FILES}
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+            COMMENT "Checking source formatting with clang-format"
+            VERBATIM)
+endif()
+
 if(OSCPP_BUILD_TESTING)
     enable_testing()
     add_subdirectory(test)

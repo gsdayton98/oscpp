@@ -1,5 +1,5 @@
 // -*- mode:C++; c-basic-offset:2; indent-tabs-mode:nil -*-
-// Copyright 2023 Glen S. Dayton. Rights reserved according to terms of included license.
+// Copyright 2026 Glen S. Dayton. Rights reserved according to terms of included license.
 //
 // Non-throwing counterpart of oscpp::FileDescriptor. Same semantics (non-copyable, movable, closes on destruction),
 // but failures are returned as a std::error_code (errno in the generic category) inside a std::expected.
@@ -15,7 +15,7 @@ namespace oscpp_exceptionless {
 class __attribute__((visibility("default"))) FileDescriptor {
   int handle;
 
-  explicit FileDescriptor(const int fileDescriptor) noexcept : handle {fileDescriptor} {}
+  explicit FileDescriptor(const int fileDescriptor) noexcept : handle{fileDescriptor} {}
 
  public:
   /// Take ownership of an existing system descriptor.
@@ -51,5 +51,5 @@ class __attribute__((visibility("default"))) FileDescriptor {
       -> std::expected<std::size_t, std::error_code>;
 };
 
-}
+} // namespace oscpp_exceptionless
 #endif // OSCPP_EXCEPTIONLESS_FILE_DESCRIPTOR_HPP
