@@ -2,7 +2,6 @@
 ////
 //!  Copyright 2026 Glen S. Dayton. Rights reserved according to terms of included license.
 //!  Test File
-#define BOOST_BOOST_AUTO_TEST_MODULE Test File
 
 #include <string>
 #include <utility>

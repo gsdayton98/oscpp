@@ -14,7 +14,7 @@ auto oscpp::Socket::create(const int domain, const int socketType, const int pro
 }
 
 
-[[maybe_unused]] auto oscpp::Socket::clone() const -> Socket {
+auto oscpp::Socket::clone() const -> Socket {
     auto result = impl.clone();
     if (!result) throw SysException(result.error());
     return Socket(std::move(*result));

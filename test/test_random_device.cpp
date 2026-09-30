@@ -3,7 +3,6 @@
 //
 // Created by Glen Dayton on 04/25/2026.
 //
-#define BOOST_BOOST_AUTO_TEST_MODULE Test RandomDevice
 #include <boost/test/unit_test.hpp>
 
 #include <algorithm>
@@ -19,9 +18,8 @@ BOOST_AUTO_TEST_CASE(test_random_device)
 {
     oscpp::RandomDevice rd;
 
-    const auto f = rd.entropy();
-    BOOST_REQUIRE(f > 0);
-    BOOST_TEST_MESSAGE("entropy " << f);
+    // entropy() may legitimately be 0 (the standard doesn't guarantee a nonzero estimate), so just report it.
+    BOOST_TEST_MESSAGE("entropy " << rd.entropy());
     BOOST_TEST_MESSAGE("min " << oscpp::RandomDevice::min());
     BOOST_TEST_MESSAGE("max " << oscpp::RandomDevice::max());
     BOOST_TEST_MESSAGE("random value: " << rd());

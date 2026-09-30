@@ -10,13 +10,12 @@
 #include "oscpp/sysexception.hpp"
 
 
-[[maybe_unused]]
 auto oscpp::FileDescriptor::create(const int descriptor) noexcept -> FileDescriptor {
     return FileDescriptor {oscpp_exceptionless::FileDescriptor::create(descriptor)};
 }
 
 
-[[maybe_unused]] [[nodiscard]] auto oscpp::FileDescriptor::clone() const -> FileDescriptor {
+[[nodiscard]] auto oscpp::FileDescriptor::clone() const -> FileDescriptor {
     auto result = impl.clone();
     if (!result) throw SysException(result.error());
     return FileDescriptor {std::move(*result)};

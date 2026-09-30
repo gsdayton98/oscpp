@@ -15,7 +15,7 @@
 
 namespace oscpp {
 
-    class [[maybe_unused]] __attribute__((visibility("default"))) FileDescriptor {
+    class __attribute__((visibility("default"))) FileDescriptor {
         /**
          * Implementation-dependent file handle or descriptor.
          */
@@ -29,7 +29,7 @@ namespace oscpp {
 
     public:
 
-        [[maybe_unused]] static auto create(int descriptor) noexcept -> FileDescriptor;
+        static auto create(int descriptor) noexcept -> FileDescriptor;
 
         /**
          * Cannot copy a file descriptor.  Use the clone method to duplicate the descriptor into a new descriptor.
@@ -40,7 +40,7 @@ namespace oscpp {
          * Move constructor creates a new FileDescriptor with the same handle and disables the old handle to prevent
          * it from getting closed.
          */
-        [[maybe_unused]] FileDescriptor(FileDescriptor &&) noexcept = default;
+        FileDescriptor(FileDescriptor &&) noexcept = default;
 
         /**
          * Close the descriptor.
@@ -63,13 +63,13 @@ namespace oscpp {
          * @return The new FileDescriptor.
          * @throws oscpp::SysException on failure. See oscpp_exceptionless::FileDescriptor::clone for a non-throwing version.
          */
-        [[maybe_unused]] [[nodiscard]] auto clone() const -> FileDescriptor;
+        [[nodiscard]] auto clone() const -> FileDescriptor;
 
         /**
          * Return the low-level implementation specific file descriptor.
          * @return Operating system file handle
          */
-        [[maybe_unused]] [[nodiscard]] auto descriptor() const noexcept -> int { return impl.descriptor(); }
+        [[nodiscard]] auto descriptor() const noexcept -> int { return impl.descriptor(); }
     };
 }
 #endif //OSCPP_FILE_DESCRIPTOR_HPP

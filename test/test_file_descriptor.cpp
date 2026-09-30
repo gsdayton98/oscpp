@@ -6,7 +6,6 @@
 
 #include <cerrno>
 
-#define BOOST_BOOST_AUTO_TEST_MODULE Test file_descriptor
 #include <boost/test/unit_test.hpp>
 
 #include <fcntl.h>

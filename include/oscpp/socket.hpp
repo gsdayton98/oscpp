@@ -13,7 +13,7 @@
 #include "oscpp_exceptionless/socket.hpp"
 
 namespace oscpp {
-    class [[maybe_unused]] __attribute__((visibility("default"))) Socket {
+    class __attribute__((visibility("default"))) Socket {
         oscpp_exceptionless::Socket impl;
 
     private:
@@ -22,7 +22,7 @@ namespace oscpp {
     public:
         Socket(const Socket &) = delete;
 
-        [[maybe_unused]] Socket(Socket &&) noexcept = default;
+        Socket(Socket &&) noexcept = default;
 
         ~Socket() noexcept = default;
 
@@ -34,9 +34,9 @@ namespace oscpp {
 
         /// Duplicate the socket descriptor. The duplicate is close-on-exec.
         /// @throws oscpp::SysException on failure. See oscpp_exceptionless::Socket::clone for a non-throwing version.
-        [[maybe_unused]] [[nodiscard]] auto clone() const -> Socket;
+        [[nodiscard]] auto clone() const -> Socket;
 
-        [[maybe_unused]] [[nodiscard]] int descriptor() const noexcept { return impl.descriptor(); }
+        [[nodiscard]] int descriptor() const noexcept { return impl.descriptor(); }
     };
 }
 #endif //OSCPP_SOCKET_HPP

@@ -28,4 +28,10 @@ BOOST_AUTO_TEST_CASE(testMissingLibrary) {
     BOOST_CHECK(!library.error().empty());
 }
 
+BOOST_AUTO_TEST_CASE(testFlags) {
+    auto lazy = oscpp_exceptionless::DynamicLibrary::create(RTLD_LAZY | RTLD_LOCAL);
+    BOOST_REQUIRE(lazy.has_value());
+    BOOST_CHECK(lazy->symbol("strlen").has_value());
+}
+
 BOOST_AUTO_TEST_SUITE_END()

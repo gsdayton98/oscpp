@@ -16,16 +16,16 @@ auto unwrap(std::expected<T, std::string> &&result) -> T {
 }
 
 //  Open the current application image.
-oscpp::DynamicLibrary::DynamicLibrary()
-        : impl{unwrap(oscpp_exceptionless::DynamicLibrary::create())} {}
+oscpp::DynamicLibrary::DynamicLibrary(const int flags)
+        : impl{unwrap(oscpp_exceptionless::DynamicLibrary::create(flags))} {}
 
 
 // Load the specified path into the image.
-[[maybe_unused]] oscpp::DynamicLibrary::DynamicLibrary(const char *path)
-        : impl{unwrap(oscpp_exceptionless::DynamicLibrary::create(path))} {}
+oscpp::DynamicLibrary::DynamicLibrary(const char *path, const int flags)
+        : impl{unwrap(oscpp_exceptionless::DynamicLibrary::create(path, flags))} {}
 
 
 //  Find the specified symbol in the currently open library.
-[[maybe_unused]] auto oscpp::DynamicLibrary::symbol(const char *symbolName) const -> void * {
+auto oscpp::DynamicLibrary::symbol(const char *symbolName) const -> void * {
     return unwrap(impl.symbol(symbolName));
 }

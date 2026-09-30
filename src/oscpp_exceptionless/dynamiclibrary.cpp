@@ -11,14 +11,14 @@ auto dlError() -> std::string {
 }
 }
 
-auto oscpp_exceptionless::DynamicLibrary::create() -> std::expected<DynamicLibrary, std::string> {
-  void *handle = dlopen(nullptr, 0);
+auto oscpp_exceptionless::DynamicLibrary::create(const int flags) -> std::expected<DynamicLibrary, std::string> {
+  void *handle = dlopen(nullptr, flags);
   if (handle == nullptr) return std::unexpected(dlError());
   return DynamicLibrary {handle};
 }
 
-auto oscpp_exceptionless::DynamicLibrary::create(const char *path) -> std::expected<DynamicLibrary, std::string> {
-  void *handle = dlopen(path, 0);
+auto oscpp_exceptionless::DynamicLibrary::create(const char *path, const int flags) -> std::expected<DynamicLibrary, std::string> {
+  void *handle = dlopen(path, flags);
   if (handle == nullptr) return std::unexpected(dlError());
   return DynamicLibrary {handle};
 }

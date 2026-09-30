@@ -2,7 +2,6 @@
 // Copyright 2026 Glen S. Dayton. Rights reserved according to terms of included license.
 ////
 //!  Test Stopwatch
-#define BOOST_BOOST_AUTO_TEST_MODULE Test StopWatch
 
 #include <cstdlib>
 #include <fstream>

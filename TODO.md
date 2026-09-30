@@ -43,7 +43,7 @@ Items are ordered by priority within each section. Nothing here has been fixed y
   `oscpp_exceptionless::FileDescriptor` (composition, not inheritance: `clone()` must return a `Socket`, and
   inheritance invites slicing) and exposes it through `fileDescriptor()`. `oscpp::Socket` wraps the exceptionless
   socket. Still missing: socket operations (bind, connect, send, recv) and `read`/`write` on `FileDescriptor`.
-- [ ] `DynamicLibrary`: take a `dlopen` flags parameter (default `RTLD_NOW | RTLD_LOCAL`) instead of the literal `0`.
+- [x] `DynamicLibrary` takes a `dlopen` flags parameter (default `RTLD_NOW | RTLD_LOCAL`) in both namespaces, instead of the literal `0`.
 - [ ] Add missing members:
   - move assignment for `File`, `FileDescriptor` and `Socket` (currently deleted or absent; implement with
     close-then-take or swap)
@@ -52,8 +52,8 @@ Items are ordered by priority within each section. Nothing here has been fixed y
   - `read`/`write` on `FileDescriptor`
   - a public `descriptor()` on `File`
   - a public `unmap()` on `File`
-- [ ] **`[[maybe_unused]]` is applied to public classes and methods** (`DynamicLibrary`, `FileDescriptor`, `Socket`,
-  `trim`). It's meaningless there and hides real dead-code warnings. Remove it.
+- [x] **`[[maybe_unused]]` was applied to public classes and methods** (`DynamicLibrary`, `FileDescriptor`, `Socket`,
+  `trim`). It's meaningless there and hides real dead-code warnings. Removed.
 - [ ] **Replace the repeated `__attribute__((visibility("default")))`** with an `OSCPP_API` macro in an
   `export.hpp`. Then `#include`s no longer depend on compiler-specific syntax, and MSVC becomes possible later.
 - [ ] `trim`:
@@ -71,8 +71,8 @@ Items are ordered by priority within each section. Nothing here has been fixed y
     Decide whether it's header-only (then drop the `.cpp`) or has a closed instantiation set (then add
     `extern template`).
   - Add `<cstddef>` and `<algorithm>` includes.
-- [ ] Add missing standard includes (`<utility>`, `<cstddef>`) to `file.hpp` and `socket.hpp`. Also stop leaking
-  `<fcntl.h>` and `<sys/stat.h>` from `file.hpp` unless needed for the default arguments.
+- [x] `file.hpp` and `socket.hpp` include `<utility>` and `<cstddef>` where used. `<fcntl.h>` and `<sys/stat.h>` stay in `file.hpp`
+  because the default arguments and `struct stat` need them.
 - [ ] `SysException` messages carry no context. Add an optional `what_arg` (e.g. `"open(/path): No such file"`), and use
   it in `File`.
 
@@ -101,8 +101,7 @@ Items are ordered by priority within each section. Nothing here has been fixed y
 
 ## P3: Tests
 
-- [ ] Remove the bogus `#define BOOST_BOOST_AUTO_TEST_MODULE ...` from all test files. It's a typo'd macro and does
-  nothing. The module is defined in `oscpp_tests.cpp`.
+- [x] Removed the bogus `#define BOOST_BOOST_AUTO_TEST_MODULE ...` from all test files.
 - [x] Tests that write files now use the `TempDirectory` helper (`test/temp_directory.hpp`): a unique directory under the
   system temp directory, removed on destruction, with per-test fixtures. Nothing is written to the working directory.
 - [x] Missing coverage is filled. The `CircularBuffer` stress tests (`stress_circular_buffer`, label `stress`) ran clean
@@ -110,8 +109,8 @@ Items are ordered by priority within each section. Nothing here has been fixed y
   `../build/oscpp/claude-tsan`). Making that repeatable is covered by the sanitizer option in the build-system section.
 - [ ] `test_system_exception.cpp` expects the macOS text "Undefined error: 0" and `test_dynamic_library.cpp` hard-codes
   `/usr/lib/libc++.1.dylib`. Fine while macOS-only; revisit when Linux returns.
-- [ ] `test_random_device` only asserts `entropy() > 0`, which is not guaranteed by the standard. Assert that it
-  compiles and works as a generator (e.g. with `std::uniform_int_distribution`) instead.
+- [x] `test_random_device` no longer asserts `entropy() > 0`; it reports it, and the generator use with the standard
+  distributions is covered by `test_random_device_as_generator`.
 - [ ] Add CI (GitHub Actions on macOS with clang, ASan/UBSan job, TSan job for `CircularBuffer`).
 
 ## P4: Docs and hygiene
@@ -135,8 +134,8 @@ Items are ordered by priority within each section. Nothing here has been fixed y
 
 Not verified, so not actionable yet. Re-check when a Linux clang environment is available.
 
-- [ ] `dlopen(path, 0)`: glibc requires `RTLD_LAZY` or `RTLD_NOW` (covered by the flags item above).
+- [x] `dlopen(path, 0)`: glibc requires `RTLD_LAZY` or `RTLD_NOW`. Fixed by the flags parameter (default `RTLD_NOW | RTLD_LOCAL`).
 - [ ] `/dev/random` blocking behavior on older kernels.
 - [ ] Tests that hard-code macOS paths and error text.
-- [ ] `lib64` install layout from the hard-coded `LIBDIR`.
+- [x] `lib64` install layout from the hard-coded `LIBDIR`. Fixed by using `GNUInstallDirs`.
 - [ ] Add an Ubuntu (clang) CI job; consider gcc support then.
