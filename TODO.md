@@ -21,17 +21,25 @@ Items are ordered by priority within each section. Nothing here has been fixed y
 
 ## P1: API and design consistency
 
-- [ ] **Pick one error-handling model.** CLAUDE.md says "errors via `SysException`", but `FileDescriptor::clone`,
-  `Socket::create` and `Socket::clone` return `std::pair<T, int>` with errno, and `DynamicLibrary` throws
-  `std::runtime_error`. Options:
-  - `std::expected<T, std::error_code>` (we're on C++23), or
-  - throwing everywhere.
-  Also make `SysException` derive from `std::system_error` so callers can inspect `code()`. That fixes
-  `DynamicLibrary` being the odd one out. `std::generic_category().message(errno)` would also replace the
-  `strerror_r` buffer code in `SysException::message`.
-- [ ] **`Socket` and `FileDescriptor` duplicate each other.** Socket is a handle plus `descriptor()`/`clone()`, with no
-  bind, connect, send or recv. Have it own a `FileDescriptor` (or share a base) and add the missing operations,
-  or document it as a bare handle.
+- [x] **Pick one error-handling model.** Decided: two co-equal namespaces. `oscpp` (`include/oscpp/`,
+  `src/oscpp/`) throws `SysException`; `oscpp_exceptionless` (`include/oscpp_exceptionless/`,
+  `src/oscpp_exceptionless/`) returns `std::expected<T, std::error_code>` (errno in the generic category). Callers use
+  one or the other. `oscpp` types may wrap their `oscpp_exceptionless` counterpart and translate errors to exceptions.
+  Done for `FileDescriptor` and `Socket`; the old `std::pair<T, int>` returns are gone.
+- [ ] Finish the error-handling split:
+  - [x] `oscpp_exceptionless` counterparts now exist for `File`, `DynamicLibrary` and `RandomDevice`, and the `oscpp`
+    versions wrap them. Pure-computation modules (`trim`, `StopWatch`, `CircularBuffer`) need none.
+  - Make `SysException` derive from `std::system_error` so callers can inspect `code()`. That fixes
+    `DynamicLibrary` throwing plain `std::runtime_error`. `std::generic_category().message(errno)` would also
+    replace the `strerror_r` buffer code in `SysException::message`.
+  - `oscpp_exceptionless::DynamicLibrary` reports errors as the `dlerror()` string (`std::expected<T, std::string>`)
+    since there is no errno to put in an `error_code`. Consider a custom `std::error_category` if callers need to
+    branch on the failure.
+  - `oscpp_exceptionless::RandomDevice` is not a `std::uniform_random_bit_generator`, because a draw can fail.
+    libc++ silently accepts unrecognized tokens, so the token failure path is untested.
+- [ ] **`Socket` and `FileDescriptor` duplicate each other**, in both namespaces. Socket is a handle plus
+  `descriptor()`/`clone()`, with no bind, connect, send or recv. Have it own a `FileDescriptor` (or share a base) and add
+  the missing operations, or document it as a bare handle.
 - [ ] `DynamicLibrary`: take a `dlopen` flags parameter (default `RTLD_NOW | RTLD_LOCAL`) instead of the literal `0`.
 - [ ] Add missing members:
   - move assignment for `File`, `FileDescriptor` and `Socket` (currently deleted or absent; implement with
@@ -78,8 +86,8 @@ Items are ordered by priority within each section. Nothing here has been fixed y
 - [ ] Use `CXX_VISIBILITY_PRESET hidden` / `VISIBILITY_INLINES_HIDDEN` and `CMAKE_CXX_STANDARD_REQUIRED ON` /
   `CMAKE_CXX_EXTENSIONS OFF`. Better still, use `target_compile_features(oscpp PUBLIC cxx_std_23)` so consumers inherit
   the requirement.
-- [ ] `PUBLIC_HEADER` flattens the install layout. Install headers to `include/oscpp/` and use
-  `#include <oscpp/file.hpp>`, to avoid collisions on generic names like `file.hpp`, `socket.hpp` and `trim.hpp`.
+- [x] `PUBLIC_HEADER` flattened the install layout. Headers now live in `include/oscpp/` and
+  `include/oscpp_exceptionless/` and install to the same directories (`install(DIRECTORY ...)`).
 - [ ] Rename the export file: `install(EXPORT oscpp ... )` writes `oscpp.cmake`, which sits beside `oscpp-config.cmake`
   and is easy to confuse. Use `oscpp-targets.cmake`. Also add an `ALIAS oscpp::oscpp` so in-tree and installed usage
   match.
@@ -103,12 +111,13 @@ Items are ordered by priority within each section. Nothing here has been fixed y
   destructor. `BOOST_TEST_GLOBAL_FIXTURE` inside a suite is also misleading, so use a per-suite fixture.
 - [ ] Missing coverage:
   - `File`: open failure throws `SysException`, move construction, re-`map()`, write flags.
-  - `FileDescriptor`: move semantics, `create(-1)`.
-  - `Socket`: `create` failure path, move.
+  - `FileDescriptor`: move semantics. (`create(-1)` and the clone failure path are covered in both namespaces.)
+  - `Socket`: move. (The `create` failure path is covered in both namespaces.)
+  - `oscpp_exceptionless` tests for each new counterpart.
   - `DynamicLibrary`: missing library and missing symbol throw.
   - `StopWatch`: `reset`.
   - `trim`: empty string and all-whitespace edge cases.
-  - `CircularBuffer`: multi-thread producer/consumer under TSan.
+  - `CircularBuffer`: the multithreaded producer/consumer tests now live in `stress_circular_buffer` (label `stress`); run them under TSan.
 - [ ] `test_system_exception.cpp` expects the macOS text "Undefined error: 0" and `test_dynamic_library.cpp` hard-codes
   `/usr/lib/libc++.1.dylib`. Fine while macOS-only; revisit when Linux returns.
 - [ ] `test_random_device` only asserts `entropy() > 0`, which is not guaranteed by the standard. Assert that it
@@ -118,12 +127,12 @@ Items are ordered by priority within each section. Nothing here has been fixed y
 ## P4: Docs and hygiene
 
 - [ ] Update CLAUDE.md. The Test section describes one executable per source file, but there is now a single
-  `oscpp_tests`. The "filenames drop letters" note is obsolete (`dynamiclibary.cpp` was fixed). It says `Stopwatch` but the
-  class is `StopWatch`.
+  `oscpp_tests`. It says `Stopwatch` but the class is `StopWatch`. (The error-handling split, header layout and
+  out-of-tree build directory are already documented.)
 - [ ] README: fix the typos ("associed", "aruound" in `socket.hpp`, "oen" in `circular_buffer.hpp`), remove trailing
   whitespace in the table, and add build, install and `find_package(oscpp)` usage sections plus a minimal example.
 - [ ] `.gitignore` carries stale Visual Studio entries (`OSCPP.vpwhistu`, `OSCPP.vtg`, `Debug`). Replace with
-  `build/` and `cmake-build-*` (already present) plus `CMakeUserPresets.json`.
+  `cmake-build-*` (already present) plus `CMakeUserPresets.json`. `build/` is already ignored.
 - [ ] Normalize headers:
   - copyright years and formats vary (2016, 2021, 2023, "©2026")
   - indentation switches between 2 and 4 spaces
@@ -132,8 +141,8 @@ Items are ordered by priority within each section. Nothing here has been fixed y
   - some files lack a trailing newline
   Add a `.clang-format` (and optionally `.clang-tidy`) and run it once.
 - [ ] Replace the `-*- mode:C++ ... -*-` Emacs modelines with a `.editorconfig`, if they aren't wanted.
-- [ ] Bump the version and add a CHANGELOG once the API changes above land, since the `Result`/exception change is
-  source-breaking.
+- [ ] Bump the version and add a CHANGELOG once the API changes above land, since the error-handling split (`create`/`clone`
+  now throw, non-throwing forms moved to `oscpp_exceptionless`) is source-breaking.
 
 ## Deferred until a Linux environment exists
 
