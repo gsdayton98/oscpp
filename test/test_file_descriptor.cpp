@@ -13,6 +13,7 @@
 #include "oscpp/file_descriptor.hpp"
 #include <string>
 #include "oscpp/sysexception.hpp"
+#include "temp_directory.hpp"
 BOOST_AUTO_TEST_SUITE(FileDescriptor)
 
 static auto fileDescriptorOpen(const int fd) -> bool {
@@ -28,9 +29,10 @@ static auto isCloseOnExec(const int fd) -> bool {
 
 BOOST_AUTO_TEST_CASE(testFileDescriptor) {
     // open a file to get a file descriptor to use in tests
-    auto *testFileName = "testFile.txt";
+    const TempDirectory directory;
+    const auto testFileName = directory.path("testFile.txt");
 
-    const int sysDescriptor = open(testFileName, O_RDWR|O_CREAT|O_TRUNC, 0664);
+    const int sysDescriptor = open(testFileName.c_str(), O_RDWR|O_CREAT|O_TRUNC, 0664);
     if (sysDescriptor < 0) {
         const std::string error = "FileDescriptor test failed setup: " + oscpp::SysException::message(errno);
         BOOST_FAIL(error.c_str());

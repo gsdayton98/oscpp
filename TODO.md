@@ -108,9 +108,8 @@ Items are ordered by priority within each section. Nothing here has been fixed y
 
 - [ ] Remove the bogus `#define BOOST_BOOST_AUTO_TEST_MODULE ...` from all test files. It's a typo'd macro and does
   nothing. The module is defined in `oscpp_tests.cpp`.
-- [ ] `test_file.cpp` writes `testFile.dat` (and `test_file_descriptor.cpp` writes `testFile.txt`) into the cwd and never
-  removes them. Use a temp dir (`std::filesystem::temp_directory_path()` plus unique name) and clean up in the fixture
-  destructor. `BOOST_TEST_GLOBAL_FIXTURE` inside a suite is also misleading, so use a per-suite fixture.
+- [x] Tests that write files now use the `TempDirectory` helper (`test/temp_directory.hpp`): a unique directory under the
+  system temp directory, removed on destruction, with per-test fixtures. Nothing is written to the working directory.
 - [ ] Missing coverage:
   - `File`: open failure throws `SysException`, move construction, re-`map()`, write flags.
   - `FileDescriptor`: move semantics. (`create(-1)` and the clone failure path are covered in both namespaces.)

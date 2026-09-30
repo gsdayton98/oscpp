@@ -1,18 +1,22 @@
 // -*- mode: c++ -*-
 // Copyright 2026 Glen S. Dayton. Rights reserved according to terms of included license.
 #include <cerrno>
-#include <cstdio>
+#include <string>
 #include <fstream>
 #include <boost/test/unit_test.hpp>
 #include "oscpp_exceptionless/file.hpp"
+#include "temp_directory.hpp"
 
 BOOST_AUTO_TEST_SUITE(ExceptionlessFile)
 
 constexpr unsigned int NUMBER_POINTS = 256u;
-constexpr auto dataFileName = "exceptionlessFile.dat";
-constexpr auto emptyFileName = "exceptionlessEmpty.dat";
 
+// Each test case gets its own temporary directory holding a data file and an empty file; both are removed afterward.
 struct DataFile {
+    TempDirectory directory;
+    std::string dataFileName {directory.path("data.dat")};
+    std::string emptyFileName {directory.path("empty.dat")};
+
     DataFile() {
         std::ofstream out(dataFileName, std::ios::out | std::ios::binary);
         for (unsigned int i = 0; i < NUMBER_POINTS; ++i) {
@@ -20,14 +24,10 @@ struct DataFile {
         }
         std::ofstream empty(emptyFileName, std::ios::out | std::ios::trunc);
     }
-    ~DataFile() {
-        std::remove(dataFileName);
-        std::remove(emptyFileName);
-    }
 };
 
 BOOST_FIXTURE_TEST_CASE(testFstat, DataFile) {
-    auto file = oscpp_exceptionless::File::create(dataFileName);
+    auto file = oscpp_exceptionless::File::create(dataFileName.c_str());
     BOOST_REQUIRE(file.has_value());
     const auto stats = file->fstat();
     BOOST_REQUIRE(stats.has_value());
@@ -35,7 +35,7 @@ BOOST_FIXTURE_TEST_CASE(testFstat, DataFile) {
 }
 
 BOOST_FIXTURE_TEST_CASE(testMap, DataFile) {
-    auto file = oscpp_exceptionless::File::create(dataFileName);
+    auto file = oscpp_exceptionless::File::create(dataFileName.c_str());
     BOOST_REQUIRE(file.has_value());
     const auto mapped = file->map();
     BOOST_REQUIRE(mapped.has_value());
@@ -48,7 +48,7 @@ BOOST_FIXTURE_TEST_CASE(testMap, DataFile) {
 }
 
 BOOST_FIXTURE_TEST_CASE(testMapEmptyFile, DataFile) {
-    auto file = oscpp_exceptionless::File::create(emptyFileName);
+    auto file = oscpp_exceptionless::File::create(emptyFileName.c_str());
     BOOST_REQUIRE(file.has_value());
     const auto mapped = file->map();
     BOOST_REQUIRE(mapped.has_value());
@@ -63,7 +63,7 @@ BOOST_AUTO_TEST_CASE(testOpenFails) {
 }
 
 BOOST_FIXTURE_TEST_CASE(testMove, DataFile) {
-    auto file = oscpp_exceptionless::File::create(dataFileName);
+    auto file = oscpp_exceptionless::File::create(dataFileName.c_str());
     BOOST_REQUIRE(file.has_value());
     BOOST_REQUIRE(file->map().has_value());
     oscpp_exceptionless::File moved {std::move(*file)};
