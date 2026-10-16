@@ -16,6 +16,7 @@ oscpp is a C++23 header/source library that wraps POSIX/OS-specific facilities (
 | `socket`           | Socket wrapper (non-copyable, movable).                                  |
 | `stopwatch`        | Timing utility for code sections.                                        |
 | `sysexception`     | `std::system_error` subclass built from `errno` (generic category).      |
+| `thousands_separator` | Header-only `std::numpunct` facet and `withThousandsSeparator()`: 1,234,567. |
 | `trim`             | Whitespace trimming for strings.                                         |
 
 ## Build

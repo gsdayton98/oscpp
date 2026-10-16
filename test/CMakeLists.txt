@@ -15,6 +15,7 @@ add_executable(oscpp_tests oscpp_tests.cpp
         test_socket.cpp
         test_system_exception.cpp
         test_stopwatch.cpp
+        test_thousands_separator.cpp
         test_trim.cpp)
 # Boost's own headers trip -Wconversion and -Wsign-compare, so mark them as system headers to check only oscpp's code.
 # CMake drops implicit include directories such as /usr/local/include from the command line (and AppleClang doesn't treat

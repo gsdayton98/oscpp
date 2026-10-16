@@ -25,6 +25,7 @@ The `oscpp` classes wrap their `oscpp_exceptionless` counterparts and turn error
 | `socket`           | `oscpp`, `oscpp_exceptionless`| Owning socket handle.                                          |
 | `stopwatch`        | `oscpp`                       | Timing utility for sections of code.                           |
 | `sysexception`     | `oscpp`                       | `std::system_error` built from `errno`.                        |
+| `thousands_separator` | `oscpp`                    | Locale facet that writes numbers as 1,234,567 (header-only).   |
 | `trim`             | `oscpp`                       | Trim trailing whitespace and NULs from a string.               |
 
 ## Example
