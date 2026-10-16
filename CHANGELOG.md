@@ -5,6 +5,12 @@ and the project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- **`oscpp/thousands_separator.hpp`**, a header-only locale facet (`oscpp::ThousandsSeparator`) and
+  `oscpp::withThousandsSeparator()`, to write numbers to a stream with separators: `1234567` as `1,234,567`. The
+  separator character and group size can be changed. It affects only the stream it is imbued in.
+
 ## [2.0.0] - 2026-09-30
 
 A breaking release. The API is split into a throwing namespace (`oscpp`) and a non-throwing one

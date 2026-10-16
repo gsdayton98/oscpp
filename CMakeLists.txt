@@ -52,6 +52,7 @@ set(HEADERS include/oscpp_export.hpp
         include/oscpp/socket.hpp
         include/oscpp/stopwatch.hpp
         include/oscpp/sysexception.hpp
+        include/oscpp/thousands_separator.hpp
         include/oscpp/trim.hpp
         include/oscpp_exceptionless/dynamiclibrary.hpp
         include/oscpp_exceptionless/file.hpp
