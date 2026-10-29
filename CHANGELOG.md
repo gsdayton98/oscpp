@@ -5,7 +5,20 @@ and the project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+
+- **`oscpp_export.hpp` moves to `oscpp/oscpp_export.hpp`**, so every installed header lives under `oscpp/` or
+  `oscpp_exceptionless/` and nothing is dropped loose into the include directory. Code that included it directly must
+  update the path.
+- **Install prefix comes from the presets.** `debug` installs to `$HOME`, `release` to `/usr/local`. The `$HOME` default
+  for presetless top-level builds no longer applies when oscpp is embedded with `FetchContent`/`add_subdirectory`.
+- **Headers install through a `FILE_SET`**, so the list in `CMakeLists.txt` is the single source for the install.
+
 ### Added
+
+- **`oscpp.pc`**, a pkg-config file, is installed again.
+- **`OSCPP_ABSOLUTE_INSTALL_NAME`** option (on in the `release` preset) records the absolute install path as the macOS
+  install name.
 
 - **`oscpp/thousands_separator.hpp`**, a header-only locale facet (`oscpp::ThousandsSeparator`) and
   `oscpp::withThousandsSeparator()`, to write numbers to a stream with separators: `1234567` as `1,234,567`. The

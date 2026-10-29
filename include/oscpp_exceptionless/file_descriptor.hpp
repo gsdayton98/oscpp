@@ -9,7 +9,7 @@
 #include <cstddef>
 #include <expected>
 #include <system_error>
-#include "oscpp_export.hpp"
+#include "oscpp/oscpp_export.hpp"
 
 namespace oscpp_exceptionless {
 

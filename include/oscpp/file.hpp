@@ -15,7 +15,7 @@
 #include <utility>
 #include "oscpp/sysexception.hpp"
 #include "oscpp_exceptionless/file.hpp"
-#include "oscpp_export.hpp"
+#include "oscpp/oscpp_export.hpp"
 
 namespace oscpp {
 

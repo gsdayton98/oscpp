@@ -13,7 +13,7 @@
 #include <sys/stat.h>
 #include <system_error>
 #include <utility>
-#include "oscpp_export.hpp"
+#include "oscpp/oscpp_export.hpp"
 
 namespace oscpp_exceptionless {
 
