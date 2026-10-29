@@ -4,7 +4,7 @@
 #ifndef OSCPP_TRIM_HPP
 #define OSCPP_TRIM_HPP
 #include <string>
-#include "oscpp_export.hpp"
+#include "oscpp/oscpp_export.hpp"
 
 namespace oscpp {
 

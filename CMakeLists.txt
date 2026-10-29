@@ -5,10 +5,10 @@ project(oscpp VERSION 2.0.0 DESCRIPTION "Library for operating system like funct
 option(OSCPP_BUILD_TESTING "Build the oscpp tests (requires Boost.Test)" ${PROJECT_IS_TOP_LEVEL})
 
 include(GNUInstallDirs)
-# Override system installation when developing.
-# For actual installation, set the values on the command line.
-# This avoids needing privileged access during development.
-if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+# The presets choose the prefix: `debug` installs to $HOME for development, `release` to /usr/local for delivery.
+# Without a preset, a top-level build still defaults to $HOME so a plain install needs no privileges. Pass --prefix
+# or -DCMAKE_INSTALL_PREFIX= to choose another. Never override the prefix of a parent project that embeds oscpp.
+if(PROJECT_IS_TOP_LEVEL AND CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set(CMAKE_INSTALL_PREFIX "$ENV{HOME}" CACHE PATH "Install prefix" FORCE)
 endif()
 
@@ -43,23 +43,6 @@ if(OSCPP_WERROR)
     target_compile_options(oscpp_warnings INTERFACE -Werror)
 endif()
 
-set(HEADERS include/oscpp_export.hpp
-        include/oscpp/circular_buffer.hpp
-        include/oscpp/dynamiclibrary.hpp
-        include/oscpp/file.hpp
-        include/oscpp/file_descriptor.hpp
-        include/oscpp/random_device.hpp
-        include/oscpp/socket.hpp
-        include/oscpp/stopwatch.hpp
-        include/oscpp/sysexception.hpp
-        include/oscpp/thousands_separator.hpp
-        include/oscpp/trim.hpp
-        include/oscpp_exceptionless/dynamiclibrary.hpp
-        include/oscpp_exceptionless/file.hpp
-        include/oscpp_exceptionless/file_descriptor.hpp
-        include/oscpp_exceptionless/random_device.hpp
-        include/oscpp_exceptionless/socket.hpp)
-
 set(SOURCES src/oscpp/dynamiclibrary.cpp
         src/oscpp/file.cpp
         src/oscpp/file_descriptor.cpp
@@ -74,9 +57,28 @@ set(SOURCES src/oscpp/dynamiclibrary.cpp
         src/oscpp_exceptionless/random_device.cpp
         src/oscpp_exceptionless/socket.cpp)
 
-add_library(oscpp SHARED ${HEADERS} ${SOURCES})
+add_library(oscpp SHARED ${SOURCES})
 add_library(oscpp::oscpp ALIAS oscpp)
 target_link_libraries(oscpp PRIVATE $<BUILD_INTERFACE:oscpp_warnings>)
+# The public headers. install(TARGETS) installs the file set below the include directory, keeping the oscpp/ and
+# oscpp_exceptionless/ directories. List new headers here so they are installed.
+target_sources(oscpp PUBLIC FILE_SET HEADERS BASE_DIRS include FILES
+        include/oscpp/circular_buffer.hpp
+        include/oscpp/dynamiclibrary.hpp
+        include/oscpp/file.hpp
+        include/oscpp/file_descriptor.hpp
+        include/oscpp/oscpp_export.hpp
+        include/oscpp/random_device.hpp
+        include/oscpp/socket.hpp
+        include/oscpp/stopwatch.hpp
+        include/oscpp/sysexception.hpp
+        include/oscpp/thousands_separator.hpp
+        include/oscpp/trim.hpp
+        include/oscpp_exceptionless/dynamiclibrary.hpp
+        include/oscpp_exceptionless/file.hpp
+        include/oscpp_exceptionless/file_descriptor.hpp
+        include/oscpp_exceptionless/random_device.hpp
+        include/oscpp_exceptionless/socket.hpp)
 target_include_directories(oscpp
         PUBLIC
             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -90,13 +92,19 @@ target_compile_definitions(oscpp PRIVATE OSCPP_EXPORTS)
 set_target_properties(oscpp PROPERTIES VERSION ${PROJECT_VERSION})
 set_target_properties(oscpp PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR})
 
+# On macOS the install name is @rpath/liboscpp.N.dylib, which executables outside the install prefix can't resolve
+# without an rpath. For delivery, the `release` preset records the absolute library path instead. The library then
+# must be installed at the configured prefix, so don't combine this with `cmake --install --prefix`.
+option(OSCPP_ABSOLUTE_INSTALL_NAME "Record the absolute install path as the library's install name (macOS)" OFF)
+if(OSCPP_ABSOLUTE_INSTALL_NAME)
+    set_target_properties(oscpp PROPERTIES INSTALL_NAME_DIR "${CMAKE_INSTALL_FULL_LIBDIR}")
+endif()
+
 install(TARGETS ${PROJECT_NAME} EXPORT oscpp-targets
         ARCHIVE  DESTINATION "${CMAKE_INSTALL_LIBDIR}"
         LIBRARY  DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-        RUNTIME  DESTINATION "${CMAKE_INSTALL_BINDIR}")
-# Preserve the oscpp/ and oscpp_exceptionless/ header directories.
-install(FILES include/oscpp_export.hpp DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
-install(DIRECTORY include/oscpp include/oscpp_exceptionless DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}" FILES_MATCHING PATTERN "*.hpp")
+        RUNTIME  DESTINATION "${CMAKE_INSTALL_BINDIR}"
+        FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
 install(EXPORT oscpp-targets NAMESPACE oscpp:: DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/oscpp")
 export(TARGETS ${PROJECT_NAME} NAMESPACE oscpp:: FILE oscpp-targets.cmake)
 
@@ -153,3 +161,8 @@ install(FILES
         "${CMAKE_CURRENT_BINARY_DIR}/oscpp-config-version.cmake"
         DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/oscpp"
 )
+
+# pkg-config file for consumers that don't use CMake.
+configure_file("cmake/oscpp.pc.in" "oscpp.pc" @ONLY)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/oscpp.pc"
+        DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig")

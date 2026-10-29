@@ -5,7 +5,7 @@
 #define OSCPP_DYNAMIC_LIBRARY_HPP
 #include <utility>
 #include "oscpp_exceptionless/dynamiclibrary.hpp"
-#include "oscpp_export.hpp"
+#include "oscpp/oscpp_export.hpp"
 
 namespace oscpp {
 /**

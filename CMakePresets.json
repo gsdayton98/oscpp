@@ -15,13 +15,22 @@
       "name": "debug",
       "inherits": "base",
       "displayName": "Debug",
-      "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
+      "description": "Development build. Installs to $HOME/{lib,include}.",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_INSTALL_PREFIX": "$env{HOME}"
+      }
     },
     {
       "name": "release",
       "inherits": "base",
       "displayName": "Release",
-      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
+      "description": "Delivery build. Installs to /usr/local; run the install step with sudo if needed.",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_INSTALL_PREFIX": "/usr/local",
+        "OSCPP_ABSOLUTE_INSTALL_NAME": "ON"
+      }
     },
     {
       "name": "asan",

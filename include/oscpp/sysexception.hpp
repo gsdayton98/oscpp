@@ -11,7 +11,7 @@
 #include <cerrno>
 #include <string>
 #include <system_error>
-#include "oscpp_export.hpp"
+#include "oscpp/oscpp_export.hpp"
 namespace oscpp {
 class OSCPP_API SysException : public std::system_error {
  public:

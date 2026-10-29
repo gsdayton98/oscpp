@@ -12,7 +12,7 @@
 #include <cstddef>
 #include <utility>
 #include "oscpp_exceptionless/file_descriptor.hpp"
-#include "oscpp_export.hpp"
+#include "oscpp/oscpp_export.hpp"
 
 namespace oscpp {
 

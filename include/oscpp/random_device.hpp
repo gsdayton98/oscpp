@@ -15,7 +15,7 @@
 #include <string>
 #include <system_error>
 #include "oscpp_exceptionless/random_device.hpp"
-#include "oscpp_export.hpp"
+#include "oscpp/oscpp_export.hpp"
 namespace oscpp {
 /**
  * Satisfies std::uniform_random_bit_generator, so it can be used with the standard distributions and

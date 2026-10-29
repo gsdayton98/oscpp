@@ -11,7 +11,7 @@
 #include <sys/socket.h>
 #include <utility>
 #include "oscpp_exceptionless/socket.hpp"
-#include "oscpp_export.hpp"
+#include "oscpp/oscpp_export.hpp"
 
 namespace oscpp {
 class OSCPP_API Socket {

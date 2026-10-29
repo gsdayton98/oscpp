@@ -8,7 +8,7 @@
 #ifndef OSCPP_STOPWATCH_HPP
 #define OSCPP_STOPWATCH_HPP
 #include <chrono>
-#include "oscpp_export.hpp"
+#include "oscpp/oscpp_export.hpp"
 
 namespace oscpp {
 class OSCPP_API StopWatch {

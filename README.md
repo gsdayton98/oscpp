@@ -94,12 +94,27 @@ package works from another CMake project (`test/package_consumer`), and checks f
 
 ## Installing
 
-The install prefix defaults to `$HOME` when you don't choose one, so a test install needs no privileges. Pass
-`--prefix` or `-DCMAKE_INSTALL_PREFIX=` to choose another.
+The presets choose where oscpp installs. Builds go in `../build/oscpp/<preset>`, outside the source tree.
+
+| Preset    | Prefix       | Use                                              |
+|-----------|--------------|--------------------------------------------------|
+| `debug`   | `$HOME`      | Development: `$HOME/lib`, `$HOME/include`        |
+| `release` | `/usr/local` | Delivery: `/usr/local/lib`, `/usr/local/include` |
 
 ```sh
-cmake --install ../build/oscpp
+cmake --preset debug && cmake --build --preset debug && cmake --install ../build/oscpp/debug
 ```
+
+```sh
+cmake --preset release && cmake --build --preset release && sudo cmake --install ../build/oscpp/release
+```
+
+Without a preset, a top-level build defaults to `$HOME`, so a test install needs no privileges. Pass `--prefix` or
+`-DCMAKE_INSTALL_PREFIX=` to choose another. The `release` preset records the absolute library path as the macOS install
+name (`OSCPP_ABSOLUTE_INSTALL_NAME`), so install it at its configured prefix rather than with `--prefix`.
+
+The install provides the headers (`oscpp/`, `oscpp_exceptionless/`), `liboscpp`, a CMake package and `oscpp.pc` for
+pkg-config.
 
 ## Using oscpp from CMake
 
